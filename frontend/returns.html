@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Returns And Refunds | MAT STORE</title>
+    <meta name="description" content="MAT STORE returns and refunds policy for premium marketplace orders, exchanges, support review, and payment refund readiness.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body data-page="static">
+    <header class="site-header">
+      <a class="brand" href="/"><span class="brand-mark">MAT</span><span class="brand-name">STORE</span></a>
+      <nav class="desktop-nav" aria-label="Primary navigation"><a href="/shop.html">Shop</a><a href="/shipping.html">Shipping</a><a href="/privacy.html">Privacy</a><a href="/contact.html">Contact</a></nav>
+      <form class="search-shell" id="pageSearchForm" role="search"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg><input id="pageSearchInput" type="search" placeholder="Search products"></form>
+      <div class="nav-actions"><select id="currencySelect" class="currency-select" aria-label="Currency"></select><a class="icon-button cart-button" href="/cart.html" aria-label="Cart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span id="cartCount" class="cart-count">0</span></a><a class="icon-button" href="/account.html" aria-label="Account"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg></a><a class="admin-link admin-only" href="/admin.html" hidden>Admin</a></div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero">
+        <div><p class="eyebrow">Customer trust</p><h1>Returns And Refunds</h1><p>Returns are handled through a support-first flow that keeps the customer, order, product, payment method, and audit trail connected.</p></div>
+        <div class="page-hero-card"><strong>Refund-ready structure</strong><p>The backend can expand into Stripe and PayPal refund workflows without redesigning order records.</p></div>
+      </section>
+
+      <section class="page-shell mini-stat-grid">
+        <article class="mini-stat"><strong>01</strong><p>Start with a support request and include your order number.</p></article>
+        <article class="mini-stat"><strong>02</strong><p>Support reviews item condition, supplier rules, and payment status.</p></article>
+        <article class="mini-stat"><strong>03</strong><p>Approved returns move into refund, replacement, or exchange handling.</p></article>
+      </section>
+
+      <section class="page-shell policy-layout">
+        <div class="policy-stack">
+          <article class="policy-row"><span>A</span><div><h2>Eligibility</h2><p>Products should be unused, complete, and reviewed by support before approval. Some supplier-linked items may have category-specific return rules.</p></div></article>
+          <article class="policy-row"><span>B</span><div><h2>Refund timing</h2><p>Refunds depend on payment provider processing time after approval. Demo handoffs should be replaced with production payment credentials before public launch.</p></div></article>
+          <article class="policy-row"><span>C</span><div><h2>Exchange readiness</h2><p>Inventory-aware exchanges can reuse product stock records, customer details, and the order lifecycle service.</p></div></article>
+        </div>
+        <aside class="support-stack">
+          <article class="support-card"><h2>Need a return?</h2><p>Send the order number, item name, reason, and photos if relevant. This keeps support fast and audit-ready.</p><p><a class="button ghost full" href="/contact.html">Start Return</a></p></article>
+          <article class="support-card"><h2>Trust signal</h2><p>Clear return language reduces checkout friction and supports repeat purchase confidence.</p></article>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="footer-inner"><div><h2>MAT STORE</h2><p>Premium support workflows for modern marketplace retention.</p></div><div><h3>Shop</h3><a href="/shop.html">All products</a><a href="/deals.html">Deals</a></div><div><h3>Support</h3><a href="/shipping.html">Shipping</a><a href="/contact.html">Contact</a></div><div><h3>Legal</h3><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div></footer>
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
+  </body>
+</html>

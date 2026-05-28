@@ -1,0 +1,22 @@
+{
+  "pricing": {
+    "defaultMarkupPercent": 40,
+    "hardToFindMarkupPercent": 50,
+    "maxResponsibleMarkupPercent": 70,
+    "smartPricing": true,
+    "paymentFeePercent": 3.4,
+    "paymentFeeFixed": 0.49,
+    "riskBufferPercent": 4,
+    "profitProtectionPercent": 12,
+    "fixedMargin": 0,
+    "rounding": 0.99
+  },
+  "currencies": {
+    "base": "USD",
+    "supported": ["USD", "EUR", "GBP", "GMD", "NGN", "CAD", "AED", "AUD", "JPY", "CNY", "ZAR", "XOF"]
+  },
+  "seo": {
+    "siteName": "MAT STORE",
+    "canonicalBaseUrl": "http://localhost:3000"
+  }
+}

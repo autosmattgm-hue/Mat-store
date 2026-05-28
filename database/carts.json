@@ -1,0 +1,104 @@
+[
+  {
+    "id": "5a8da908-bbf0-4cb4-a5af-94c7357524bb",
+    "sessionId": "a9613af6-8027-4944-8061-2925435a9fa3",
+    "currency": "GMD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-05-27T19:49:25.535Z",
+    "createdAt": "2026-05-27T19:49:25.535Z"
+  },
+  {
+    "id": "7c0fc129-c1f8-48ad-8c99-b89c0225dec7",
+    "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",
+    "currency": "GMD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-05-27T17:19:39.031Z",
+    "createdAt": "2026-05-27T17:19:39.031Z"
+  },
+  {
+    "id": "f13df3c6-c5b5-45ab-b020-0662470721d4",
+    "sessionId": "image-test",
+    "currency": "USD",
+    "items": [
+      {
+        "productId": "be3a7e5c-b517-45a8-b702-2123036f88ae",
+        "quantity": 1,
+        "variant": ""
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-27T14:32:12.235Z",
+    "createdAt": "2026-05-27T14:32:12.235Z"
+  },
+  {
+    "id": "3aa33007-cf19-442d-9965-bb5f114e05b5",
+    "sessionId": "variant-iphone-128",
+    "currency": "USD",
+    "items": [
+      {
+        "productId": "c9bd7bcd-bb1e-4f7b-a769-70163b401a81",
+        "quantity": 1,
+        "variant": "Capacity: 128GB"
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-27T13:17:29.474Z",
+    "createdAt": "2026-05-27T13:17:29.474Z"
+  },
+  {
+    "id": "d4831d19-2e9e-4e6b-a434-ced515089360",
+    "sessionId": "variant-iphone-64",
+    "currency": "USD",
+    "items": [
+      {
+        "productId": "c9bd7bcd-bb1e-4f7b-a769-70163b401a81",
+        "quantity": 1,
+        "variant": "Capacity: 64GB"
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-27T13:17:28.788Z",
+    "createdAt": "2026-05-27T13:17:28.789Z"
+  },
+  {
+    "id": "35d34798-6bad-44f1-b00e-3b5b4baf915b",
+    "sessionId": "variant-test-256",
+    "currency": "USD",
+    "items": [
+      {
+        "productId": "prd_edge_phone_006",
+        "quantity": 1,
+        "variant": "Capacity: 256GB"
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-27T13:14:11.935Z",
+    "createdAt": "2026-05-27T13:14:11.935Z"
+  },
+  {
+    "id": "dc9efb23-0c50-4d98-9af3-501f5bc56122",
+    "sessionId": "variant-test-128",
+    "currency": "USD",
+    "items": [
+      {
+        "productId": "prd_edge_phone_006",
+        "quantity": 1,
+        "variant": "Capacity: 128GB"
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-27T13:14:11.325Z",
+    "createdAt": "2026-05-27T13:14:11.325Z"
+  },
+  {
+    "id": "357a02d4-5751-4c03-a323-572b9a451588",
+    "sessionId": "057e2a1d-4f33-4701-8baf-6f4ac3381f0d",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-05-27T11:47:06.395Z",
+    "createdAt": "2026-05-27T11:47:06.395Z"
+  }
+]

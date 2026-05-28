@@ -1,0 +1,67 @@
+[
+  {
+    "id": "0a5b53d0-02af-4495-bd01-3b7dfbbd500d",
+    "cartId": "f13df3c6-c5b5-45ab-b020-0662470721d4",
+    "userId": null,
+    "sessionId": "image-test",
+    "currency": "USD",
+    "itemCount": 1,
+    "estimatedValue": 27.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-27T15:02:45.124Z",
+    "lastReminderAt": null
+  },
+  {
+    "id": "9317f315-1f67-4449-9d8c-cb1ae87ebb69",
+    "cartId": "3aa33007-cf19-442d-9965-bb5f114e05b5",
+    "userId": null,
+    "sessionId": "variant-iphone-128",
+    "currency": "USD",
+    "itemCount": 1,
+    "estimatedValue": 646.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-27T14:29:11.400Z",
+    "lastReminderAt": null
+  },
+  {
+    "id": "10c1da39-cee4-456a-943b-19b68d67d84c",
+    "cartId": "d4831d19-2e9e-4e6b-a434-ced515089360",
+    "userId": null,
+    "sessionId": "variant-iphone-64",
+    "currency": "USD",
+    "itemCount": 1,
+    "estimatedValue": 587.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-27T14:29:11.400Z",
+    "lastReminderAt": null
+  },
+  {
+    "id": "1f53e21a-ed65-40b4-a142-3f0ba8445ec4",
+    "cartId": "35d34798-6bad-44f1-b00e-3b5b4baf915b",
+    "userId": null,
+    "sessionId": "variant-test-256",
+    "currency": "USD",
+    "itemCount": 1,
+    "estimatedValue": 183.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-27T14:29:11.401Z",
+    "lastReminderAt": null
+  },
+  {
+    "id": "05291db0-d7e4-4d2d-abf7-a850c260bbc4",
+    "cartId": "dc9efb23-0c50-4d98-9af3-501f5bc56122",
+    "userId": null,
+    "sessionId": "variant-test-128",
+    "currency": "USD",
+    "itemCount": 1,
+    "estimatedValue": 166.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-27T14:29:11.402Z",
+    "lastReminderAt": null
+  }
+]

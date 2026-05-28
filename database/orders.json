@@ -1,0 +1,70 @@
+[
+  {
+    "id": "cf5f82e3-d481-4766-aa92-fd513012f2f7",
+    "orderNumber": "MAT-260526-4V6GR",
+    "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "prd_rose_bag_003",
+        "title": "Rose Gold Structured Carryall",
+        "image": "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1100&q=82",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 68.99,
+        "lineTotal": 68.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 68.99,
+      "shipping": 9.95,
+      "tax": 4.83,
+      "total": 83.77,
+      "displaySubtotal": 68.99,
+      "displayShipping": 9.95,
+      "displayTax": 4.83,
+      "displayTotal": 83.77,
+      "currency": "USD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "paid",
+    "fulfillmentStatus": "delivered",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-26T17:26:13.499Z"
+      },
+      {
+        "status": "updated",
+        "message": "Marked processing from admin dashboard.",
+        "createdAt": "2026-05-26T23:39:31.086Z"
+      },
+      {
+        "status": "updated",
+        "message": "Marked delivered from admin dashboard.",
+        "createdAt": "2026-05-26T23:48:35.803Z"
+      }
+    ],
+    "createdAt": "2026-05-26T17:26:13.499Z",
+    "updatedAt": "2026-05-26T23:48:35.803Z"
+  }
+]

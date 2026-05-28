@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Terms Of Service | MAT STORE</title>
+    <meta name="description" content="MAT STORE terms covering marketplace browsing, account use, payments, pricing, product availability, returns, and acceptable use.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body data-page="static">
+    <header class="site-header">
+      <a class="brand" href="/"><span class="brand-mark">MAT</span><span class="brand-name">STORE</span></a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="/shop.html">Shop</a><a href="/categories.html">Categories</a><a href="/returns.html">Returns</a><a href="/privacy.html">Privacy</a>
+      </nav>
+      <form class="search-shell" id="pageSearchForm" role="search">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg>
+        <input id="pageSearchInput" type="search" placeholder="Search products">
+      </form>
+      <div class="nav-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <a class="icon-button cart-button" href="/cart.html" aria-label="Cart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span id="cartCount" class="cart-count">0</span></a>
+        <a class="icon-button" href="/account.html" aria-label="Account"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg></a>
+        <a class="admin-link admin-only" href="/admin.html" hidden>Admin</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero">
+        <div>
+          <p class="eyebrow">Legal framework</p>
+          <h1>Terms Of Service</h1>
+          <p>These starter terms define how MAT STORE handles browsing, account access, product availability, payments, fulfillment, and support workflows.</p>
+          <div class="legal-meta"><span>Last updated May 26, 2026</span><span>Marketplace ready</span><span>Review before launch</span></div>
+        </div>
+        <div class="page-hero-card"><strong>Production note</strong><p>These terms are implementation-ready content, not legal advice. Have counsel review before public launch.</p></div>
+      </section>
+
+      <section class="page-shell policy-layout">
+        <div class="policy-stack">
+          <article class="policy-row"><span>01</span><div><h2>Marketplace use</h2><p>Customers agree to provide accurate account, shipping, and contact information when browsing, saving products, or placing orders.</p></div></article>
+          <article class="policy-row"><span>02</span><div><h2>Pricing and availability</h2><p>Product prices, currency displays, promotions, stock, and supplier availability may change as marketplace inventory updates.</p></div></article>
+          <article class="policy-row"><span>03</span><div><h2>Payments</h2><p>Stripe and PayPal handoffs require valid production credentials. WhatsApp ordering opens a prefilled message for direct concierge processing.</p></div></article>
+          <article class="policy-row"><span>04</span><div><h2>Returns and support</h2><p>Return eligibility, refunds, exchanges, and customer service outcomes depend on product condition, supplier rules, and order audit history.</p></div></article>
+        </div>
+        <aside class="support-stack">
+          <article class="support-card"><h2>Account responsibility</h2><p>Users are responsible for keeping login details secure and notifying support about unauthorized account activity.</p></article>
+          <article class="support-card"><h2>Acceptable use</h2><p>Do not abuse APIs, import tools, payment flows, checkout systems, or admin-only functionality.</p></article>
+          <article class="support-card"><h2>Need help?</h2><p>Support can assist with orders, shipping questions, returns, payment handoff issues, and account concerns.</p><p><a class="button ghost full" href="/contact.html">Contact Support</a></p></article>
+        </aside>
+      </section>
+
+      <section class="page-shell">
+        <div class="page-cta">
+          <div><p class="eyebrow">Trust layer</p><h2>Shop with clear expectations.</h2><p>The terms, privacy page, returns page, and shipping page are designed as a customer trust system, not hidden fine print.</p></div>
+          <a class="button ghost" href="/shop.html">Return To Shop</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="footer-inner"><div><h2>MAT STORE</h2><p>Premium AI ecommerce with transparent shopping policies.</p></div><div><h3>Shop</h3><a href="/shop.html">All products</a><a href="/deals.html">Deals</a></div><div><h3>Support</h3><a href="/contact.html">Contact</a><a href="/returns.html">Returns</a></div><div><h3>Legal</h3><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div></footer>
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
+  </body>
+</html>

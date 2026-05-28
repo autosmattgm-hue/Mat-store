@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050505">
+    <title>MAT STORE | AI Luxury Marketplace</title>
+    <meta
+      name="description"
+      content="MAT STORE is an AI-powered luxury ecommerce marketplace with curated products, secure checkout, smart importing, global currency support, and premium mobile shopping."
+    >
+    <link rel="canonical" href="http://localhost:3000/">
+    <meta property="og:title" content="MAT STORE | AI Luxury Marketplace">
+    <meta property="og:description" content="Shop an ultra-premium AI-powered marketplace with curated products, secure checkout, and cinematic product discovery.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="http://localhost:3000/">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1200&q=82">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MAT STORE | AI Luxury Marketplace">
+    <meta name="twitter:description" content="AI-curated luxury ecommerce with secure checkout and premium mobile experience.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "MAT STORE",
+        "url": "http://localhost:3000/",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "http://localhost:3000/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="cursorGlow" class="cursor-glow" aria-hidden="true"></div>
+
+    <div id="loader" class="loader" role="status" aria-live="polite">
+      <div class="loader-mark" aria-hidden="true">MAT</div>
+      <div class="loader-line" aria-hidden="true"></div>
+      <p>Preparing luxury intelligence</p>
+    </div>
+
+    <header class="site-header" id="siteHeader">
+      <a class="brand" href="#top" aria-label="MAT STORE home">
+        <span class="brand-mark">MAT</span>
+        <span class="brand-name">STORE</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="/shop.html">Shop</a>
+        <a href="/categories.html">Categories</a>
+        <a href="/deals.html">Deals</a>
+        <a href="/about.html">About</a>
+      </nav>
+
+      <form class="search-shell" id="searchForm" role="search">
+        <label class="sr-only" for="searchInput">Search products</label>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg>
+        <input id="searchInput" type="search" autocomplete="off" placeholder="Search luxury tech, fashion, beauty">
+        <div id="searchSuggestions" class="suggestions" role="listbox" hidden></div>
+      </form>
+
+      <div class="nav-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <button class="icon-button mobile-only" id="menuToggle" type="button" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
+          <span class="hamburger" aria-hidden="true"></span>
+        </button>
+        <button class="icon-button" id="wishlistButton" type="button" aria-label="Wishlist">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+        </button>
+        <button class="icon-button cart-button" id="cartButton" type="button" aria-label="Open cart">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </button>
+        <button class="icon-button" id="profileButton" type="button" aria-label="Account">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+        </button>
+        <button class="admin-link admin-only" id="adminOpenButton" type="button" hidden>Admin</button>
+      </div>
+    </header>
+
+    <div class="mobile-menu" id="mobileMenu" hidden>
+      <a href="/shop.html">Shop</a>
+      <a href="/categories.html">Categories</a>
+      <a href="/deals.html">Deals</a>
+      <a href="/about.html">About</a>
+      <button id="mobileAccountButton" type="button">Account</button>
+    </div>
+
+    <main id="storefront" class="storefront">
+      <section class="hero" id="top" aria-labelledby="heroTitle">
+        <video class="hero-video" autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1800&q=82">
+          <source src="https://videos.pexels.com/video-files/3195394/3195394-hd_1920_1080_25fps.mp4" type="video/mp4">
+        </video>
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <div class="hero-copy reveal">
+            <p class="eyebrow">AI-curated marketplace</p>
+            <h1 id="heroTitle">MAT STORE</h1>
+            <p class="hero-lede">Luxury product discovery, smart pricing, global currency comfort, and secure checkout built for modern shoppers.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="/shop.html?trending=true">Trending Products</a>
+              <button class="button ghost" id="heroImportTeaser" type="button">AI Import Studio</button>
+            </div>
+            <div class="hero-metrics" aria-label="Marketplace highlights">
+              <span><strong>12+</strong> curated lines</span>
+              <span><strong>AI</strong> merchandising</span>
+              <span><strong>3</strong> checkout paths</span>
+            </div>
+          </div>
+          <div class="hero-stage reveal" id="heroStage" aria-label="Featured products"></div>
+        </div>
+      </section>
+
+      <section class="trust-band" aria-label="Store promises">
+        <span>Secure sessions</span>
+        <span>NVIDIA AI enrichment</span>
+        <span>Stripe and PayPal ready</span>
+        <span>WhatsApp concierge orders</span>
+        <span>Global currency display</span>
+      </section>
+
+      <section class="section collection-band" id="collections" aria-labelledby="collectionsTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Smart categories</p>
+            <h2 id="collectionsTitle">Curated By Intent</h2>
+          </div>
+          <div id="categoryFilters" class="category-filters" aria-label="Product categories"></div>
+        </div>
+        <div class="collection-grid">
+          <article class="editorial-tile tall reveal">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=82" alt="Premium sneaker product styling" loading="lazy">
+            <div>
+              <p>Street Luxe</p>
+              <strong>Shoes and fashion selected for movement.</strong>
+            </div>
+          </article>
+          <article class="editorial-tile reveal">
+            <img src="https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=900&q=82" alt="Premium skincare serum" loading="lazy">
+            <div>
+              <p>Beauty Rituals</p>
+              <strong>Repeat-purchase products with refined shelf appeal.</strong>
+            </div>
+          </article>
+          <article class="editorial-tile reveal">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=82" alt="Wireless headphones" loading="lazy">
+            <div>
+              <p>Modern Tech</p>
+              <strong>High-demand electronics with premium presentation.</strong>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="trending" aria-labelledby="trendingTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Trending products</p>
+            <h2 id="trendingTitle">Luxury Market Pulse</h2>
+          </div>
+          <a class="text-button" id="viewTrendingButton" href="/shop.html?trending=true">View all trending</a>
+        </div>
+        <div id="trendingGrid" class="product-grid"></div>
+      </section>
+
+      <section class="section premium-rail-section" id="premium" aria-labelledby="premiumTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Auto-scrolling edit</p>
+            <h2 id="premiumTitle">Premium Picks In Motion</h2>
+          </div>
+        </div>
+        <div class="rail-window" aria-label="Premium product carousel">
+          <div id="premiumRail" class="rail-track"></div>
+        </div>
+      </section>
+
+      <section class="section split-market" aria-labelledby="aiTitle">
+        <div class="split-copy reveal">
+          <p class="eyebrow">AI commerce engine</p>
+          <h2 id="aiTitle">Imported, Rewritten, Priced, Published.</h2>
+          <p>Admin tools turn private sourcing links into MAT STORE products with AI copy, SEO, category inference, price markup, inventory tracking, and conversion-ready merchandising.</p>
+          <div class="mini-kpis">
+            <span><strong>AI</strong> protected pricing</span>
+            <span><strong>30m</strong> cart recovery logic</span>
+            <span><strong>12</strong> currencies</span>
+          </div>
+        </div>
+        <div class="automation-stack reveal">
+          <div>
+            <span>01</span>
+            <strong>Private sourcing validation</strong>
+            <p>Admin-only importing keeps sourcing links protected while shoppers see polished MAT STORE products.</p>
+          </div>
+          <div>
+            <span>02</span>
+            <strong>NVIDIA AI enrichment</strong>
+            <p>Luxury title, description, SEO metadata, tags, and category intelligence.</p>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Revenue automation</strong>
+            <p>Markup controls, low-stock alerts, abandoned cart records, and payment handoffs.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="flash" aria-labelledby="flashTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Flash sale</p>
+            <h2 id="flashTitle">High-Intent Offers</h2>
+          </div>
+          <div class="countdown" aria-label="Flash sale countdown">
+            <span id="countdownHours">12</span><small>h</small>
+            <span id="countdownMinutes">00</span><small>m</small>
+            <span id="countdownSeconds">00</span><small>s</small>
+          </div>
+        </div>
+        <div id="flashGrid" class="product-grid compact"></div>
+      </section>
+
+      <section class="section masonry-section" aria-labelledby="masonryTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Cinematic gallery</p>
+            <h2 id="masonryTitle">Boutique Product Stories</h2>
+          </div>
+        </div>
+        <div id="masonryGrid" class="masonry-grid"></div>
+      </section>
+    </main>
+
+    <main id="adminView" class="admin-view" hidden>
+      <aside class="admin-sidebar">
+        <div class="brand admin-brand">
+          <span class="brand-mark">MAT</span>
+          <span class="brand-name">ADMIN</span>
+        </div>
+        <button class="admin-tab active" data-admin-tab="overview" type="button">Overview</button>
+        <button class="admin-tab" data-admin-tab="importer" type="button">AI Importer</button>
+        <button class="admin-tab" data-admin-tab="products" type="button">Products</button>
+        <button class="admin-tab" data-admin-tab="orders" type="button">Orders</button>
+        <button class="admin-tab" data-admin-tab="customers" type="button">Customers</button>
+        <button class="admin-tab" data-admin-tab="automation" type="button">Automation</button>
+        <button class="admin-exit admin-logout" id="adminLogoutButton" type="button">Logout</button>
+        <button class="admin-exit" id="adminExitButton" type="button">Storefront</button>
+      </aside>
+
+      <section class="admin-main">
+        <header class="admin-topbar">
+          <div>
+            <p class="eyebrow">Control center</p>
+            <h1>MAT STORE Intelligence</h1>
+          </div>
+          <button class="button ghost" id="adminRefreshButton" type="button">Refresh</button>
+        </header>
+
+        <section class="admin-panel active" data-admin-panel="overview">
+          <div id="adminStats" class="admin-stats"></div>
+          <div class="admin-two-col">
+            <div>
+              <h2>Revenue By Category</h2>
+              <div id="categoryRevenue" class="bar-list"></div>
+            </div>
+            <div>
+              <h2>Low Stock Alerts</h2>
+              <div id="lowStockList" class="admin-list"></div>
+            </div>
+          </div>
+          <div class="admin-insight-grid">
+            <div>
+              <h2>Collection Performance</h2>
+              <div id="adminCollectionStats" class="admin-list"></div>
+            </div>
+            <div>
+              <h2>Marketplace Sources</h2>
+              <div id="adminMarketplaceStats" class="admin-list"></div>
+            </div>
+            <div>
+              <h2>Catalog Health</h2>
+              <div id="adminHealthPanel" class="admin-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="importer">
+          <div class="admin-two-col">
+            <form id="importPreviewForm" class="admin-form">
+              <h2>AI Product Importer</h2>
+              <label for="importUrl">Marketplace product links or collection pages</label>
+              <textarea id="importUrl" name="url" rows="6" placeholder="Paste supported private sourcing product links or collection pages. One link per line is best." required></textarea>
+              <div class="form-grid two">
+                <label for="importMarkup">Markup percent
+                  <input id="importMarkup" name="markupPercent" type="number" min="1" step="1" value="40">
+                </label>
+                <label for="importStock">Starting stock
+                  <input id="importStock" name="stock" type="number" min="0" step="1" value="24">
+                </label>
+              </div>
+              <label for="importImageUrl">Image override URL</label>
+              <input id="importImageUrl" name="imageUrl" type="url" placeholder="Optional: paste a product image URL if media is blocked">
+              <button class="button primary" type="submit">Preview Import</button>
+              <button class="button ghost" id="confirmImportButton" type="button" disabled>Publish Products</button>
+            </form>
+            <div id="importPreview" class="import-preview"></div>
+          </div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="products">
+          <form id="productForm" class="admin-form product-editor">
+            <h2>Product Editor</h2>
+            <input type="hidden" id="productId">
+            <div class="form-grid">
+              <label>Title<input id="productTitle" required></label>
+              <label>Category<input id="productCategory" required></label>
+              <label>Collection<input id="productCollection" placeholder="Premium Deal Collection"></label>
+              <label>Supplier<input id="productSupplierName" placeholder="Private source"></label>
+              <label>Supplier URL<input id="productSupplierUrl" type="url"></label>
+              <label>Status
+                <select id="productStatus">
+                  <option value="active">Active</option>
+                  <option value="draft">Draft</option>
+                  <option value="archived">Archived</option>
+                </select>
+              </label>
+              <label>Supplier price<input id="productSupplierPrice" type="number" step="0.01" required></label>
+              <label>Store price<input id="productPrice" type="number" step="0.01" required></label>
+              <label>Markup %<input id="productMarkupPercent" type="number" step="1" value="40"></label>
+              <label>Stock<input id="productStock" type="number" step="1" required></label>
+              <label>Low stock alert<input id="productLowStockThreshold" type="number" step="1" value="6"></label>
+              <label>Image URL<input id="productImage" type="url"></label>
+            </div>
+            <label>Description<textarea id="productDescription" rows="4"></textarea></label>
+            <div class="form-actions">
+              <button class="button primary" type="submit">Save Product</button>
+              <button class="button ghost" id="resetProductForm" type="button">New Product</button>
+            </div>
+          </form>
+          <div class="admin-toolbar">
+            <label>Search products <input id="adminProductSearch" type="search" placeholder="Title, SKU, category, supplier"></label>
+            <label>Collection <select id="adminCollectionFilter"></select></label>
+            <label>Source <select id="adminSupplierFilter"></select></label>
+            <label>Status <select id="adminProductStatusFilter"></select></label>
+            <label>Bulk markup <input id="bulkMarkupInput" type="number" value="40" min="1"></label>
+            <button class="button ghost" id="bulkMarkupButton" type="button">Apply</button>
+            <button class="button ghost" id="repairPricingButton" type="button">Repair AI Prices</button>
+            <button class="button ghost" id="cleanupDuplicatesButton" type="button">Clean Duplicates</button>
+            <span id="adminProductCount" class="admin-count"></span>
+          </div>
+          <div id="adminProductsTable" class="admin-table"></div>
+          <button class="button ghost admin-more-button" id="adminProductShowMore" type="button" hidden>Show More</button>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="orders">
+          <div id="adminOrders" class="admin-table"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="customers">
+          <div id="adminCustomers" class="admin-table"></div>
+        </section>
+
+        <section class="admin-panel" data-admin-panel="automation">
+          <div class="admin-two-col">
+            <div>
+              <h2>Recovery Queue</h2>
+              <div id="abandonedCarts" class="admin-list"></div>
+            </div>
+            <div>
+              <h2>SEO and Image Tools</h2>
+              <div class="tool-row">
+                <button class="button ghost" id="seoAuditButton" type="button">Run SEO Audit</button>
+                <button class="button ghost" id="imageAuditButton" type="button">Run Image Audit</button>
+                <button class="button ghost" id="inventorySyncButton" type="button">Sync Inventory</button>
+              </div>
+              <div id="automationOutput" class="admin-list"></div>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <aside class="drawer" id="cartDrawer" aria-labelledby="cartTitle" aria-hidden="true">
+      <div class="drawer-backdrop" data-close-cart></div>
+      <div class="drawer-panel">
+        <header>
+          <h2 id="cartTitle">Shopping Cart</h2>
+          <button class="icon-button" type="button" data-close-cart aria-label="Close cart">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </header>
+        <div id="cartItems" class="cart-items"></div>
+        <form id="promoForm" class="promo-form">
+          <label class="sr-only" for="promoCode">Promo code</label>
+          <input id="promoCode" placeholder="Promo code">
+          <button type="submit">Apply</button>
+        </form>
+        <div id="cartTotals" class="cart-totals"></div>
+        <button class="button primary full" id="checkoutButton" type="button">Checkout</button>
+      </div>
+    </aside>
+
+    <dialog class="modal" id="productModal" aria-labelledby="modalProductTitle">
+      <button class="icon-button modal-close" type="button" data-close-product aria-label="Close product">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div id="productModalContent" class="product-modal-content"></div>
+    </dialog>
+
+    <dialog class="modal compact-modal" id="authModal" aria-labelledby="authTitle">
+      <button class="icon-button modal-close" type="button" data-close-auth aria-label="Close account">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <div class="auth-shell">
+        <h2 id="authTitle">MAT STORE Account</h2>
+        <div class="auth-tabs" role="tablist">
+          <button class="active" data-auth-tab="login" type="button">Login</button>
+          <button data-auth-tab="register" type="button">Register</button>
+          <button data-auth-tab="forgot" type="button">Reset</button>
+        </div>
+        <form class="auth-form active" id="loginForm" data-auth-panel="login">
+          <label>Email<input name="email" type="email" autocomplete="username" required></label>
+          <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+          <button class="button primary full" type="submit">Login</button>
+        </form>
+        <form class="auth-form" id="registerForm" data-auth-panel="register">
+          <label>Name<input name="name" autocomplete="name" required></label>
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <label>Password<input name="password" type="password" minlength="8" autocomplete="new-password" required></label>
+          <div class="form-grid two">
+            <label>Country<input name="country" maxlength="2" value="US" required></label>
+            <label>Currency<select name="currency" id="registerCurrency"></select></label>
+          </div>
+          <label class="check-line"><input name="marketingOptIn" type="checkbox" checked> Send premium drops and recovery reminders</label>
+          <button class="button primary full" type="submit">Create Account</button>
+        </form>
+        <form class="auth-form" id="forgotForm" data-auth-panel="forgot">
+          <label>Email<input name="email" type="email" autocomplete="email" required></label>
+          <button class="button primary full" type="submit">Prepare Reset</button>
+        </form>
+        <div id="profilePanel" class="profile-panel" hidden>
+          <p id="profileName"></p>
+          <div id="profileWishlist"></div>
+          <button class="button ghost full" id="logoutButton" type="button">Logout</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog class="modal checkout-modal" id="checkoutModal" aria-labelledby="checkoutTitle">
+      <button class="icon-button modal-close" type="button" data-close-checkout aria-label="Close checkout">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+      <form id="checkoutForm" class="checkout-form">
+        <div>
+          <p class="eyebrow">Secure checkout</p>
+          <h2 id="checkoutTitle">Complete Your Order</h2>
+        </div>
+        <div class="form-grid two">
+          <label>Name<input name="name" required></label>
+          <label>Email<input name="email" type="email" required></label>
+          <label>Phone<input name="phone" required></label>
+          <label>Country<input name="country" maxlength="2" value="US" required></label>
+          <label>Address<input name="line1" required></label>
+          <label>City<input name="city" required></label>
+          <label>Region<input name="region" required></label>
+          <label>Postal code<input name="postalCode" required></label>
+        </div>
+        <fieldset class="payment-options">
+          <legend>Payment</legend>
+          <label><input type="radio" name="paymentMethod" value="stripe" checked> Stripe</label>
+          <label><input type="radio" name="paymentMethod" value="paypal"> PayPal</label>
+          <label><input type="radio" name="paymentMethod" value="whatsapp"> WhatsApp</label>
+        </fieldset>
+        <div id="checkoutSummary" class="checkout-summary"></div>
+        <button class="button primary full" type="submit">Place Order</button>
+      </form>
+    </dialog>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="/js/api.js" defer></script>
+    <script src="/js/cart.js" defer></script>
+    <script src="/js/auth.js" defer></script>
+    <script src="/js/admin.js" defer></script>
+    <script src="/js/app.js" defer></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Orders | MAT STORE</title>
+    <meta name="description" content="View MAT STORE order history, payment status, fulfillment status, and purchased products.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body data-page="orders">
+    <header class="site-header"><a class="brand" href="/"><span class="brand-mark">MAT</span><span class="brand-name">STORE</span></a><nav class="desktop-nav"><a href="/shop.html">Shop</a><a href="/categories.html">Categories</a><a href="/deals.html">Deals</a><a href="/account.html">Account</a></nav><form class="search-shell" id="pageSearchForm"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg><input id="pageSearchInput" type="search" placeholder="Search products"></form><div class="nav-actions"><select id="currencySelect" class="currency-select"></select><a class="icon-button cart-button" href="/cart.html" aria-label="Cart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span id="cartCount" class="cart-count">0</span></a><a class="admin-link admin-only" href="/admin.html" hidden>Admin</a></div></header>
+    <main class="page-main">
+      <section class="page-hero"><div><p class="eyebrow">Order history</p><h1>Your Orders</h1><p>Track payment handoff state, fulfillment status, purchased products, totals, and lifecycle updates from your MAT STORE account.</p></div><div class="page-hero-card"><strong>Lifecycle ready</strong><p>Orders are structured for future refunds, invoice PDFs, delivery updates, support notes, and analytics.</p></div></section>
+      <section class="page-shell mini-stat-grid"><article class="mini-stat"><strong>New</strong><p>Every checkout begins with inventory reservation and a new fulfillment state.</p></article><article class="mini-stat"><strong>Paid</strong><p>Payment status can be updated through Stripe, PayPal, or admin workflows.</p></article><article class="mini-stat"><strong>Done</strong><p>Delivery, refund, exchange, and support states can be added to the audit trail.</p></article></section>
+      <section class="page-shell"><div id="ordersList" class="line-list"></div></section>
+      <section class="page-shell"><div class="page-cta"><div><p class="eyebrow">Need help?</p><h2>Support can review your order context.</h2><p>Include the order number and account email when contacting support.</p></div><a class="button ghost" href="/contact.html">Contact Support</a></div></section>
+    </main>
+    <footer class="site-footer"><div class="footer-inner"><div><h2>MAT STORE</h2><p>Order visibility built for premium customer confidence.</p></div><div><h3>Shop</h3><a href="/shop.html">All products</a><a href="/categories.html">Categories</a></div><div><h3>Account</h3><a href="/account.html">Profile</a><a href="/wishlist.html">Wishlist</a></div><div><h3>Support</h3><a href="/shipping.html">Shipping</a><a href="/returns.html">Returns</a></div></div></footer>
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div><script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
+  </body>
+</html>

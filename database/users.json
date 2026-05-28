@@ -1,0 +1,87 @@
+[
+  {
+    "id": "275d2822-6909-48e4-9124-1d4ed404c5d2",
+    "name": "MAT STORE Admin",
+    "email": "admin@matstore.local",
+    "passwordHash": "$2a$12$9qnj4hEAcSkPEhAolLDHrun.g1qGqZAu4g5ezRIvQAXC2wjLPm7.q",
+    "role": "admin",
+    "country": "US",
+    "currency": "USD",
+    "addresses": [],
+    "wishlist": [],
+    "preferences": {
+      "theme": "dark",
+      "marketingOptIn": true
+    },
+    "refreshTokens": [
+      {
+        "id": "0dc52942-af11-4b9f-b508-9d434ceeb55e",
+        "hash": "0647c3328f8ec881c8466b69fadbc56dcf4af72f287a5ece038b62af9ca21ecc",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.18363; en-US) PowerShell/7.5.5",
+        "ip": "::1",
+        "createdAt": "2026-05-27T00:45:06.006Z",
+        "expiresAt": "2026-06-26T00:45:06.006Z"
+      },
+      {
+        "id": "480e58e5-b12e-49ab-9449-da300800b2da",
+        "hash": "9e7bc8eb898b0badc000f5c85408483bf34b2ec9c856c84d430fa3fd165df9eb",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.18363; en-US) PowerShell/7.5.5",
+        "ip": "::1",
+        "createdAt": "2026-05-27T09:52:10.740Z",
+        "expiresAt": "2026-06-26T09:52:10.740Z"
+      },
+      {
+        "id": "bdd7016a-dbe8-4599-ae75-3b883102e093",
+        "hash": "bc0f6bb9f35632e44924cc7a5dacfe781479389439028c5e9d5011a27b09a701",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "ip": "::1",
+        "createdAt": "2026-05-27T09:52:14.014Z",
+        "expiresAt": "2026-06-26T09:52:14.014Z"
+      },
+      {
+        "id": "1470ae3b-2dba-49ed-a5ff-09a388a34110",
+        "hash": "59761d985fad32f7e8ce7c80de1116c5ede24da2bf4c70fc4ab2db3faf55ecc3",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.18363; en-US) PowerShell/7.5.5",
+        "ip": "::1",
+        "createdAt": "2026-05-27T09:53:02.465Z",
+        "expiresAt": "2026-06-26T09:53:02.465Z"
+      },
+      {
+        "id": "6d9361fa-b3c6-4067-9f89-17ac77c9f4f6",
+        "hash": "ee2598261ee1226225492fc3d253f41a2b96875696cff672d49fae69591c0ba6",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.18363; en-US) PowerShell/7.5.5",
+        "ip": "::1",
+        "createdAt": "2026-05-27T10:02:38.136Z",
+        "expiresAt": "2026-06-26T10:02:38.136Z"
+      },
+      {
+        "id": "754604a4-120c-4269-a7d6-45711a0c079b",
+        "hash": "47d26f53cd57ebed950148637808fd7d1e36219637967f44376f8e15153fe8d3",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.18363; en-US) PowerShell/7.5.5",
+        "ip": "::1",
+        "createdAt": "2026-05-27T11:14:02.660Z",
+        "expiresAt": "2026-06-26T11:14:02.660Z"
+      },
+      {
+        "id": "1b1dbe7a-96de-4fdc-8f02-c83adff237b0",
+        "hash": "97cafdcd49e44e93a924da451bafe3a385113ca766ade9bfbf7fabf9a8b038c0",
+        "userAgent": "node",
+        "ip": "::ffff:127.0.0.1",
+        "createdAt": "2026-05-27T17:40:58.559Z",
+        "expiresAt": "2026-06-26T17:40:58.559Z"
+      },
+      {
+        "id": "3e1cf91a-0e71-4341-ac1e-133fc151a826",
+        "hash": "920c135f5a352ad20690851334bcadd2c8744feb0e2b4312abcd3aee8bea2205",
+        "userAgent": "node",
+        "ip": "::ffff:127.0.0.1",
+        "createdAt": "2026-05-27T17:46:19.706Z",
+        "expiresAt": "2026-06-26T17:46:19.706Z"
+      }
+    ],
+    "resetTokens": [],
+    "createdAt": "2026-05-26T16:31:54.112Z",
+    "updatedAt": "2026-05-27T17:46:19.711Z",
+    "lastLoginAt": "2026-05-27T17:46:19.711Z"
+  }
+]

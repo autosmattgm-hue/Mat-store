@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Privacy Policy | MAT STORE</title>
+    <meta name="description" content="MAT STORE privacy policy covering accounts, orders, carts, region preferences, AI importing, analytics, and security.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body data-page="static">
+    <header class="site-header">
+      <a class="brand" href="/"><span class="brand-mark">MAT</span><span class="brand-name">STORE</span></a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="/shop.html">Shop</a><a href="/categories.html">Categories</a><a href="/shipping.html">Shipping</a><a href="/terms.html">Terms</a>
+      </nav>
+      <form class="search-shell" id="pageSearchForm" role="search">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg>
+        <input id="pageSearchInput" type="search" placeholder="Search products">
+      </form>
+      <div class="nav-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <a class="icon-button cart-button" href="/cart.html" aria-label="Cart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span id="cartCount" class="cart-count">0</span></a>
+        <a class="icon-button" href="/account.html" aria-label="Account"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg></a>
+        <a class="admin-link admin-only" href="/admin.html" hidden>Admin</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero">
+        <div>
+          <p class="eyebrow">Legal and trust</p>
+          <h1>Privacy Policy</h1>
+          <p>MAT STORE uses customer data to operate secure commerce, remember region preferences, improve product discovery, and support marketplace automation.</p>
+          <div class="legal-meta"><span>Last updated May 26, 2026</span><span>Passwords hashed with bcrypt</span><span>NVIDIA AI only</span></div>
+        </div>
+        <div class="page-hero-card">
+          <strong>Privacy by architecture</strong>
+          <p>Authentication, orders, carts, wishlists, and admin automation are separated behind backend services for cleaner future compliance work.</p>
+        </div>
+      </section>
+
+      <section class="page-shell policy-layout">
+        <div class="policy-stack">
+          <article class="policy-row"><span>01</span><div><h2>Account information</h2><p>We store name, email, hashed password, country, currency, wishlist, saved addresses, and session records to provide account access and localized shopping.</p></div></article>
+          <article class="policy-row"><span>02</span><div><h2>Order information</h2><p>Orders store customer contact details, shipping address, purchased items, totals, payment method, fulfillment status, and audit trail events.</p></div></article>
+          <article class="policy-row"><span>03</span><div><h2>Cart and recovery data</h2><p>Cart records support checkout continuity and abandoned cart recovery logic. Recovery messages are email-ready but require a production email provider before launch.</p></div></article>
+          <article class="policy-row"><span>04</span><div><h2>AI importing data</h2><p>When configured, supplier product metadata can be sent to NVIDIA AI to rewrite product titles, descriptions, SEO metadata, tags, and categories.</p></div></article>
+        </div>
+        <aside class="support-stack">
+          <article class="support-card"><h2>Security controls</h2><p>Protected APIs require JWT authorization. Admin routes require the admin role. Passwords are never stored in plain text.</p></article>
+          <article class="support-card"><h2>Payment data</h2><p>Stripe and PayPal are external payment handoffs. MAT STORE stores order state and payment method, not full card details.</p></article>
+          <article class="support-card"><h2>Contact</h2><p>For privacy requests, use the contact page and include the email connected to your MAT STORE account.</p><p><a class="button ghost full" href="/contact.html">Contact Support</a></p></article>
+        </aside>
+      </section>
+
+      <section class="page-shell">
+        <div class="page-cta">
+          <div><p class="eyebrow">Customer confidence</p><h2>Need a data request?</h2><p>MAT STORE is ready for account export, deletion, and support workflows as production compliance requirements are finalized.</p></div>
+          <a class="button ghost" href="/account.html">Manage Account</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer"><div class="footer-inner"><div><h2>MAT STORE</h2><p>Premium AI ecommerce with secure account and order foundations.</p></div><div><h3>Shop</h3><a href="/shop.html">All products</a><a href="/categories.html">Categories</a></div><div><h3>Support</h3><a href="/contact.html">Contact</a><a href="/shipping.html">Shipping</a></div><div><h3>Legal</h3><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div></div></footer>
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
+  </body>
+</html>
