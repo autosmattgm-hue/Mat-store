@@ -403,7 +403,7 @@
           <button type="submit">Apply</button>
         </form>
         <div id="cartTotals" class="cart-totals"></div>
-        <button class="button primary full" id="checkoutButton" type="button">Checkout</button>
+        <a class="button primary full" id="checkoutButton" href="/checkout.html">Checkout</a>
       </div>
     </aside>
 
@@ -420,30 +420,49 @@
       </button>
       <div class="auth-shell">
         <h2 id="authTitle">MAT STORE Account</h2>
+        <p class="auth-subtitle">Secure access for saved carts, private drops, wishlist recovery, and faster checkout.</p>
         <div class="auth-tabs" role="tablist">
           <button class="active" data-auth-tab="login" type="button">Login</button>
           <button data-auth-tab="register" type="button">Register</button>
           <button data-auth-tab="forgot" type="button">Reset</button>
         </div>
+        <p class="auth-status" id="authStatus" aria-live="polite" hidden></p>
         <form class="auth-form active" id="loginForm" data-auth-panel="login">
           <label>Email<input name="email" type="email" autocomplete="username" required></label>
-          <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-          <button class="button primary full" type="submit">Login</button>
+          <label>Password
+            <span class="password-field">
+              <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+              <button class="password-toggle" type="button" data-toggle-password="loginPassword" aria-label="Show password">Show</button>
+            </span>
+          </label>
+          <button class="button primary full" type="submit">Login securely</button>
         </form>
         <form class="auth-form" id="registerForm" data-auth-panel="register">
           <label>Name<input name="name" autocomplete="name" required></label>
           <label>Email<input name="email" type="email" autocomplete="email" required></label>
-          <label>Password<input name="password" type="password" minlength="8" autocomplete="new-password" required></label>
+          <label>Password
+            <span class="password-field">
+              <input id="registerPassword" name="password" type="password" minlength="8" autocomplete="new-password" required>
+              <button class="password-toggle" type="button" data-toggle-password="registerPassword" aria-label="Show password">Show</button>
+            </span>
+            <span class="password-strength" id="registerPasswordStrength">Use 8+ characters with letters and numbers.</span>
+          </label>
+          <label>Confirm password
+            <span class="password-field">
+              <input id="registerConfirmPassword" name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required>
+              <button class="password-toggle" type="button" data-toggle-password="registerConfirmPassword" aria-label="Show password">Show</button>
+            </span>
+          </label>
           <div class="form-grid two">
-            <label>Country<input name="country" maxlength="2" value="US" required></label>
+            <label>Country<input class="country-code-input" name="country" maxlength="2" value="US" autocomplete="country" required></label>
             <label>Currency<select name="currency" id="registerCurrency"></select></label>
           </div>
           <label class="check-line"><input name="marketingOptIn" type="checkbox" checked> Send premium drops and recovery reminders</label>
-          <button class="button primary full" type="submit">Create Account</button>
+          <button class="button primary full" type="submit">Create secure account</button>
         </form>
         <form class="auth-form" id="forgotForm" data-auth-panel="forgot">
           <label>Email<input name="email" type="email" autocomplete="email" required></label>
-          <button class="button primary full" type="submit">Prepare Reset</button>
+          <button class="button primary full" type="submit">Send reset instructions</button>
         </form>
         <div id="profilePanel" class="profile-panel" hidden>
           <p id="profileName"></p>

@@ -579,6 +579,10 @@ h2 {
   width: 100%;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 .hero-metrics {
   display: flex;
   flex-wrap: wrap;
@@ -1609,6 +1613,107 @@ label {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.checkout-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checkout-steps li {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  color: var(--paper-soft);
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 800;
+}
+
+.checkout-steps span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #111;
+  background: var(--gold);
+  font-size: 0.75rem;
+}
+
+.shipping-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.shipping-options legend {
+  color: var(--gold);
+}
+
+.shipping-card {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  min-height: 76px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.shipping-card strong,
+.payment-card strong {
+  display: block;
+  color: inherit;
+}
+
+.shipping-card small,
+.payment-card small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.shipping-card b {
+  white-space: nowrap;
+  color: var(--gold);
+}
+
+.shipping-card:has(input:checked),
+.payment-card:has(input:checked) {
+  border-color: rgba(244, 213, 158, 0.62);
+  background: rgba(244, 213, 158, 0.14);
+  box-shadow: 0 12px 34px rgba(244, 213, 158, 0.1);
+}
+
+.billing-address-panel {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.billing-address-panel[hidden] {
+  display: none !important;
+}
+
+.checkout-check {
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+}
+
 .payment-options {
   display: flex;
   flex-wrap: wrap;
@@ -1630,6 +1735,151 @@ label {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.04);
+}
+
+.payment-card {
+  flex: 1 1 180px;
+}
+
+.checkout-assurance,
+.checkout-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.checkout-assurance span,
+.checkout-trust-row span {
+  min-height: 32px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--gold);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.paypal-checkout-panel {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid rgba(244, 213, 158, 0.36);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(255, 250, 242, 0.72), rgba(244, 213, 158, 0.18)),
+    rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.42), 0 18px 48px rgba(54, 42, 27, 0.1);
+}
+
+.paypal-checkout-panel[hidden] {
+  display: none !important;
+}
+
+.paypal-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.paypal-panel-head span,
+.paypal-panel-head small {
+  color: #75501d;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.paypal-panel-head strong {
+  display: block;
+  margin-top: 4px;
+  color: #16130f;
+  font-size: 1.15rem;
+}
+
+.paypal-status {
+  min-height: 42px;
+  display: grid;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(39, 32, 24, 0.12);
+  border-radius: 8px;
+  color: #5f5548;
+  background: rgba(255, 255, 255, 0.52);
+}
+
+.paypal-status[data-tone='success'] {
+  color: #1d5b3b;
+  border-color: rgba(29, 91, 59, 0.22);
+  background: rgba(46, 139, 87, 0.1);
+}
+
+.paypal-status[data-tone='warning'] {
+  color: #83560d;
+  border-color: rgba(131, 86, 13, 0.24);
+  background: rgba(244, 181, 71, 0.13);
+}
+
+.paypal-status[data-tone='error'] {
+  color: #8d2e23;
+  border-color: rgba(141, 46, 35, 0.24);
+  background: rgba(255, 117, 111, 0.13);
+}
+
+.paypal-status[data-tone='loading'] {
+  color: #5c4630;
+  background: rgba(244, 213, 158, 0.2);
+}
+
+.paypal-button-shell {
+  min-height: 52px;
+}
+
+.paypal-card-fields {
+  display: grid;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(39, 32, 24, 0.12);
+}
+
+.paypal-card-fields[hidden] {
+  display: none !important;
+}
+
+.paypal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.paypal-billing-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(39, 32, 24, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.38);
+}
+
+.paypal-card-grid label {
+  min-width: 0;
+  color: #4f463b;
+  font-weight: 800;
+}
+
+.paypal-hosted-field {
+  height: 48px;
+  display: grid;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid rgba(39, 32, 24, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
 }
 
 .profile-panel {
@@ -2374,6 +2624,7 @@ label {
 .filter-panel,
 .summary-panel,
 .account-panel,
+.payment-action-panel,
 .support-card,
 .policy-block,
 .contact-panel {
@@ -2720,6 +2971,7 @@ label {
 
 .cart-page-layout,
 .checkout-layout,
+.payment-layout,
 .account-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 370px;
@@ -2762,9 +3014,95 @@ label {
   color: var(--muted);
 }
 
+.checkout-review-list {
+  display: grid;
+  gap: 10px;
+}
+
+.checkout-review-item {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.checkout-review-item img {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  padding: 5px;
+  border-radius: 6px;
+  background: rgba(255, 250, 242, 0.84);
+}
+
+.checkout-review-item strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--paper);
+  font-size: 0.9rem;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.checkout-review-item span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.checkout-delivery-note {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(244, 213, 158, 0.1);
+}
+
+.checkout-delivery-note strong {
+  color: var(--gold);
+}
+
+.checkout-delivery-note span {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
 .page-form {
   display: grid;
   gap: 12px;
+}
+
+.payment-panel,
+.payment-action-panel {
+  display: grid;
+  gap: 14px;
+}
+
+.payment-action-panel {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.payment-action-panel[hidden] {
+  display: none !important;
+}
+
+.payment-action-panel h3,
+.payment-action-panel p {
+  margin: 0;
+}
+
+.payment-action-panel p {
+  color: var(--muted);
 }
 
 .page-form .form-grid {
@@ -2864,6 +3202,7 @@ label {
   .detail-layout,
   .cart-page-layout,
   .checkout-layout,
+  .payment-layout,
   .account-layout,
   .footer-inner {
     grid-template-columns: 1fr;
@@ -2919,6 +3258,27 @@ label {
   }
 
   .page-form .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-steps,
+  .shipping-options {
+    grid-template-columns: 1fr;
+  }
+
+  .shipping-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .shipping-card b {
+    grid-column: 2;
+  }
+
+  .paypal-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .paypal-billing-fields {
     grid-template-columns: 1fr;
   }
 }
@@ -3235,6 +3595,8 @@ li,
 .review-card,
 .category-tile,
 .line-item,
+.checkout-review-item,
+.checkout-delivery-note,
 .order-card,
 .automation-stack > div,
 .feature-list li,
@@ -3422,12 +3784,21 @@ li,
   background: rgba(255, 255, 255, 0.5);
 }
 
+.checkout-steps li,
+.shipping-options,
+.shipping-card,
+.billing-address-panel,
+.paypal-billing-fields,
+.checkout-check,
 .payment-options,
-.payment-options label {
+.payment-options label,
+.checkout-assurance span,
+.checkout-trust-row span {
   border-color: rgba(39, 32, 24, 0.12);
   background: rgba(255, 255, 255, 0.42);
 }
 
+.shipping-options legend,
 .payment-options legend {
   color: #75501d;
 }
@@ -4496,5 +4867,305 @@ li,
   .ai-agent-icon,
   .ai-agent-chips button {
     transition: none;
+  }
+}
+
+.auth-subtitle {
+  margin: -6px 0 2px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+.auth-status {
+  margin: 0;
+  padding: 12px 14px;
+  color: #352816;
+  border: 1px solid rgba(244, 213, 158, 0.5);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(244, 213, 158, 0.96), rgba(255, 250, 242, 0.94));
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.auth-status[data-tone="error"] {
+  color: #4a1512;
+  border-color: rgba(255, 117, 111, 0.45);
+  background: linear-gradient(135deg, rgba(255, 222, 220, 0.98), rgba(255, 246, 243, 0.94));
+}
+
+.auth-status[data-tone="success"] {
+  color: #12371e;
+  border-color: rgba(130, 217, 154, 0.45);
+  background: linear-gradient(135deg, rgba(221, 255, 230, 0.98), rgba(247, 255, 247, 0.94));
+}
+
+.password-field {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 76px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  min-width: 54px;
+  min-height: 32px;
+  transform: translateY(-50%);
+  color: #2a2118;
+  border: 1px solid rgba(39, 32, 24, 0.16);
+  border-radius: 6px;
+  background: rgba(255, 250, 242, 0.9);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.password-toggle:hover,
+.password-toggle:focus-visible {
+  border-color: rgba(244, 213, 158, 0.9);
+  box-shadow: 0 0 0 3px rgba(244, 213, 158, 0.22);
+  outline: none;
+}
+
+.password-strength {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.4;
+}
+
+.password-strength[data-strength="0"],
+.password-strength[data-strength="1"] {
+  color: var(--danger);
+}
+
+.password-strength[data-strength="3"],
+.password-strength[data-strength="4"],
+.password-strength[data-strength="5"] {
+  color: var(--success);
+}
+
+.account-hero h1 {
+  max-width: 850px;
+}
+
+.account-auth-layout {
+  align-items: stretch;
+}
+
+.account-access-panel,
+.account-side-panel,
+.profile-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(39, 32, 24, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(255, 250, 242, 0.72)),
+    radial-gradient(circle at top right, rgba(215, 163, 155, 0.18), transparent 34%);
+  box-shadow: 0 18px 50px rgba(39, 32, 24, 0.08);
+}
+
+.account-access-panel::before,
+.account-side-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(244, 213, 158, 0.2), transparent 30%, rgba(158, 183, 160, 0.14));
+}
+
+.account-tabs {
+  position: relative;
+  z-index: 1;
+}
+
+.account-tabs button,
+.auth-tabs button {
+  transition: transform 180ms var(--ease), box-shadow 180ms var(--ease), border-color 180ms var(--ease);
+}
+
+.account-tabs button:hover,
+.auth-tabs button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 26px rgba(39, 32, 24, 0.1);
+}
+
+.auth-card-form,
+.page-panel,
+.auth-benefits,
+.account-side-panel .page-form,
+#accountProfile {
+  position: relative;
+  z-index: 1;
+}
+
+.auth-card-form {
+  padding: 16px;
+  border: 1px solid rgba(39, 32, 24, 0.1);
+  border-radius: var(--radius);
+  background: rgba(255, 250, 242, 0.66);
+}
+
+.page-input,
+.page-select,
+.profile-edit-form input,
+.profile-edit-form select {
+  width: 100%;
+  min-height: 46px;
+  color: #17130f;
+  border: 1px solid rgba(39, 32, 24, 0.14);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.88);
+  padding: 0 13px;
+  outline: none;
+}
+
+.page-input:focus,
+.page-select:focus,
+.profile-edit-form input:focus,
+.profile-edit-form select:focus {
+  border-color: rgba(244, 213, 158, 0.95);
+  box-shadow: 0 0 0 4px rgba(244, 213, 158, 0.18);
+}
+
+.page-input:disabled {
+  color: rgba(39, 32, 24, 0.58);
+  background: rgba(39, 32, 24, 0.06);
+}
+
+.premium-check,
+.check-line {
+  display: flex;
+  grid-template-columns: none;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  color: #342a1f;
+  border: 1px solid rgba(39, 32, 24, 0.1);
+  border-radius: var(--radius);
+}
+
+.premium-check input,
+.check-line input {
+  width: auto;
+  min-height: auto;
+  margin-top: 3px;
+}
+
+.auth-benefits {
+  display: grid;
+  gap: 12px;
+  padding: 4px 0 6px;
+}
+
+.auth-benefits h2,
+.profile-card h2 {
+  margin: 0;
+  color: #16130f;
+  font-size: clamp(1.18rem, 2vw, 1.58rem);
+}
+
+.auth-benefits p,
+.profile-card p {
+  margin: 0;
+  color: rgba(39, 32, 24, 0.72);
+}
+
+.auth-mini-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.auth-mini-list li {
+  position: relative;
+  padding-left: 18px;
+  color: rgba(39, 32, 24, 0.78);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.auth-mini-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.58em;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--rose));
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.profile-card {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border-radius: var(--radius);
+}
+
+.profile-edit-form {
+  margin-top: 14px;
+  padding: 16px;
+  border: 1px solid rgba(39, 32, 24, 0.1);
+  border-radius: var(--radius);
+  background: rgba(255, 250, 242, 0.62);
+}
+
+.address-stack {
+  margin-top: 14px;
+}
+
+.address-row {
+  color: #17130f;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.account-trust-card {
+  min-height: 150px;
+}
+
+@media (max-width: 760px) {
+  .account-auth-layout {
+    gap: 12px;
+  }
+
+  .account-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .account-tabs button,
+  .auth-tabs button {
+    min-height: 44px;
+    padding: 0 10px;
+  }
+
+  .auth-card-form,
+  .profile-edit-form,
+  .profile-card {
+    padding: 13px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .password-field input {
+    padding-right: 70px;
   }
 }

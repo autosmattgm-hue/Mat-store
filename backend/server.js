@@ -14,6 +14,8 @@ const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const aiAgentRoutes = require('./routes/aiAgentRoutes');
+const orderController = require('./controllers/orderController');
+const { optionalAuth } = require('./middleware/auth');
 
 const app = express();
 
@@ -35,6 +37,12 @@ app.use('/api/marketplace', marketplaceRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/importer', importerRoutes);
 app.use('/api/cart', cartRoutes);
+app.get('/api/paypal/config', orderController.paypalConfig);
+app.post('/api/paypal/orders', optionalAuth, orderController.createPaypalOrder);
+app.post('/api/paypal/orders/:orderID/capture', optionalAuth, (req, res, next) => {
+  req.body = { ...req.body, orderID: req.params.orderID };
+  return orderController.capturePaypalOrder(req, res, next);
+});
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiAgentRoutes);

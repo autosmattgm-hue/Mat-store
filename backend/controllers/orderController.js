@@ -1,5 +1,6 @@
 const orderService = require('../services/orderService');
 const paymentService = require('../services/paymentService');
+const HttpError = require('../utils/httpError');
 
 async function create(req, res, next) {
   try {
@@ -9,6 +10,54 @@ async function create(req, res, next) {
     });
     const payment = await paymentService.createPaymentHandoff(order);
     res.status(201).json({ order, payment });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function paypalConfig(req, res, next) {
+  try {
+    res.json(paymentService.paypalClientConfig(req.query.currency || 'USD'));
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function createPaypalOrder(req, res, next) {
+  let order = null;
+  try {
+    if (!paymentService.paypalClientConfig(req.body.currency || 'USD').enabled) {
+      throw new HttpError(424, 'PayPal checkout is not configured yet.');
+    }
+    order = await orderService.createOrder({
+      ...req.body,
+      paymentMethod: 'paypal',
+      userId: req.user?.id || null
+    });
+    const payment = await paymentService.createPayPalOrder(order, { required: true });
+    res.status(201).json({ order, payment });
+  } catch (error) {
+    if (order?.id) {
+      try {
+        await orderService.cancelOrderAndReleaseInventory(order.id, {
+          paymentStatus: 'failed',
+          message: `PayPal order creation failed: ${error.message}`
+        });
+      } catch (releaseError) {
+        error.details = {
+          ...(error.details || {}),
+          releaseError: releaseError.message
+        };
+      }
+    }
+    next(error);
+  }
+}
+
+async function capturePaypalOrder(req, res, next) {
+  try {
+    const payment = await paymentService.capturePayPalOrder(req.body);
+    res.json({ payment, order: payment.order });
   } catch (error) {
     next(error);
   }
@@ -43,6 +92,9 @@ async function update(req, res, next) {
 
 module.exports = {
   create,
+  paypalConfig,
+  createPaypalOrder,
+  capturePaypalOrder,
   myOrders,
   list,
   update

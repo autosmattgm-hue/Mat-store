@@ -1,9 +1,160 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Checkout | MAT STORE</title><meta name="description" content="Complete MAT STORE checkout with Stripe, PayPal, or WhatsApp ordering handoff."><link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/styles.css"></head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout | MAT STORE</title>
+    <meta name="description" content="Complete MAT STORE checkout with secure PayPal wallet and PayPal-hosted card fields.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
   <body data-page="checkout">
-    <header class="site-header"><a class="brand" href="/"><span class="brand-mark">MAT</span><span class="brand-name">STORE</span></a><nav class="desktop-nav"><a href="/shop.html">Shop</a><a href="/categories.html">Categories</a><a href="/deals.html">Deals</a><a href="/about.html">About</a></nav><form class="search-shell" id="pageSearchForm"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg><input id="pageSearchInput" type="search" placeholder="Search products"></form><div class="nav-actions"><select id="currencySelect" class="currency-select"></select><a class="icon-button cart-button" href="/cart.html" aria-label="Cart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span id="cartCount" class="cart-count">0</span></a><a class="icon-button" href="/account.html" aria-label="Account"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg></a><a class="admin-link admin-only" href="/admin.html" hidden>Admin</a></div></header>
-    <main class="page-main"><section class="page-hero"><div><p class="eyebrow">Secure checkout</p><h1>Complete Order</h1><p>Payment flows are idempotent-ready, inventory is reserved on order creation, and WhatsApp orders include customer, item, and total details.</p></div><div class="page-hero-card"><strong>3 payment paths</strong><p>Stripe and PayPal use demo handoffs until credentials are configured. WhatsApp opens a prefilled order message.</p></div></section><section class="page-shell checkout-layout"><form id="checkoutPageForm" class="page-form account-panel"><h2>Shipping and Payment</h2><div class="form-grid"><label>Name<input class="page-input" name="name" required></label><label>Email<input class="page-input" name="email" type="email" required></label><label>Phone<input class="page-input" name="phone" required></label><label>Country<input class="page-input" name="country" maxlength="2" value="US" required></label><label>Address<input class="page-input" name="line1" required></label><label>Apartment<input class="page-input" name="line2"></label><label>City<input class="page-input" name="city" required></label><label>Region<input class="page-input" name="region" required></label><label>Postal code<input class="page-input" name="postalCode" required></label><label>Promo code<input class="page-input" name="promoCode" placeholder="MAT10"></label></div><fieldset class="payment-options"><legend>Payment method</legend><label><input type="radio" name="paymentMethod" value="stripe" checked> Stripe</label><label><input type="radio" name="paymentMethod" value="paypal"> PayPal</label><label><input type="radio" name="paymentMethod" value="whatsapp"> WhatsApp</label></fieldset><button class="button primary full" type="submit">Place Secure Order</button></form><aside id="pageSummary" class="summary-panel"></aside></section></main>
-    <div id="toastRegion" class="toast-region" aria-live="polite"></div><script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark">MAT</span>
+        <span class="brand-name">STORE</span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="/shop.html">Shop</a>
+        <a href="/categories.html">Categories</a>
+        <a href="/deals.html">Deals</a>
+        <a href="/about.html">About</a>
+      </nav>
+      <form class="search-shell" id="pageSearchForm">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg>
+        <input id="pageSearchInput" type="search" placeholder="Search products" autocomplete="off">
+      </form>
+      <div class="nav-actions">
+        <select id="currencySelect" class="currency-select"></select>
+        <a class="icon-button cart-button" href="/cart.html" aria-label="Cart">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </a>
+        <a class="icon-button" href="/account.html" aria-label="Account">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+        </a>
+        <a class="admin-link admin-only" href="/admin.html" hidden>Admin</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero">
+        <div>
+          <p class="eyebrow">Secure checkout</p>
+          <h1>Complete Order</h1>
+          <p>Choose a secure payment path, confirm your shipping details, and complete your MAT STORE order without leaving the checkout experience.</p>
+        </div>
+        <div class="page-hero-card">
+          <strong>Protected payment</strong>
+          <p>PayPal wallet and hosted card fields connect through the MAT STORE order system.</p>
+        </div>
+      </section>
+
+      <section class="page-shell checkout-layout">
+        <form id="checkoutPageForm" class="page-form account-panel">
+          <h2>Shipping and Payment</h2>
+          <ol class="checkout-steps" aria-label="Checkout steps">
+            <li><span>1</span>Details</li>
+            <li><span>2</span>Delivery</li>
+            <li><span>3</span>Payment</li>
+          </ol>
+          <div class="form-grid">
+            <label>Name<input class="page-input" name="name" autocomplete="name" required></label>
+            <label>Email<input class="page-input" name="email" type="email" autocomplete="email" required></label>
+            <label>Phone<input class="page-input" name="phone" autocomplete="tel" required></label>
+            <label>Country<input class="page-input" name="country" maxlength="2" value="US" autocomplete="country" required></label>
+            <label>Address<input class="page-input" name="line1" autocomplete="address-line1" required></label>
+            <label>Apartment<input class="page-input" name="line2" autocomplete="address-line2"></label>
+            <label>City<input class="page-input" name="city" autocomplete="address-level2" required></label>
+            <label>Region<input class="page-input" name="region" autocomplete="address-level1" required></label>
+            <label>Postal code<input class="page-input" name="postalCode" autocomplete="postal-code" required></label>
+            <label>Promo code<input class="page-input" name="promoCode" placeholder="MAT10" autocomplete="off"></label>
+          </div>
+
+          <fieldset class="shipping-options">
+            <legend>Delivery speed</legend>
+            <label class="shipping-card">
+              <input type="radio" name="shippingMethod" value="standard" checked>
+              <span><strong>MAT Standard</strong><small>7-14 business days · tracked delivery</small></span>
+              <b>Included</b>
+            </label>
+            <label class="shipping-card">
+              <input type="radio" name="shippingMethod" value="express">
+              <span><strong>MAT Express</strong><small>4-8 business days · faster dispatch</small></span>
+              <b>+ $12.95</b>
+            </label>
+            <label class="shipping-card">
+              <input type="radio" name="shippingMethod" value="priority">
+              <span><strong>MAT Priority</strong><small>2-5 business days where available</small></span>
+              <b>+ $24.95</b>
+            </label>
+            <label class="shipping-card">
+              <input type="radio" name="shippingMethod" value="concierge">
+              <span><strong>MAT Concierge</strong><small>Priority support for scarce products</small></span>
+              <b>+ $39.95</b>
+            </label>
+          </fieldset>
+
+          <label class="check-line checkout-check"><input id="billingSameAsShipping" name="billingSameAsShipping" type="checkbox" checked> Billing address is the same as shipping</label>
+          <div id="billingAddressPanel" class="billing-address-panel" hidden>
+            <div class="form-grid">
+              <label>Billing name<input class="page-input" name="billingName" autocomplete="billing name"></label>
+              <label>Billing country<input class="page-input" name="billingCountry" maxlength="2" autocomplete="billing country"></label>
+              <label>Billing address<input class="page-input" name="billingLine1" autocomplete="billing address-line1"></label>
+              <label>Billing apartment<input class="page-input" name="billingLine2" autocomplete="billing address-line2"></label>
+              <label>Billing city<input class="page-input" name="billingCity" autocomplete="billing address-level2"></label>
+              <label>Billing region<input class="page-input" name="billingRegion" autocomplete="billing address-level1"></label>
+              <label>Billing postal code<input class="page-input" name="billingPostalCode" autocomplete="billing postal-code"></label>
+            </div>
+          </div>
+
+          <label>Order note<textarea class="page-textarea" name="notes" rows="3" placeholder="Delivery note, gift message, or support request"></textarea></label>
+
+          <fieldset class="payment-options">
+            <legend>Payment method</legend>
+            <label class="payment-card"><input type="radio" name="paymentMethod" value="paypal" checked><span><strong>PayPal</strong><small>Wallet or hosted card fields</small></span></label>
+          </fieldset>
+
+          <section id="paypalCheckoutPanel" class="paypal-checkout-panel" hidden>
+            <div class="paypal-panel-head">
+              <div>
+                <span>PayPal secure checkout</span>
+                <strong>Wallet or card</strong>
+              </div>
+              <small id="paypalCurrencyNote"></small>
+            </div>
+            <div id="paypal-status" class="paypal-status" role="status">Select PayPal to load secure payment options.</div>
+            <div id="paypal-button-container" class="paypal-button-shell"></div>
+            <div id="paypal-card-fields" class="paypal-card-fields" hidden>
+              <div class="paypal-card-grid">
+                <label>Cardholder name<div id="card-name-field-container" class="paypal-hosted-field"></div></label>
+                <label>Card number<div id="card-number-field-container" class="paypal-hosted-field"></div></label>
+                <label>Expiry<div id="card-expiry-field-container" class="paypal-hosted-field"></div></label>
+                <label>CVV<div id="card-cvv-field-container" class="paypal-hosted-field"></div></label>
+              </div>
+              <button id="paypal-card-submit" class="button ghost full" type="button" disabled>Pay securely with card</button>
+            </div>
+          </section>
+
+          <div class="checkout-assurance">
+            <span>Secure payment</span>
+            <span>Inventory reserved</span>
+            <span>Order support ready</span>
+          </div>
+          <label class="check-line checkout-check"><input name="termsAccepted" type="checkbox" required> I agree to the MAT STORE checkout, shipping, and returns terms.</label>
+          <label class="check-line checkout-check"><input name="marketingOptIn" type="checkbox"> Send me curated deals and order updates.</label>
+          <button id="checkoutSubmitButton" class="button primary full" type="submit">Continue to Payment</button>
+        </form>
+        <aside id="pageSummary" class="summary-panel"></aside>
+      </section>
+    </main>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="/js/api.js" defer></script>
+    <script src="/js/cart.js" defer></script>
+    <script src="/js/pages.js" defer></script>
   </body>
 </html>

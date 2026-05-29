@@ -1,5 +1,983 @@
 [
   {
+    "id": "70eba302-d27b-42b1-b67e-58a3572792b8",
+    "orderNumber": "MAT-260529-8D6NO",
+    "userId": "4ff9bf15-b9d5-41cb-b175-0fef0f98f4c7",
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "+2206785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "e03f87a2-7692-472b-98ad-c77562ec4721",
+        "title": "Lenovo IdeaPad Laptop",
+        "image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6549/6549071ld.jpg",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 1259.99,
+        "lineTotal": 1259.99
+      }
+    ],
+    "currency": "GMD",
+    "totals": {
+      "subtotal": 1259.99,
+      "shipping": 12.95,
+      "tax": 88.2,
+      "total": 1361.14,
+      "displaySubtotal": 85427.32,
+      "displayShipping": 878.01,
+      "displayTax": 5979.96,
+      "displayTotal": 92285.29,
+      "currency": "GMD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "checkout": {
+      "shippingMethod": "express",
+      "shippingLabel": "MAT Express",
+      "deliveryWindow": "4-8 business days",
+      "supportLevel": "Faster dispatch",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "Iyamu street",
+        "line2": "close to viviana school",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US"
+      },
+      "termsAccepted": true,
+      "marketingOptIn": true,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-29T10:19:28.789Z"
+      },
+      {
+        "status": "payment",
+        "message": "PayPal order created in USD; customer display currency was GMD.",
+        "createdAt": "2026-05-29T10:19:34.717Z"
+      }
+    ],
+    "createdAt": "2026-05-29T10:19:28.790Z",
+    "updatedAt": "2026-05-29T10:19:34.717Z",
+    "payment": {
+      "provider": "paypal",
+      "processorOrderId": "8A724943GG6497100",
+      "processorCaptureId": "",
+      "processorStatus": "CREATED",
+      "processorMode": "live",
+      "settlementCurrency": "USD",
+      "settlementAmount": 1361.14,
+      "payerEmail": "",
+      "updatedAt": "2026-05-29T10:19:34.716Z"
+    }
+  },
+  {
+    "id": "5e21e742-bce0-43b0-9f61-dd25b77686b9",
+    "orderNumber": "MAT-260529-LL4HX",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "+2206785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "costal road",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
+        "title": "Skechers Go Walk Shoes",
+        "image": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 83.99,
+        "lineTotal": 83.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 83.99,
+      "shipping": 9.95,
+      "tax": 5.88,
+      "total": 91.42,
+      "displaySubtotal": 83.99,
+      "displayShipping": 9.95,
+      "displayTax": 5.88,
+      "displayTotal": 91.42,
+      "currency": "USD",
+      "discount": 8.4,
+      "displayDiscount": 8.4
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "costal road",
+        "line2": "close to viviana school",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US"
+      },
+      "termsAccepted": true,
+      "marketingOptIn": true,
+      "giftMessage": ""
+    },
+    "paymentMethod": "stripe",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "MAT10",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-29T00:21:55.722Z"
+      }
+    ],
+    "createdAt": "2026-05-29T00:21:55.722Z",
+    "updatedAt": "2026-05-29T00:21:55.722Z"
+  },
+  {
+    "id": "26487ab7-c6dd-44b0-b44f-1ffea87b6346",
+    "orderNumber": "MAT-260529-IGBA3",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "+2206785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "costal road",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
+        "title": "Skechers Go Walk Shoes",
+        "image": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 83.99,
+        "lineTotal": 83.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 83.99,
+      "shipping": 9.95,
+      "tax": 5.88,
+      "total": 91.42,
+      "displaySubtotal": 83.99,
+      "displayShipping": 9.95,
+      "displayTax": 5.88,
+      "displayTotal": 91.42,
+      "currency": "USD",
+      "discount": 8.4,
+      "displayDiscount": 8.4
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "costal road",
+        "line2": "close to viviana school",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US"
+      },
+      "termsAccepted": true,
+      "marketingOptIn": true,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "MAT10",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-29T00:18:06.638Z"
+      },
+      {
+        "status": "payment",
+        "message": "PayPal order created.",
+        "createdAt": "2026-05-29T00:18:11.409Z"
+      }
+    ],
+    "createdAt": "2026-05-29T00:18:06.638Z",
+    "updatedAt": "2026-05-29T00:18:11.409Z",
+    "payment": {
+      "provider": "paypal",
+      "processorOrderId": "16D57088JY3118255",
+      "processorCaptureId": "",
+      "processorStatus": "CREATED",
+      "processorMode": "live",
+      "settlementCurrency": "USD",
+      "settlementAmount": 91.42,
+      "payerEmail": "",
+      "updatedAt": "2026-05-29T00:18:11.408Z"
+    }
+  },
+  {
+    "id": "84d8882d-0e78-4960-9064-20ef540ddd60",
+    "orderNumber": "MAT-260529-YMJLK",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "+2206785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "costal road",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
+        "title": "Skechers Go Walk Shoes",
+        "image": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 83.99,
+        "lineTotal": 83.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 83.99,
+      "shipping": 9.95,
+      "tax": 5.88,
+      "total": 91.42,
+      "displaySubtotal": 83.99,
+      "displayShipping": 9.95,
+      "displayTax": 5.88,
+      "displayTotal": 91.42,
+      "currency": "USD",
+      "discount": 8.4,
+      "displayDiscount": 8.4
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "costal road",
+        "line2": "close to viviana school",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US"
+      },
+      "termsAccepted": true,
+      "marketingOptIn": true,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "MAT10",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-29T00:17:27.687Z"
+      },
+      {
+        "status": "payment",
+        "message": "PayPal order created.",
+        "createdAt": "2026-05-29T00:18:02.127Z"
+      }
+    ],
+    "createdAt": "2026-05-29T00:17:27.687Z",
+    "updatedAt": "2026-05-29T00:18:02.127Z",
+    "payment": {
+      "provider": "paypal",
+      "processorOrderId": "95109918BT715425C",
+      "processorCaptureId": "",
+      "processorStatus": "CREATED",
+      "processorMode": "live",
+      "settlementCurrency": "USD",
+      "settlementAmount": 91.42,
+      "payerEmail": "",
+      "updatedAt": "2026-05-29T00:18:02.126Z"
+    }
+  },
+  {
+    "id": "337a6175-a454-40c2-8d53-24a3247e332b",
+    "orderNumber": "MAT-260528-8SGTI",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "+2206785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "costal road",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
+        "title": "Skechers Go Walk Shoes",
+        "image": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 83.99,
+        "lineTotal": 83.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 83.99,
+      "shipping": 9.95,
+      "tax": 5.88,
+      "total": 91.42,
+      "displaySubtotal": 83.99,
+      "displayShipping": 9.95,
+      "displayTax": 5.88,
+      "displayTotal": 91.42,
+      "currency": "USD",
+      "discount": 8.4,
+      "displayDiscount": 8.4
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "costal road",
+        "line2": "close to viviana school",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US"
+      },
+      "termsAccepted": true,
+      "marketingOptIn": true,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "failed",
+    "fulfillmentStatus": "cancelled",
+    "promoCode": "MAT10",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T23:02:05.448Z"
+      },
+      {
+        "status": "cancelled",
+        "message": "PayPal order creation failed: PayPal cannot create live orders because the merchant account is restricted. Open PayPal Business Resolution Center or use valid Sandbox credentials until PayPal removes the restriction.",
+        "createdAt": "2026-05-28T23:02:15.371Z"
+      }
+    ],
+    "createdAt": "2026-05-28T23:02:05.448Z",
+    "updatedAt": "2026-05-28T23:02:15.371Z"
+  },
+  {
+    "id": "4b23a565-c4f6-404e-9c16-a1405d39015f",
+    "orderNumber": "MAT-260528-HMVH2",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "+2206785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "costal road",
+      "line2": "close to viviana school",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
+        "title": "Skechers Go Walk Shoes",
+        "image": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 83.99,
+        "lineTotal": 83.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 83.99,
+      "shipping": 9.95,
+      "tax": 5.88,
+      "total": 91.42,
+      "displaySubtotal": 83.99,
+      "displayShipping": 9.95,
+      "displayTax": 5.88,
+      "displayTotal": 91.42,
+      "currency": "USD",
+      "discount": 8.4,
+      "displayDiscount": 8.4
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "costal road",
+        "line2": "close to viviana school",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US"
+      },
+      "termsAccepted": true,
+      "marketingOptIn": true,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "MAT10",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T22:38:01.288Z"
+      }
+    ],
+    "createdAt": "2026-05-28T22:38:01.288Z",
+    "updatedAt": "2026-05-28T22:38:01.288Z"
+  },
+  {
+    "id": "5ffa3977-1067-4b5d-9971-918ebad695ed",
+    "orderNumber": "MAT-260528-RUDSN",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
+        "title": "Skechers Go Walk Shoes",
+        "image": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 83.99,
+        "lineTotal": 83.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 83.99,
+      "shipping": 9.95,
+      "tax": 5.88,
+      "total": 99.82,
+      "displaySubtotal": 83.99,
+      "displayShipping": 9.95,
+      "displayTax": 5.88,
+      "displayTotal": 99.82,
+      "currency": "USD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "",
+        "line2": "",
+        "city": "",
+        "region": "",
+        "postalCode": "",
+        "country": "US"
+      },
+      "termsAccepted": false,
+      "marketingOptIn": false,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T22:00:58.633Z"
+      }
+    ],
+    "createdAt": "2026-05-28T22:00:58.633Z",
+    "updatedAt": "2026-05-28T22:00:58.633Z"
+  },
+  {
+    "id": "4d60f45f-22cd-4d69-be01-163c79dde314",
+    "orderNumber": "MAT-260528-LVRNH",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "196dbfd0-746f-410a-bd67-144566e7f1f7",
+        "title": "Lenovo Legion Tower 5i – AI-Powered Gaming PC - Intel® Core Ultra 7 265F P",
+        "image": "/api/media/image?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F51XekLq5PxL._AC_SX679_.jpg",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 3848.99,
+        "lineTotal": 3848.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 3848.99,
+      "shipping": 0,
+      "tax": 269.43,
+      "total": 4118.42,
+      "displaySubtotal": 3848.99,
+      "displayShipping": 0,
+      "displayTax": 269.43,
+      "displayTotal": 4118.42,
+      "currency": "USD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "",
+        "line2": "",
+        "city": "",
+        "region": "",
+        "postalCode": "",
+        "country": "US"
+      },
+      "termsAccepted": false,
+      "marketingOptIn": false,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T21:24:17.969Z"
+      }
+    ],
+    "createdAt": "2026-05-28T21:24:17.969Z",
+    "updatedAt": "2026-05-28T21:24:17.969Z"
+  },
+  {
+    "id": "579c4059-2078-4683-b75c-9bfc33ebe782",
+    "orderNumber": "MAT-260528-3MFBE",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "gambia",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "96c5f38b-acf1-47e9-8465-e99c37bdb2b8",
+        "title": "JBL Portable Bluetooth Speaker",
+        "image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6514/6514475_sd.jpg",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 111.99,
+        "lineTotal": 111.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 111.99,
+      "shipping": 9.95,
+      "tax": 7.84,
+      "total": 129.78,
+      "displaySubtotal": 111.99,
+      "displayShipping": 9.95,
+      "displayTax": 7.84,
+      "displayTotal": 129.78,
+      "currency": "USD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "checkout": {
+      "shippingMethod": "standard",
+      "shippingLabel": "MAT Standard",
+      "deliveryWindow": "7-14 business days",
+      "supportLevel": "Tracked delivery",
+      "billingSameAsShipping": true,
+      "billingAddress": {
+        "name": "EBUBE OKOYE",
+        "line1": "",
+        "line2": "",
+        "city": "",
+        "region": "",
+        "postalCode": "",
+        "country": "US"
+      },
+      "termsAccepted": false,
+      "marketingOptIn": false,
+      "giftMessage": ""
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T20:33:39.815Z"
+      }
+    ],
+    "createdAt": "2026-05-28T20:33:39.815Z",
+    "updatedAt": "2026-05-28T20:33:39.815Z"
+  },
+  {
+    "id": "39bf6214-6b67-4b9c-9447-4fde1cb7cff6",
+    "orderNumber": "MAT-260528-IYMBU",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "024232cb-fe04-4b35-90d2-4f4f6300088c",
+        "title": "Logitech Wireless Gaming Mouse",
+        "image": "/api/media/image?url=https%3A%2F%2Fi5.walmartimages.com%2Fseo%2FLogitech-G305-Wireless-Gaming-Mouse-12-000-DPI-Lightweight-6-Programmable-Buttons-Black_644a1b19-537a-40da-939e-905b4fa143e0.62c7af24c06385421106a7f059761ad0.jpeg%3FodnHeight%3D1600%26odnWidth%3D1600%26odnBg%3DFFFFFF",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 1259.99,
+        "lineTotal": 1259.99
+      }
+    ],
+    "currency": "GMD",
+    "totals": {
+      "subtotal": 1259.99,
+      "shipping": 0,
+      "tax": 88.2,
+      "total": 1348.19,
+      "displaySubtotal": 85427.32,
+      "displayShipping": 0,
+      "displayTax": 5979.96,
+      "displayTotal": 91407.28,
+      "currency": "GMD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T20:19:18.239Z"
+      }
+    ],
+    "createdAt": "2026-05-28T20:19:18.239Z",
+    "updatedAt": "2026-05-28T20:19:18.239Z"
+  },
+  {
+    "id": "64cff409-adad-4878-9b6d-02642c587ae9",
+    "orderNumber": "MAT-260528-FHTX5",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "96c5f38b-acf1-47e9-8465-e99c37bdb2b8",
+        "title": "JBL Portable Bluetooth Speaker",
+        "image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6514/6514475_sd.jpg",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 111.99,
+        "lineTotal": 111.99
+      }
+    ],
+    "currency": "GMD",
+    "totals": {
+      "subtotal": 111.99,
+      "shipping": 9.95,
+      "tax": 7.84,
+      "total": 129.78,
+      "displaySubtotal": 7592.92,
+      "displayShipping": 674.61,
+      "displayTax": 531.55,
+      "displayTotal": 8799.08,
+      "currency": "GMD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T20:18:35.710Z"
+      }
+    ],
+    "createdAt": "2026-05-28T20:18:35.710Z",
+    "updatedAt": "2026-05-28T20:18:35.710Z"
+  },
+  {
+    "id": "8921bd3d-4f15-4693-9bac-a822f3e8daf5",
+    "orderNumber": "MAT-260528-NWS2A",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "Anambra",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "c5ce402e-fa90-4a09-a125-aee743b051c5",
+        "title": "Arolina 2 Piece Swimsuit for Women Tummy Control Bathing Suits Full Covera",
+        "image": "/api/media/image?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71C1InSWaEL._AC_SL1500_.jpg",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 57.99,
+        "lineTotal": 57.99
+      }
+    ],
+    "currency": "GMD",
+    "totals": {
+      "subtotal": 57.99,
+      "shipping": 9.95,
+      "tax": 4.06,
+      "total": 72,
+      "displaySubtotal": 3931.72,
+      "displayShipping": 674.61,
+      "displayTax": 275.27,
+      "displayTotal": 4881.6,
+      "currency": "GMD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T20:18:01.023Z"
+      }
+    ],
+    "createdAt": "2026-05-28T20:18:01.025Z",
+    "updatedAt": "2026-05-28T20:18:01.025Z"
+  },
+  {
+    "id": "eef9ff65-8c4c-4f2e-8869-4962c8fef017",
+    "orderNumber": "MAT-260528-0W76F",
+    "userId": null,
+    "customer": {
+      "name": "EBUBE OKOYE",
+      "email": "zgifantasy@gmail.com",
+      "phone": "6785316"
+    },
+    "shippingAddress": {
+      "name": "EBUBE OKOYE",
+      "line1": "Iyamu street",
+      "line2": "",
+      "city": "banjul",
+      "region": "gambia",
+      "postalCode": "102103",
+      "country": "US"
+    },
+    "items": [
+      {
+        "productId": "e03f87a2-7692-472b-98ad-c77562ec4721",
+        "title": "Lenovo IdeaPad Laptop",
+        "image": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6549/6549071ld.jpg",
+        "quantity": 1,
+        "variant": "",
+        "unitPrice": 1259.99,
+        "lineTotal": 1259.99
+      }
+    ],
+    "currency": "USD",
+    "totals": {
+      "subtotal": 1259.99,
+      "shipping": 0,
+      "tax": 88.2,
+      "total": 1348.19,
+      "displaySubtotal": 1259.99,
+      "displayShipping": 0,
+      "displayTax": 88.2,
+      "displayTotal": 1348.19,
+      "currency": "USD",
+      "discount": 0,
+      "displayDiscount": 0
+    },
+    "paymentMethod": "paypal",
+    "paymentStatus": "pending",
+    "fulfillmentStatus": "new",
+    "promoCode": "",
+    "notes": "",
+    "auditTrail": [
+      {
+        "status": "created",
+        "message": "Order created and inventory reserved.",
+        "createdAt": "2026-05-28T20:04:04.068Z"
+      }
+    ],
+    "createdAt": "2026-05-28T20:04:04.068Z",
+    "updatedAt": "2026-05-28T20:04:04.068Z"
+  },
+  {
     "id": "cf5f82e3-d481-4766-aa92-fd513012f2f7",
     "orderNumber": "MAT-260526-4V6GR",
     "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",

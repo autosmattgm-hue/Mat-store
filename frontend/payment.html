@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Payment | MAT STORE</title>
+    <meta name="description" content="Complete secure MAT STORE payment with PayPal wallet and PayPal-hosted card fields.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body data-page="payment">
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark">MAT</span>
+        <span class="brand-name">STORE</span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="/shop.html">Shop</a>
+        <a href="/categories.html">Categories</a>
+        <a href="/deals.html">Deals</a>
+        <a href="/checkout.html">Checkout</a>
+      </nav>
+      <form class="search-shell" id="pageSearchForm">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg>
+        <input id="pageSearchInput" type="search" placeholder="Search products" autocomplete="off">
+      </form>
+      <div class="nav-actions">
+        <select id="currencySelect" class="currency-select"></select>
+        <a class="icon-button cart-button" href="/cart.html" aria-label="Cart">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </a>
+        <a class="icon-button" href="/account.html" aria-label="Account">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 21a8 8 0 0 0-16 0m12-13a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"/></svg>
+        </a>
+        <a class="admin-link admin-only" href="/admin.html" hidden>Admin</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero">
+        <div>
+          <p class="eyebrow">Secure payment</p>
+          <h1>Finish Payment</h1>
+          <p>Review your order and complete payment through PayPal wallet or PayPal-hosted card fields.</p>
+        </div>
+        <div class="page-hero-card">
+          <strong>Final step</strong>
+          <p>Your order is created only when you choose a payment path, so inventory is reserved at the right moment.</p>
+        </div>
+      </section>
+
+      <section class="page-shell payment-layout">
+        <section class="account-panel payment-panel">
+          <h2>Payment Method</h2>
+          <div id="paymentStatus" class="paypal-status" role="status">Loading payment details...</div>
+
+          <fieldset id="paymentMethodPanel" class="payment-options">
+            <legend>Choose how to pay</legend>
+            <label class="payment-card"><input type="radio" name="paymentPageMethod" value="paypal" checked><span><strong>PayPal</strong><small>Wallet or secure card fields</small></span></label>
+          </fieldset>
+
+          <section id="paypalCheckoutPanel" class="paypal-checkout-panel" hidden>
+            <div class="paypal-panel-head">
+              <div>
+                <span>PayPal secure checkout</span>
+                <strong>Wallet or card</strong>
+              </div>
+              <small id="paypalCurrencyNote"></small>
+            </div>
+            <div id="paypal-status" class="paypal-status" role="status">Loading PayPal...</div>
+            <div id="paypal-button-container" class="paypal-button-shell"></div>
+            <div id="paypal-card-fields" class="paypal-card-fields" hidden>
+              <div class="paypal-card-grid">
+                <label>Cardholder name<div id="card-name-field-container" class="paypal-hosted-field"></div></label>
+                <label>Card number<div id="card-number-field-container" class="paypal-hosted-field"></div></label>
+                <label>Expiry<div id="card-expiry-field-container" class="paypal-hosted-field"></div></label>
+                <label>CVV<div id="card-cvv-field-container" class="paypal-hosted-field"></div></label>
+              </div>
+              <div class="paypal-billing-fields">
+                <label>Billing address<input id="card-billing-address-line-1" class="page-input" autocomplete="billing address-line1" placeholder="Address line 1"></label>
+                <label>Address line 2<input id="card-billing-address-line-2" class="page-input" autocomplete="billing address-line2" placeholder="Apartment, suite, unit"></label>
+                <label>Region / state<input id="card-billing-address-admin-area-line-1" class="page-input" autocomplete="billing address-level1" placeholder="Region or state"></label>
+                <label>City<input id="card-billing-address-admin-area-line-2" class="page-input" autocomplete="billing address-level2" placeholder="City"></label>
+                <label>Country code<input id="card-billing-address-country-code" class="page-input" maxlength="2" autocomplete="billing country" placeholder="US"></label>
+                <label>Postal code<input id="card-billing-address-postal-code" class="page-input" autocomplete="billing postal-code" placeholder="Postal/zip code"></label>
+              </div>
+              <button id="paypal-card-submit" class="button ghost full" type="button" disabled>Pay securely with card</button>
+            </div>
+          </section>
+
+          <div class="checkout-assurance">
+            <span>Encrypted checkout</span>
+            <span>MAT STORE support</span>
+            <span>Order audit trail</span>
+          </div>
+
+          <a class="button ghost full" href="/checkout.html">Edit Checkout Details</a>
+        </section>
+
+        <aside id="paymentSummary" class="summary-panel"></aside>
+      </section>
+    </main>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="/js/api.js" defer></script>
+    <script src="/js/cart.js" defer></script>
+    <script src="/js/pages.js" defer></script>
+  </body>
+</html>

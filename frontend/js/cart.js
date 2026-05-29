@@ -198,15 +198,14 @@
     document.body.classList.remove('modal-open');
   }
 
-  function openCheckout() {
+  function openCheckout(event) {
+    event?.preventDefault();
     if (!state.items.length) {
       window.MATApp?.toast('Add a product before checkout.');
       return;
     }
     closeCart();
-    renderTotals(document.getElementById('checkoutSummary'));
-    document.getElementById('checkoutModal').showModal();
-    document.body.classList.add('modal-open');
+    window.location.assign('/checkout.html');
   }
 
   function closeCheckout() {

@@ -1,9 +1,187 @@
 <!doctype html>
 <html lang="en">
-  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Account | MAT STORE</title><meta name="description" content="Manage your MAT STORE account, saved addresses, wishlist, order history, country, and currency settings."><link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="/css/styles.css"></head>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Account | MAT STORE</title>
+    <meta name="description" content="Securely manage your MAT STORE login, registration, saved addresses, wishlist, order history, country, and currency preferences.">
+    <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
   <body data-page="account">
-    <header class="site-header"><a class="brand" href="/"><span class="brand-mark">MAT</span><span class="brand-name">STORE</span></a><nav class="desktop-nav"><a href="/shop.html">Shop</a><a href="/categories.html">Categories</a><a href="/deals.html">Deals</a><a href="/about.html">About</a></nav><form class="search-shell" id="pageSearchForm"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg><input id="pageSearchInput" type="search" placeholder="Search products"></form><div class="nav-actions"><select id="currencySelect" class="currency-select"></select><a class="icon-button" href="/wishlist.html" aria-label="Wishlist"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg></a><a class="icon-button cart-button" href="/cart.html" aria-label="Cart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg><span id="cartCount" class="cart-count">0</span></a><a class="admin-link admin-only" href="/admin.html" hidden>Admin</a></div></header>
-    <main class="page-main"><section class="page-hero"><div><p class="eyebrow">Customer account</p><h1>Profile Center</h1><p>Manage login, registration, saved addresses, wishlist access, order history, and currency preferences from one secure account page.</p></div><div class="page-hero-card"><strong>Admin access</strong><p>Use admin@matstore.local with password 11223344ADMIN for the dashboard.</p></div></section><section class="page-shell account-layout"><div class="account-panel"><div class="account-tabs"><button class="active" data-account-tab="login" type="button">Login</button><button data-account-tab="register" type="button">Register</button><button data-account-tab="reset" type="button">Reset</button><button data-account-tab="profile" type="button">Profile</button></div><div class="page-panel active" data-account-panel="login"><form id="accountLoginForm" class="page-form"><label>Email<input class="page-input" name="email" type="email" autocomplete="username" required></label><label>Password<input class="page-input" name="password" type="password" autocomplete="current-password" required></label><button class="button primary full" type="submit">Login</button></form></div><div class="page-panel" data-account-panel="register"><form id="accountRegisterForm" class="page-form"><label>Name<input class="page-input" name="name" autocomplete="name" required></label><label>Email<input class="page-input" name="email" type="email" autocomplete="email" required></label><label>Password<input class="page-input" name="password" type="password" minlength="8" autocomplete="new-password" required></label><div class="form-grid"><label>Country<input class="page-input" name="country" maxlength="2" value="US" required></label><label>Currency<select class="page-select" id="accountCurrency" name="currency"></select></label></div><button class="button primary full" type="submit">Create Account</button></form></div><div class="page-panel" data-account-panel="reset"><form id="accountResetForm" class="page-form"><label>Email<input class="page-input" name="email" type="email" autocomplete="email" required></label><button class="button primary full" type="submit">Prepare Reset</button></form></div><div class="page-panel" data-account-panel="profile"><div id="accountProfile"></div></div></div><aside class="account-panel"><h2>Saved Address</h2><form id="addressForm" class="page-form"><label>Label<input class="page-input" name="label" value="Primary"></label><label>Name<input class="page-input" name="name" required></label><label>Address<input class="page-input" name="line1" required></label><label>City<input class="page-input" name="city" required></label><label>Region<input class="page-input" name="region"></label><label>Postal code<input class="page-input" name="postalCode"></label><label>Country<input class="page-input" name="country" maxlength="2" value="US" required></label><label>Phone<input class="page-input" name="phone"></label><button class="button ghost full" type="submit">Save Address</button></form></aside></section></main>
-    <div id="toastRegion" class="toast-region" aria-live="polite"></div><script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
+    <header class="site-header">
+      <a class="brand" href="/">
+        <span class="brand-mark">MAT</span>
+        <span class="brand-name">STORE</span>
+      </a>
+      <nav class="desktop-nav">
+        <a href="/shop.html">Shop</a>
+        <a href="/categories.html">Categories</a>
+        <a href="/deals.html">Deals</a>
+        <a href="/about.html">About</a>
+      </nav>
+      <form class="search-shell" id="pageSearchForm">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z"/></svg>
+        <input id="pageSearchInput" type="search" placeholder="Search products">
+      </form>
+      <div class="nav-actions">
+        <select id="currencySelect" class="currency-select" aria-label="Currency"></select>
+        <a class="icon-button" href="/wishlist.html" aria-label="Wishlist">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+        </a>
+        <a class="icon-button cart-button" href="/cart.html" aria-label="Cart">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0 0-2H3m6 17a1 1 0 1 0 0-2 1 1 0 0 0 0 2Zm9 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/></svg>
+          <span id="cartCount" class="cart-count">0</span>
+        </a>
+        <a class="admin-link admin-only" href="/admin.html" hidden>Admin</a>
+      </div>
+    </header>
+
+    <main class="page-main">
+      <section class="page-hero account-hero">
+        <div>
+          <p class="eyebrow">Secure customer account</p>
+          <h1>Login, register, and manage your luxury shopping profile.</h1>
+          <p>Save delivery details, keep your currency accurate, protect your wishlist, and move faster through checkout on every device.</p>
+        </div>
+        <div class="page-hero-card account-trust-card">
+          <strong>Protected access</strong>
+          <p>Passwords are encrypted, sessions rotate securely, and customer marketplace sources stay private.</p>
+        </div>
+      </section>
+
+      <section class="page-shell account-layout account-auth-layout">
+        <div class="account-panel account-access-panel">
+          <div class="account-tabs" role="tablist" aria-label="Account options">
+            <button class="active" data-account-tab="login" type="button" role="tab">Login</button>
+            <button data-account-tab="register" type="button" role="tab">Register</button>
+            <button data-account-tab="reset" type="button" role="tab">Reset</button>
+            <button data-account-tab="profile" type="button" role="tab">Profile</button>
+          </div>
+
+          <p class="auth-status" id="accountStatus" aria-live="polite" hidden></p>
+
+          <div class="page-panel active" data-account-panel="login" role="tabpanel">
+            <form id="accountLoginForm" class="page-form auth-card-form">
+              <label>Email
+                <input class="page-input" name="email" type="email" autocomplete="username" inputmode="email" required>
+              </label>
+              <label>Password
+                <span class="password-field">
+                  <input class="page-input" id="accountLoginPassword" name="password" type="password" autocomplete="current-password" required>
+                  <button class="password-toggle" type="button" data-toggle-password="accountLoginPassword" aria-label="Show password">Show</button>
+                </span>
+              </label>
+              <button class="button primary full" type="submit">Login securely</button>
+            </form>
+          </div>
+
+          <div class="page-panel" data-account-panel="register" role="tabpanel">
+            <form id="accountRegisterForm" class="page-form auth-card-form">
+              <div class="form-grid">
+                <label>Full name
+                  <input class="page-input" name="name" autocomplete="name" required>
+                </label>
+                <label>Email
+                  <input class="page-input" name="email" type="email" autocomplete="email" inputmode="email" required>
+                </label>
+              </div>
+              <div class="form-grid">
+                <label>Password
+                  <span class="password-field">
+                    <input class="page-input" id="accountRegisterPassword" name="password" type="password" minlength="8" autocomplete="new-password" required>
+                    <button class="password-toggle" type="button" data-toggle-password="accountRegisterPassword" aria-label="Show password">Show</button>
+                  </span>
+                  <span class="password-strength" id="accountPasswordStrength">Use 8+ characters with letters and numbers.</span>
+                </label>
+                <label>Confirm password
+                  <span class="password-field">
+                    <input class="page-input" id="accountConfirmPassword" name="confirmPassword" type="password" minlength="8" autocomplete="new-password" required>
+                    <button class="password-toggle" type="button" data-toggle-password="accountConfirmPassword" aria-label="Show password">Show</button>
+                  </span>
+                </label>
+              </div>
+              <div class="form-grid">
+                <label>Country code
+                  <input class="page-input country-code-input" name="country" maxlength="2" value="US" autocomplete="country" required>
+                </label>
+                <label>Currency
+                  <select class="page-select" id="accountCurrency" name="currency" required></select>
+                </label>
+              </div>
+              <label class="check-line premium-check">
+                <input name="marketingOptIn" type="checkbox" checked>
+                Send premium drops, order reminders, and private deal alerts.
+              </label>
+              <button class="button primary full" type="submit">Create secure account</button>
+            </form>
+          </div>
+
+          <div class="page-panel" data-account-panel="reset" role="tabpanel">
+            <form id="accountResetForm" class="page-form auth-card-form">
+              <label>Email
+                <input class="page-input" name="email" type="email" autocomplete="email" inputmode="email" required>
+              </label>
+              <button class="button primary full" type="submit">Send reset instructions</button>
+            </form>
+          </div>
+
+          <div class="page-panel" data-account-panel="profile" role="tabpanel">
+            <div id="accountProfile"></div>
+          </div>
+        </div>
+
+        <aside class="account-panel account-side-panel">
+          <div class="auth-benefits">
+            <p class="eyebrow">Faster checkout</p>
+            <h2>Save an address once. Buy faster every time.</h2>
+            <ul class="auth-mini-list">
+              <li>Auto-fill delivery details during checkout.</li>
+              <li>Keep currency and country pricing consistent.</li>
+              <li>Recover carts and wishlist products after login.</li>
+            </ul>
+          </div>
+          <form id="addressForm" class="page-form">
+            <label>Label
+              <input class="page-input" name="label" value="Primary" autocomplete="off">
+            </label>
+            <label>Name
+              <input class="page-input" name="name" autocomplete="name" required>
+            </label>
+            <label>Address
+              <input class="page-input" name="line1" autocomplete="address-line1" required>
+            </label>
+            <div class="form-grid">
+              <label>City
+                <input class="page-input" name="city" autocomplete="address-level2" required>
+              </label>
+              <label>Region
+                <input class="page-input" name="region" autocomplete="address-level1">
+              </label>
+            </div>
+            <div class="form-grid">
+              <label>Postal code
+                <input class="page-input" name="postalCode" autocomplete="postal-code">
+              </label>
+              <label>Country
+                <input class="page-input country-code-input" name="country" maxlength="2" value="US" autocomplete="country" required>
+              </label>
+            </div>
+            <label>Phone
+              <input class="page-input" name="phone" type="tel" autocomplete="tel">
+            </label>
+            <button class="button ghost full" type="submit">Save address</button>
+          </form>
+        </aside>
+      </section>
+    </main>
+
+    <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+    <script src="/js/api.js" defer></script>
+    <script src="/js/cart.js" defer></script>
+    <script src="/js/pages.js" defer></script>
   </body>
 </html>

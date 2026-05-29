@@ -3,6 +3,7 @@
   const state = {
     page: document.body.dataset.page || '',
     currency: localStorage.getItem('mat_currency') || 'USD',
+    currencies: [],
     products: [],
     categories: [],
     user: null,
@@ -31,6 +32,20 @@
   const SHOP_AUTO_LOADS = 2;
   const SEARCH_MARKETPLACE_STEP = 50;
   const SEARCH_MARKETPLACE_MAX = 160;
+  const CHECKOUT_SHIPPING_OPTIONS = {
+    standard: { label: 'MAT Standard', fee: 0, window: '7-14 business days' },
+    express: { label: 'MAT Express', fee: 12.95, window: '4-8 business days' },
+    priority: { label: 'MAT Priority', fee: 24.95, window: '2-5 business days' },
+    concierge: { label: 'MAT Concierge', fee: 39.95, window: 'Priority support window' }
+  };
+  const paypalCheckout = {
+    scriptKey: '',
+    rendered: false,
+    rendering: false,
+    orderId: '',
+    localOrder: null,
+    fingerprint: ''
+  };
 
   function escapeHtml(value) {
     return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char]));
@@ -706,8 +721,14 @@
     const select = document.getElementById('currencySelect');
     const registerSelect = document.getElementById('accountCurrency');
     if (!select && !registerSelect) return;
-    const data = await api.get('/auth/currencies');
-    const currencies = data.supported || ['USD'];
+    let currencies = ['USD', 'EUR', 'GBP', 'GMD', 'NGN', 'CAD', 'AED'];
+    try {
+      const data = await api.get('/auth/currencies');
+      currencies = data.supported || currencies;
+    } catch {
+      toast('Currency service is using offline defaults.');
+    }
+    state.currencies = currencies;
     [select, registerSelect].filter(Boolean).forEach((element) => {
       element.innerHTML = currencies.map((currency) => `<option value="${currency}">${currency}</option>`).join('');
       element.value = currencies.includes(state.currency) ? state.currency : 'USD';
@@ -727,6 +748,7 @@
     } catch {
       api.clearTokens();
       state.user = null;
+      api.setUser(null);
     }
     updateHeaderUser();
     return state.user;
@@ -1305,12 +1327,69 @@
     renderSummary();
   }
 
+  function checkoutPromoRate() {
+    const code = String(document.querySelector('#checkoutPageForm [name="promoCode"]')?.value || '').trim().toUpperCase();
+    if (code === 'MAT10') return 0.1;
+    if (code === 'VIP15') return 0.15;
+    return 0;
+  }
+
+  function selectedCheckoutShipping() {
+    const selected = document.querySelector('#checkoutPageForm input[name="shippingMethod"]:checked')?.value || 'standard';
+    return CHECKOUT_SHIPPING_OPTIONS[selected] || CHECKOUT_SHIPPING_OPTIONS.standard;
+  }
+
+  function checkoutEstimatedTotals() {
+    const items = window.MATCart?.items ? window.MATCart.items() : [];
+    const subtotal = items.reduce((sum, item) => sum + Number(item.snapshot?.displayPrice || 0) * Number(item.quantity || 0), 0);
+    const baseShipping = subtotal > 150 || subtotal === 0 ? 0 : 9.95;
+    const shipping = baseShipping + selectedCheckoutShipping().fee;
+    const tax = subtotal * 0.07;
+    const discount = subtotal * checkoutPromoRate();
+    return {
+      subtotal,
+      shipping,
+      tax,
+      discount,
+      total: Math.max(0, subtotal + shipping + tax - discount)
+    };
+  }
+
   function renderSummary() {
     const summary = document.getElementById('pageSummary');
     if (!summary || !window.MATCart) return;
-    const totals = window.MATCart.totals();
+    const isCheckout = state.page === 'checkout';
+    const totals = isCheckout ? checkoutEstimatedTotals() : window.MATCart.totals();
+    const items = window.MATCart.items ? window.MATCart.items() : [];
+    const shipping = isCheckout ? selectedCheckoutShipping() : null;
     summary.innerHTML = `
       <h2>Order Summary</h2>
+      ${
+        isCheckout
+          ? `<div class="checkout-review-list">${
+              items.length
+                ? items
+                    .map((item) => {
+                      const product = item.snapshot || {};
+                      return `
+                        <article class="checkout-review-item">
+                          <img src="${product.image || '/assets/icons/favicon.svg'}" alt="${escapeHtml(product.title || 'Product')}">
+                          <div>
+                            <strong>${escapeHtml(product.title || 'MAT STORE Product')}</strong>
+                            <span>${item.quantity} x ${money(product.displayPrice || 0)}${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</span>
+                          </div>
+                        </article>
+                      `;
+                    })
+                    .join('')
+                : '<div class="empty-state">Your cart is empty.</div>'
+            }</div>
+            <div class="checkout-delivery-note">
+              <strong>${escapeHtml(shipping.label)}</strong>
+              <span>${escapeHtml(shipping.window)}</span>
+            </div>`
+          : ''
+      }
       <div class="cart-totals">
         <div><span>Subtotal</span><strong>${money(totals.subtotal)}</strong></div>
         <div><span>Shipping</span><strong>${totals.shipping ? money(totals.shipping) : 'Included'}</strong></div>
@@ -1318,7 +1397,7 @@
         <div><span>Discount</span><strong>${totals.discount ? `-${money(totals.discount)}` : 'None'}</strong></div>
         <div><span>Total</span><strong>${money(totals.total)}</strong></div>
       </div>
-      <a class="button primary full" href="/checkout.html">Secure Checkout</a>
+      ${isCheckout ? '<div class="checkout-trust-row"><span>Encrypted</span><span>Protected</span><span>Support ready</span></div>' : '<a class="button primary full" href="/checkout.html">Secure Checkout</a>'}
       <a class="button ghost full" href="/shop.html">Continue Shopping</a>
     `;
   }
@@ -1338,53 +1417,764 @@
     });
   }
 
+  function checkoutCartItems() {
+    return window.MATCart?.items() || [];
+  }
+
+  function checkoutPayload(form, paymentMethod) {
+    const data = Object.fromEntries(new FormData(form).entries());
+    const billingSameAsShipping = data.billingSameAsShipping === 'on';
+    const shippingAddress = {
+      name: data.name,
+      line1: data.line1,
+      line2: data.line2,
+      city: data.city,
+      region: data.region,
+      postalCode: data.postalCode,
+      country: String(data.country || 'US').slice(0, 2).toUpperCase()
+    };
+    return {
+      sessionId: api.getSessionId(),
+      currency: state.currency,
+      paymentMethod: 'paypal',
+      promoCode: data.promoCode,
+      shippingMethod: data.shippingMethod || 'standard',
+      termsAccepted: data.termsAccepted === 'on',
+      marketingOptIn: data.marketingOptIn === 'on',
+      notes: data.notes,
+      customer: { name: data.name, email: data.email, phone: data.phone },
+      shippingAddress,
+      billingSameAsShipping,
+      billingAddress: billingSameAsShipping
+        ? shippingAddress
+        : {
+            name: data.billingName || data.name,
+            line1: data.billingLine1,
+            line2: data.billingLine2,
+            city: data.billingCity,
+            region: data.billingRegion,
+            postalCode: data.billingPostalCode,
+            country: String(data.billingCountry || data.country || 'US').slice(0, 2).toUpperCase()
+          },
+      checkoutMeta: {
+        savedAt: new Date().toISOString(),
+        shipping: selectedCheckoutShipping(),
+        estimatedTotals: checkoutEstimatedTotals()
+      },
+      items: checkoutCartItems().map((item) => ({ productId: item.productId, quantity: item.quantity, variant: item.variant }))
+    };
+  }
+
+  function checkoutFingerprint(payload) {
+    return JSON.stringify({
+      currency: payload.currency,
+      promoCode: payload.promoCode || '',
+      shippingMethod: payload.shippingMethod || 'standard',
+      customer: payload.customer,
+      shippingAddress: payload.shippingAddress,
+      billingSameAsShipping: payload.billingSameAsShipping,
+      billingAddress: payload.billingAddress,
+      items: payload.items
+    });
+  }
+
+  function validateCheckoutForm(form) {
+    if (!checkoutCartItems().length) {
+      toast('Your cart is empty.');
+      return false;
+    }
+    if (form && typeof form.reportValidity === 'function' && !form.reportValidity()) return false;
+    return true;
+  }
+
+  function clearCheckoutCart(items = checkoutCartItems()) {
+    items.forEach((item) => window.MATCart?.remove(item.productId, item.variant));
+  }
+
+  function resetPayPalCheckoutSession() {
+    paypalCheckout.orderId = '';
+    paypalCheckout.localOrder = null;
+    paypalCheckout.fingerprint = '';
+  }
+
+  function setPayPalStatus(message, tone = '') {
+    const status = document.getElementById('paypal-status');
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.tone = tone;
+  }
+
+  function payPalSdkUrl(config) {
+    const params = new URLSearchParams({
+      'client-id': config.clientId,
+      currency: config.currency || 'USD',
+      components: config.components || 'buttons,card-fields',
+      intent: config.intent || 'capture'
+    });
+    if (config.buyerCountry) params.set('buyer-country', config.buyerCountry);
+    if (config.enableFunding) params.set('enable-funding', config.enableFunding);
+    return `https://www.paypal.com/sdk/js?${params.toString()}`;
+  }
+
+  function loadPayPalSdk(config) {
+    const key = `${config.clientId}:${config.currency}:${config.components}:${config.intent}:${config.buyerCountry || ''}:${config.enableFunding || ''}`;
+    if (window.paypal && paypalCheckout.scriptKey === key) return Promise.resolve();
+
+    document.querySelectorAll('script[data-paypal-sdk]').forEach((script) => script.remove());
+    paypalCheckout.scriptKey = key;
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = payPalSdkUrl(config);
+      script.async = true;
+      script.dataset.paypalSdk = 'true';
+      script.dataset.key = key;
+      script.dataset.sdkIntegrationSource = 'mat-store-expanded-checkout';
+      script.addEventListener('load', () => (window.paypal ? resolve() : reject(new Error('PayPal SDK did not load.'))), { once: true });
+      script.addEventListener('error', () => reject(new Error('PayPal SDK could not be loaded.')), { once: true });
+      document.head.appendChild(script);
+    });
+  }
+
+  async function createPayPalSdkOrder(form) {
+    if (!validateCheckoutForm(form)) throw new Error('Complete checkout details before paying.');
+    const payload = checkoutPayload(form, 'paypal');
+    return createPayPalOrderFromPayload(payload);
+  }
+
+  async function createPayPalOrderFromPayload(payload) {
+    const fingerprint = checkoutFingerprint(payload);
+    if (paypalCheckout.orderId && paypalCheckout.fingerprint === fingerprint) return paypalCheckout.orderId;
+
+    setPayPalStatus('Creating secure PayPal order...', 'loading');
+    const result = await api.post('/orders/paypal/create', payload);
+    paypalCheckout.orderId = result.payment?.orderId || '';
+    paypalCheckout.localOrder = result.order || null;
+    paypalCheckout.fingerprint = fingerprint;
+    if (!paypalCheckout.orderId) throw new Error('PayPal did not return an order id.');
+    setPayPalStatus(`PayPal order ready: ${result.payment.currency} ${Number(result.payment.amount || 0).toFixed(2)}`, 'success');
+    return paypalCheckout.orderId;
+  }
+
+  function cardBillingAddress() {
+    const payload = activePaymentPayload('paypal') || storedCheckoutPayload() || {};
+    const fallback = payload.billingAddress || payload.shippingAddress || {};
+    const value = (id, fallbackValue = '') => {
+      const input = document.getElementById(id);
+      return String(input?.value || fallbackValue || '').trim();
+    };
+    return {
+      addressLine1: value('card-billing-address-line-1', fallback.line1),
+      addressLine2: value('card-billing-address-line-2', fallback.line2),
+      adminArea1: value('card-billing-address-admin-area-line-1', fallback.region),
+      adminArea2: value('card-billing-address-admin-area-line-2', fallback.city),
+      countryCode: value('card-billing-address-country-code', fallback.country || 'US').toUpperCase().slice(0, 2),
+      postalCode: value('card-billing-address-postal-code', fallback.postalCode)
+    };
+  }
+
+  function hydrateCardBillingFields(payload = {}) {
+    const billing = payload.billingAddress || payload.shippingAddress || {};
+    const values = {
+      'card-billing-address-line-1': billing.line1,
+      'card-billing-address-line-2': billing.line2,
+      'card-billing-address-admin-area-line-1': billing.region,
+      'card-billing-address-admin-area-line-2': billing.city,
+      'card-billing-address-country-code': billing.country || 'US',
+      'card-billing-address-postal-code': billing.postalCode
+    };
+    Object.entries(values).forEach(([id, value]) => {
+      const input = document.getElementById(id);
+      if (input && !input.value) input.value = String(value || '');
+    });
+  }
+
+  function paypalCaptureProblem(details = {}) {
+    const transaction =
+      details?.purchase_units?.[0]?.payments?.captures?.[0] ||
+      details?.purchase_units?.[0]?.payments?.authorizations?.[0] ||
+      null;
+    const errorDetail = details?.details?.[0] || null;
+    if (errorDetail) return { restart: errorDetail.issue === 'INSTRUMENT_DECLINED', message: `${errorDetail.issue || 'PAYPAL_ERROR'} ${errorDetail.description || ''}`.trim() };
+    if (!transaction) return { restart: false, message: 'PayPal did not return a completed transaction.' };
+    if (transaction.status === 'DECLINED') return { restart: false, message: `Transaction DECLINED: ${transaction.id || ''}`.trim() };
+    return null;
+  }
+
+  async function capturePayPalSdkOrder(data, actions) {
+    try {
+      setPayPalStatus('Capturing PayPal payment...', 'loading');
+      const result = await api.post('/orders/paypal/capture', {
+        orderID: data.orderID,
+        localOrderId: paypalCheckout.localOrder?.id || ''
+      });
+      const details = result.payment?.details || {};
+      const problem = paypalCaptureProblem(details);
+      if (problem?.restart && actions?.restart) {
+        setPayPalStatus('Payment method was declined. Restarting PayPal so you can choose another method...', 'warning');
+        return actions.restart();
+      }
+      if (problem) throw new Error(problem.message);
+
+      const order = result.order || result.payment?.order || paypalCheckout.localOrder;
+      localStorage.removeItem('mat_checkout_payload');
+      clearCheckoutCart();
+      resetPayPalCheckoutSession();
+      setPayPalStatus('Payment complete. Preparing your order page...', 'success');
+      window.location.href = `/orders.html?created=${encodeURIComponent(order?.orderNumber || '')}`;
+    } catch (error) {
+      setPayPalStatus(error.message || 'Sorry, your transaction could not be processed.', 'error');
+      toast(error.message || 'Sorry, your transaction could not be processed.');
+      throw error;
+    }
+  }
+
+  async function renderPayPalCheckout(form) {
+    if (paypalCheckout.rendered || paypalCheckout.rendering) return;
+    paypalCheckout.rendering = true;
+    try {
+      setPayPalStatus('Loading PayPal secure checkout...', 'loading');
+      const config = await api.get('/orders/paypal/config', { currency: state.currency });
+      const note = document.getElementById('paypalCurrencyNote');
+      if (note) {
+        note.textContent = config.currency !== config.requestedCurrency ? `PayPal settles in ${config.currency}` : `${config.currency} secure payment`;
+      }
+      if (!config.enabled || !config.clientId) {
+        setPayPalStatus('PayPal credentials are not configured yet. Add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET on the server.', 'error');
+        return;
+      }
+
+      await loadPayPalSdk(config);
+      const buttonContainer = document.getElementById('paypal-button-container');
+      if (buttonContainer) buttonContainer.innerHTML = '';
+      ['card-name-field-container', 'card-number-field-container', 'card-expiry-field-container', 'card-cvv-field-container'].forEach((id) => {
+        const container = document.getElementById(id);
+        if (container) container.innerHTML = '';
+      });
+
+      window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal',
+          borderRadius: 8
+        },
+        onClick(_data, actions) {
+          if (!validateCheckoutForm(form)) return actions.reject();
+          return actions.resolve();
+        },
+        createOrder() {
+          return createPayPalSdkOrder(form);
+        },
+        onApprove(data, actions) {
+          return capturePayPalSdkOrder(data, actions);
+        },
+        onCancel() {
+          setPayPalStatus('PayPal checkout was cancelled. Your cart is still here.', 'warning');
+        },
+        onError(error) {
+          setPayPalStatus(error?.message || 'PayPal checkout could not be completed.', 'error');
+          toast(error?.message || 'PayPal checkout could not be completed.');
+        }
+      }).render('#paypal-button-container');
+
+      const cardShell = document.getElementById('paypal-card-fields');
+      const cardSubmit = document.getElementById('paypal-card-submit');
+      if (window.paypal.CardFields && cardShell && cardSubmit) {
+        const cardFields = window.paypal.CardFields({
+          style: {
+            input: {
+              color: '#16130f',
+              'font-size': '16px',
+              'font-family': 'Inter, sans-serif',
+              'font-weight': '600'
+            },
+            '.invalid': { color: '#b64235' }
+          },
+          createOrder() {
+            return createPayPalSdkOrder(form);
+          },
+          onApprove(data, actions) {
+            return capturePayPalSdkOrder(data, actions);
+          },
+          onError(error) {
+            setPayPalStatus(error?.message || 'Card payment could not be completed.', 'error');
+            toast(error?.message || 'Card payment could not be completed.');
+          },
+          onCancel() {
+            setPayPalStatus('Card verification was cancelled.', 'warning');
+          },
+          inputEvents: {
+            onChange(data) {
+              cardSubmit.disabled = !data.isFormValid;
+            }
+          }
+        });
+
+        if (cardFields.isEligible()) {
+          cardShell.hidden = false;
+          cardFields.NameField({ placeholder: 'Full name on card' }).render('#card-name-field-container');
+          cardFields.NumberField({ placeholder: 'Card number' }).render('#card-number-field-container');
+          cardFields.ExpiryField({ placeholder: 'MM/YY' }).render('#card-expiry-field-container');
+          cardFields.CVVField({ placeholder: 'CVV' }).render('#card-cvv-field-container');
+          cardSubmit.addEventListener('click', async () => {
+            if (!validateCheckoutForm(form)) return;
+            const fieldState = await cardFields.getState();
+            if (!fieldState.isFormValid) {
+              setPayPalStatus('Check your card details before paying.', 'error');
+              return;
+            }
+            cardSubmit.disabled = true;
+            try {
+              await cardFields.submit({ billingAddress: cardBillingAddress() });
+            } catch (error) {
+              setPayPalStatus(error?.message || 'Card payment could not be submitted.', 'error');
+            } finally {
+              cardSubmit.disabled = false;
+            }
+          });
+        }
+      }
+
+      paypalCheckout.rendered = true;
+      setPayPalStatus('Choose PayPal wallet or enter card details below.', 'success');
+    } catch (error) {
+      setPayPalStatus(error.message, 'error');
+      toast(error.message);
+    } finally {
+      paypalCheckout.rendering = false;
+    }
+  }
+
+  function bindPayPalCheckout(form) {
+    const panel = document.getElementById('paypalCheckoutPanel');
+    const submit = document.getElementById('checkoutSubmitButton');
+    if (!form || !panel || !submit) return;
+
+    const refreshPaymentUi = () => {
+      const selected = form.querySelector('input[name="paymentMethod"]:checked')?.value || 'paypal';
+      const isPayPal = selected === 'paypal';
+      panel.hidden = !isPayPal;
+      submit.classList.toggle('is-hidden', isPayPal);
+      submit.disabled = false;
+      if (isPayPal) renderPayPalCheckout(form);
+    };
+
+    form.querySelectorAll('input[name="paymentMethod"]').forEach((input) => input.addEventListener('change', refreshPaymentUi));
+    form.addEventListener('input', (event) => {
+      if (!event.target.matches('input[name="paymentMethod"]')) resetPayPalCheckoutSession();
+    });
+    window.addEventListener('mat:cart-updated', resetPayPalCheckoutSession);
+    refreshPaymentUi();
+  }
+
+  function bindCheckoutEnhancements(form) {
+    if (!form) return;
+    const billingToggle = document.getElementById('billingSameAsShipping');
+    const billingPanel = document.getElementById('billingAddressPanel');
+
+    const syncBilling = () => {
+      const same = billingToggle ? billingToggle.checked : true;
+      if (billingPanel) billingPanel.hidden = same;
+      billingPanel?.querySelectorAll('input').forEach((input) => {
+        const requiredNames = new Set(['billingName', 'billingCountry', 'billingLine1', 'billingCity', 'billingRegion', 'billingPostalCode']);
+        input.required = !same && requiredNames.has(input.name);
+      });
+    };
+
+    const syncSummary = () => {
+      renderSummary();
+      resetPayPalCheckoutSession();
+    };
+
+    billingToggle?.addEventListener('change', syncBilling);
+    form.querySelectorAll('input[name="shippingMethod"]').forEach((input) => input.addEventListener('change', syncSummary));
+    form.querySelector('[name="promoCode"]')?.addEventListener('input', renderSummary);
+    form.querySelector('[name="country"]')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.toUpperCase().slice(0, 2);
+    });
+    form.querySelector('[name="billingCountry"]')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.toUpperCase().slice(0, 2);
+    });
+    syncBilling();
+    renderSummary();
+  }
+
   async function initCheckout() {
     await loadProducts();
     renderSummary();
     const form = document.getElementById('checkoutPageForm');
+    bindCheckoutEnhancements(form);
     form?.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const cartItems = window.MATCart?.items() || [];
-      if (!cartItems.length) {
-        toast('Your cart is empty.');
-        return;
-      }
-      const data = Object.fromEntries(new FormData(form).entries());
-      const submit = form.querySelector('button[type="submit"]');
-      submit.disabled = true;
-      try {
-        const result = await api.post('/orders', {
-          sessionId: api.getSessionId(),
-          currency: state.currency,
-          paymentMethod: data.paymentMethod,
-          promoCode: data.promoCode,
-          customer: { name: data.name, email: data.email, phone: data.phone },
-          shippingAddress: {
-            name: data.name,
-            line1: data.line1,
-            line2: data.line2,
-            city: data.city,
-            region: data.region,
-            postalCode: data.postalCode,
-            country: data.country
-          },
-          items: cartItems.map((item) => ({ productId: item.productId, quantity: item.quantity, variant: item.variant }))
-        });
-        cartItems.forEach((item) => window.MATCart.remove(item.productId, item.variant));
-        const url = result.payment?.checkoutUrl || result.payment?.approvalUrl || result.payment?.whatsappUrl;
-        if (url) window.open(url, '_blank', 'noopener,noreferrer');
-        window.location.href = `/orders.html?created=${encodeURIComponent(result.order.orderNumber)}`;
-      } catch (error) {
-        toast(error.message);
-      } finally {
-        submit.disabled = false;
-      }
+      if (!validateCheckoutForm(form)) return;
+      const payload = checkoutPayload(form, 'paypal');
+      localStorage.setItem('mat_checkout_payload', JSON.stringify(payload));
+      resetPayPalCheckoutSession();
+      window.location.href = '/payment.html';
     });
   }
 
+  function storedCheckoutPayload() {
+    try {
+      return JSON.parse(localStorage.getItem('mat_checkout_payload') || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  function saveCheckoutPayload(payload) {
+    localStorage.setItem('mat_checkout_payload', JSON.stringify(payload));
+  }
+
+  function activePaymentPayload(method) {
+    const payload = storedCheckoutPayload();
+    if (!payload) return null;
+    return {
+      ...payload,
+      currency: payload.currency || state.currency,
+      paymentMethod: 'paypal'
+    };
+  }
+
+  function paymentLineItems(payload) {
+    const cartItems = window.MATCart?.items ? window.MATCart.items() : [];
+    return (payload?.items || []).map((item) => {
+      const cartItem = cartItems.find((entry) => entry.productId === item.productId && entry.variant === item.variant);
+      const product = state.products.find((entry) => entry.id === item.productId);
+      return {
+        ...item,
+        snapshot: cartItem?.snapshot || {
+          title: product?.title || 'MAT STORE Product',
+          image: productImage(product || {}),
+          displayPrice: product?.displayPrice || product?.price || 0
+        }
+      };
+    });
+  }
+
+  function renderPaymentSummary(payload) {
+    const summary = document.getElementById('paymentSummary');
+    if (!summary) return;
+    if (!payload) {
+      summary.innerHTML = `
+        <h2>Order Summary</h2>
+        <div class="empty-state">Checkout details were not found.</div>
+        <a class="button primary full" href="/checkout.html">Return to Checkout</a>
+      `;
+      return;
+    }
+
+    const totals = payload.checkoutMeta?.estimatedTotals || checkoutEstimatedTotals();
+    const shipping = payload.checkoutMeta?.shipping || CHECKOUT_SHIPPING_OPTIONS[payload.shippingMethod] || CHECKOUT_SHIPPING_OPTIONS.standard;
+    const items = paymentLineItems(payload);
+    summary.innerHTML = `
+      <h2>Order Summary</h2>
+      <div class="checkout-review-list">
+        ${
+          items.length
+            ? items
+                .map((item) => {
+                  const product = item.snapshot || {};
+                  return `
+                    <article class="checkout-review-item">
+                      <img src="${product.image || '/assets/icons/favicon.svg'}" alt="${escapeHtml(product.title || 'Product')}">
+                      <div>
+                        <strong>${escapeHtml(product.title || 'MAT STORE Product')}</strong>
+                        <span>${item.quantity} x ${money(product.displayPrice || 0, payload.currency)}${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</span>
+                      </div>
+                    </article>
+                  `;
+                })
+                .join('')
+            : '<div class="empty-state">No products are attached to this payment.</div>'
+        }
+      </div>
+      <div class="checkout-delivery-note">
+        <strong>${escapeHtml(shipping.label || 'MAT Standard')}</strong>
+        <span>${escapeHtml(shipping.window || 'Delivery calculated at checkout')}</span>
+      </div>
+      <div class="cart-totals">
+        <div><span>Subtotal</span><strong>${money(totals.subtotal, payload.currency)}</strong></div>
+        <div><span>Shipping</span><strong>${totals.shipping ? money(totals.shipping, payload.currency) : 'Included'}</strong></div>
+        <div><span>Tax</span><strong>${money(totals.tax, payload.currency)}</strong></div>
+        <div><span>Discount</span><strong>${totals.discount ? `-${money(totals.discount, payload.currency)}` : 'None'}</strong></div>
+        <div><span>Total</span><strong>${money(totals.total, payload.currency)}</strong></div>
+      </div>
+      <div class="checkout-trust-row"><span>Encrypted</span><span>Protected</span><span>Support ready</span></div>
+    `;
+  }
+
+  function setPaymentStatus(message, tone = '') {
+    const status = document.getElementById('paymentStatus');
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.tone = tone;
+  }
+
+  async function submitPaymentOrder(method) {
+    const payload = activePaymentPayload('paypal');
+    if (!payload || !payload.items?.length) {
+      setPaymentStatus('Checkout details are missing. Return to checkout first.', 'error');
+      return;
+    }
+    const button = document.getElementById('paypalPaymentButton');
+    if (button) button.disabled = true;
+      try {
+        setPaymentStatus('Creating PayPal order...', 'loading');
+        const result = await api.post('/orders', payload);
+        localStorage.removeItem('mat_checkout_payload');
+        clearCheckoutCart();
+        const url = result.payment?.approvalUrl;
+        if (result.payment?.requiresConfiguration) {
+          toast(result.payment.message || 'Payment provider needs configuration.');
+        }
+        setPaymentStatus(`Order ${result.order.orderNumber} created.`, 'success');
+        if (url) window.open(url, '_blank', 'noopener,noreferrer');
+        window.location.href = `/orders.html?created=${encodeURIComponent(result.order.orderNumber)}`;
+      } catch (error) {
+        setPaymentStatus(error.message, 'error');
+        toast(error.message);
+      } finally {
+        if (button) button.disabled = false;
+      }
+  }
+
+  async function renderPaymentPayPal(payload) {
+    const panel = document.getElementById('paypalCheckoutPanel');
+    if (!panel) return;
+    panel.hidden = false;
+    resetPayPalCheckoutSession();
+    paypalCheckout.rendered = false;
+    paypalCheckout.rendering = true;
+    try {
+      setPayPalStatus('Loading PayPal secure checkout...', 'loading');
+      const config = await api.get('/orders/paypal/config', { currency: payload.currency || state.currency });
+      const note = document.getElementById('paypalCurrencyNote');
+      if (note) note.textContent = config.currency !== config.requestedCurrency ? `PayPal settles in ${config.currency}` : `${config.currency} secure payment`;
+      if (!config.enabled || !config.clientId) {
+        setPayPalStatus('PayPal credentials are missing. Add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET, then restart the server.', 'error');
+        return;
+      }
+
+      await loadPayPalSdk(config);
+      const buttonContainer = document.getElementById('paypal-button-container');
+      if (buttonContainer) buttonContainer.innerHTML = '';
+      hydrateCardBillingFields(payload);
+
+      window.paypal.Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'gold',
+          shape: 'rect',
+          label: 'paypal',
+          borderRadius: 8
+        },
+        createOrder() {
+          return createPayPalOrderFromPayload(activePaymentPayload('paypal'));
+        },
+        onApprove(data, actions) {
+          return capturePayPalSdkOrder(data, actions);
+        },
+        onCancel() {
+          setPayPalStatus('PayPal checkout was cancelled. Your checkout details are still saved.', 'warning');
+        },
+        onError(error) {
+          setPayPalStatus(error?.message || 'PayPal checkout could not be completed.', 'error');
+          toast(error?.message || 'PayPal checkout could not be completed.');
+        }
+      }).render('#paypal-button-container');
+
+      const cardShell = document.getElementById('paypal-card-fields');
+      const cardSubmit = document.getElementById('paypal-card-submit');
+      if (window.paypal.CardFields && cardShell && cardSubmit) {
+        const cardFields = window.paypal.CardFields({
+          style: {
+            input: {
+              color: '#16130f',
+              'font-size': '16px',
+              'font-family': 'Inter, sans-serif',
+              'font-weight': '600'
+            },
+            '.invalid': { color: '#b64235' }
+          },
+          createOrder() {
+            return createPayPalOrderFromPayload(activePaymentPayload('paypal'));
+          },
+          onApprove(data, actions) {
+            return capturePayPalSdkOrder(data, actions);
+          },
+          onError(error) {
+            setPayPalStatus(error?.message || 'Card payment could not be completed.', 'error');
+            toast(error?.message || 'Card payment could not be completed.');
+          },
+          inputEvents: {
+            onChange(data) {
+              cardSubmit.disabled = !data.isFormValid;
+            }
+          }
+        });
+
+        if (cardFields.isEligible()) {
+          cardShell.hidden = false;
+          cardFields.NameField({ placeholder: 'Full name on card' }).render('#card-name-field-container');
+          cardFields.NumberField({ placeholder: 'Card number' }).render('#card-number-field-container');
+          cardFields.ExpiryField({ placeholder: 'MM/YY' }).render('#card-expiry-field-container');
+          cardFields.CVVField({ placeholder: 'CVV' }).render('#card-cvv-field-container');
+          cardSubmit.addEventListener('click', async () => {
+            const fieldState = await cardFields.getState();
+            if (!fieldState.isFormValid) {
+              setPayPalStatus('Check your card details before paying.', 'error');
+              return;
+            }
+            cardSubmit.disabled = true;
+            try {
+              await cardFields.submit({ billingAddress: cardBillingAddress() });
+            } catch (error) {
+              setPayPalStatus(error?.message || 'Card payment could not be submitted.', 'error');
+            } finally {
+              cardSubmit.disabled = false;
+            }
+          });
+        }
+      }
+
+      paypalCheckout.rendered = true;
+      setPayPalStatus('Choose PayPal wallet or enter card details below.', 'success');
+    } catch (error) {
+      setPayPalStatus(error.message, 'error');
+      toast(error.message);
+    } finally {
+      paypalCheckout.rendering = false;
+    }
+  }
+
+  function showPaymentMethod(method) {
+    const selectedMethod = 'paypal';
+    const payload = activePaymentPayload(selectedMethod);
+    if (payload) saveCheckoutPayload(payload);
+    document.getElementById('paypalCheckoutPanel')?.removeAttribute('hidden');
+    resetPayPalCheckoutSession();
+    if (payload) renderPaymentPayPal(payload);
+  }
+
+  async function initPayment() {
+    await loadProducts();
+    const payload = storedCheckoutPayload();
+    renderPaymentSummary(payload);
+    if (!payload || !payload.items?.length) {
+      setPaymentStatus('Checkout details are missing. Return to checkout first.', 'error');
+      document.getElementById('paymentMethodPanel')?.setAttribute('hidden', '');
+      return;
+    }
+
+    const selectedMethod = 'paypal';
+    document.querySelectorAll('input[name="paymentPageMethod"]').forEach((input) => {
+      input.checked = input.value === selectedMethod;
+      input.addEventListener('change', () => showPaymentMethod(input.value));
+    });
+    document.getElementById('card-billing-address-country-code')?.addEventListener('input', (event) => {
+      event.target.value = event.target.value.toUpperCase().slice(0, 2);
+    });
+    showPaymentMethod(selectedMethod);
+  }
+
   function setAccountTab(name) {
-    document.querySelectorAll('[data-account-tab]').forEach((button) => button.classList.toggle('active', button.dataset.accountTab === name));
-    document.querySelectorAll('[data-account-panel]').forEach((panel) => panel.classList.toggle('active', panel.dataset.accountPanel === name));
+    document.querySelectorAll('[data-account-tab]').forEach((button) => {
+      const active = button.dataset.accountTab === name;
+      button.classList.toggle('active', active);
+      button.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-account-panel]').forEach((panel) => {
+      const active = panel.dataset.accountPanel === name;
+      panel.classList.toggle('active', active);
+      panel.hidden = !active;
+    });
+  }
+
+  function setAccountStatus(message = '', tone = 'info') {
+    const status = document.getElementById('accountStatus');
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.tone = tone;
+    status.hidden = !message;
+  }
+
+  function accountFormData(form) {
+    return Object.fromEntries(new FormData(form).entries());
+  }
+
+  function normalizeCountryCode(value = '') {
+    return String(value || 'US').trim().slice(0, 2).toUpperCase() || 'US';
+  }
+
+  function setFormBusy(form, busy, busyLabel = 'Working...') {
+    const submit = form?.querySelector('button[type="submit"]');
+    if (!submit) return;
+    if (!submit.dataset.defaultLabel) submit.dataset.defaultLabel = submit.textContent;
+    submit.disabled = busy;
+    submit.textContent = busy ? busyLabel : submit.dataset.defaultLabel;
+  }
+
+  function accountPasswordScore(value = '') {
+    let score = 0;
+    if (value.length >= 8) score += 1;
+    if (value.length >= 12) score += 1;
+    if (/[a-z]/.test(value) && /[A-Z]/.test(value)) score += 1;
+    if (/\d/.test(value)) score += 1;
+    if (/[^A-Za-z0-9]/.test(value)) score += 1;
+    return score;
+  }
+
+  function updateAccountPasswordStrength() {
+    const input = document.getElementById('accountRegisterPassword');
+    const target = document.getElementById('accountPasswordStrength');
+    if (!input || !target) return;
+    const score = accountPasswordScore(input.value);
+    const labels = ['Use 8+ characters with letters and numbers.', 'Weak password.', 'Better. Add uppercase, numbers, or symbols.', 'Good password.', 'Strong password.', 'Excellent password.'];
+    target.textContent = labels[score] || labels[0];
+    target.dataset.strength = String(score);
+  }
+
+  function bindAccountPasswordToggles(root = document) {
+    root.querySelectorAll('[data-toggle-password]').forEach((button) => {
+      if (button.dataset.bound === 'true') return;
+      button.dataset.bound = 'true';
+      button.addEventListener('click', () => {
+        const input = document.getElementById(button.dataset.togglePassword);
+        if (!input) return;
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        button.textContent = isPassword ? 'Hide' : 'Show';
+        button.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+      });
+    });
+  }
+
+  function accountCurrencyOptions(selected) {
+    const currencies = state.currencies?.length ? state.currencies : ['USD', 'EUR', 'GBP', 'GMD', 'NGN', 'CAD', 'AED'];
+    return currencies.map((currency) => `<option value="${escapeHtml(currency)}" ${currency === selected ? 'selected' : ''}>${escapeHtml(currency)}</option>`).join('');
+  }
+
+  function addressSummary(address = {}) {
+    return [address.line1, address.city, address.region, address.postalCode, address.country].filter(Boolean).join(', ');
+  }
+
+  async function accountLogout() {
+    try {
+      await api.post('/auth/logout', { refreshToken: localStorage.getItem('mat_refresh_token') });
+    } catch {
+      // A stale refresh token should not block the customer from signing out locally.
+    }
+    api.clearTokens();
+    state.user = null;
+    api.setUser(null);
+    updateHeaderUser();
+    setAccountTab('login');
+    renderAccount();
+    setAccountStatus('You are signed out.', 'success');
+    toast('Signed out.');
   }
 
   async function renderAccount() {
@@ -1394,84 +2184,231 @@
       profile.innerHTML = '<div class="empty-state">Login or register to manage profile, addresses, wishlist, and orders.</div>';
       return;
     }
+
+    const addresses = state.user.addresses || [];
+    const selectedCurrency = state.user.currency || state.currency || 'USD';
+    const marketingOptIn = Boolean(state.user.preferences?.marketingOptIn);
+    const addressRows = addresses.length
+      ? addresses.map((address) => `
+          <div class="list-row address-row">
+            <strong>${escapeHtml(address.label || 'Saved address')}</strong>
+            <span>${escapeHtml(address.name || state.user.name)} · ${escapeHtml(addressSummary(address))}</span>
+          </div>
+        `).join('')
+      : '<div class="empty-state">No saved addresses yet. Add one from the address panel.</div>';
+
     profile.innerHTML = `
-      <div class="list-row">
-        <strong>${escapeHtml(state.user.name)}</strong>
-        <span>${escapeHtml(state.user.email)} · ${escapeHtml(state.user.currency)} · ${escapeHtml(state.user.country)}</span>
+      <div class="profile-grid">
+        <section class="profile-card">
+          <p class="eyebrow">Signed in</p>
+          <h2>${escapeHtml(state.user.name)}</h2>
+          <p>${escapeHtml(state.user.email)}</p>
+        </section>
+        <section class="profile-card">
+          <p class="eyebrow">Shopping profile</p>
+          <h2>${escapeHtml(selectedCurrency)} · ${escapeHtml(state.user.country || 'US')}</h2>
+          <p>${(state.user.wishlist || []).length} saved products · ${addresses.length} saved addresses · ${escapeHtml(state.user.role || 'customer')}</p>
+        </section>
       </div>
-      <div class="list-row">
-        <strong>${(state.user.wishlist || []).length} saved products</strong>
-        <span>${(state.user.addresses || []).length} saved addresses · ${state.user.role}</span>
-      </div>
-      <button class="button ghost" type="button" id="accountLogout">Logout</button>
+      <form id="accountProfileForm" class="page-form profile-edit-form">
+        <div class="form-grid">
+          <label>Full name
+            <input class="page-input" name="name" autocomplete="name" value="${escapeHtml(state.user.name)}" required>
+          </label>
+          <label>Email
+            <input class="page-input" value="${escapeHtml(state.user.email)}" disabled>
+          </label>
+        </div>
+        <div class="form-grid">
+          <label>Country code
+            <input class="page-input country-code-input" name="country" maxlength="2" autocomplete="country" value="${escapeHtml(state.user.country || 'US')}" required>
+          </label>
+          <label>Currency
+            <select class="page-select" id="accountProfileCurrency" name="currency">${accountCurrencyOptions(selectedCurrency)}</select>
+          </label>
+        </div>
+        <label class="check-line premium-check">
+          <input name="marketingOptIn" type="checkbox" ${marketingOptIn ? 'checked' : ''}>
+          Send premium drops, order reminders, and private deal alerts.
+        </label>
+        <button class="button primary full" type="submit">Save profile</button>
+      </form>
+      <section class="profile-card address-stack">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Saved addresses</p>
+            <h2>Delivery book</h2>
+          </div>
+          <span>${addresses.length}/8 saved</span>
+        </div>
+        ${addressRows}
+      </section>
+      <button class="button ghost full" type="button" id="accountLogout">Logout</button>
     `;
-    document.getElementById('accountLogout')?.addEventListener('click', () => {
-      api.clearTokens();
-      state.user = null;
-      api.setUser(null);
-      renderAccount();
-      updateHeaderUser();
+
+    bindAccountPasswordToggles(profile);
+    profile.querySelectorAll('.country-code-input').forEach((input) => {
+      input.addEventListener('input', () => {
+        input.value = normalizeCountryCode(input.value);
+      });
+    });
+    document.getElementById('accountLogout')?.addEventListener('click', accountLogout);
+    document.getElementById('accountProfileForm')?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const payload = accountFormData(form);
+      payload.country = normalizeCountryCode(payload.country);
+      payload.preferences = { marketingOptIn: Boolean(form.marketingOptIn?.checked) };
+      delete payload.marketingOptIn;
+      setFormBusy(form, true, 'Saving...');
+      try {
+        const result = await api.patch('/auth/profile', payload);
+        state.user = result.user;
+        api.setUser(result.user);
+        state.currency = result.user.currency || state.currency;
+        localStorage.setItem('mat_currency', state.currency);
+        const currencySelect = document.getElementById('currencySelect');
+        if (currencySelect) currencySelect.value = state.currency;
+        updateHeaderUser();
+        renderAccount();
+        setAccountStatus('Profile updated.', 'success');
+        toast('Profile updated.');
+      } catch (error) {
+        setAccountStatus(error.message || 'Profile could not be updated.', 'error');
+        toast(error.message);
+      } finally {
+        setFormBusy(form, false);
+      }
     });
   }
 
   async function initAccount() {
     setAccountTab(state.user ? 'profile' : 'login');
     renderAccount();
-    document.querySelectorAll('[data-account-tab]').forEach((button) => button.addEventListener('click', () => setAccountTab(button.dataset.accountTab)));
+    document.querySelectorAll('[data-account-tab]').forEach((button) => {
+      button.addEventListener('click', () => {
+        setAccountStatus('');
+        setAccountTab(button.dataset.accountTab);
+      });
+    });
+    document.querySelectorAll('.country-code-input').forEach((input) => {
+      input.addEventListener('input', () => {
+        input.value = normalizeCountryCode(input.value);
+      });
+    });
+    bindAccountPasswordToggles();
+    document.getElementById('accountRegisterPassword')?.addEventListener('input', updateAccountPasswordStrength);
 
     document.getElementById('accountLoginForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
+      const form = event.currentTarget;
+      setFormBusy(form, true, 'Signing in...');
+      setAccountStatus('Checking your secure session...', 'info');
       try {
-        const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+        const data = accountFormData(form);
         const result = await api.post('/auth/login', data);
         api.setTokens(result.accessToken, result.refreshToken);
         state.user = result.user;
         api.setUser(result.user);
-        localStorage.setItem('mat_currency', result.user.currency || 'USD');
+        state.currency = result.user.currency || 'USD';
+        localStorage.setItem('mat_currency', state.currency);
+        const currencySelect = document.getElementById('currencySelect');
+        if (currencySelect) currencySelect.value = state.currency;
         updateHeaderUser();
         setAccountTab('profile');
         renderAccount();
+        setAccountStatus('Welcome back.', 'success');
         toast('Logged in.');
       } catch (error) {
+        setAccountStatus(error.message || 'Login failed. Check your email and password.', 'error');
         toast(error.message);
+      } finally {
+        setFormBusy(form, false);
       }
     });
 
     document.getElementById('accountRegisterForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
+      const form = event.currentTarget;
+      const data = accountFormData(form);
+      if (data.password !== data.confirmPassword) {
+        setAccountStatus('Passwords do not match.', 'error');
+        return;
+      }
+      if (accountPasswordScore(data.password) < 2) {
+        setAccountStatus('Please use a stronger password before creating your account.', 'error');
+        return;
+      }
+
+      data.country = normalizeCountryCode(data.country);
+      data.marketingOptIn = Boolean(form.marketingOptIn?.checked);
+      delete data.confirmPassword;
+      setFormBusy(form, true, 'Creating...');
+      setAccountStatus('Creating your encrypted MAT STORE profile...', 'info');
       try {
-        const data = Object.fromEntries(new FormData(event.currentTarget).entries());
-        data.marketingOptIn = true;
         const result = await api.post('/auth/register', data);
         api.setTokens(result.accessToken, result.refreshToken);
         state.user = result.user;
         api.setUser(result.user);
-        localStorage.setItem('mat_currency', result.user.currency || 'USD');
+        state.currency = result.user.currency || 'USD';
+        localStorage.setItem('mat_currency', state.currency);
+        const currencySelect = document.getElementById('currencySelect');
+        if (currencySelect) currencySelect.value = state.currency;
         updateHeaderUser();
         setAccountTab('profile');
         renderAccount();
+        setAccountStatus('Account created. Your secure profile is ready.', 'success');
         toast('Account created.');
       } catch (error) {
+        setAccountStatus(error.message || 'Account creation failed. Try another email.', 'error');
         toast(error.message);
+      } finally {
+        setFormBusy(form, false);
       }
     });
 
     document.getElementById('accountResetForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const data = Object.fromEntries(new FormData(event.currentTarget).entries());
-      const result = await api.post('/auth/forgot-password', data);
-      toast(result.devResetToken ? `Reset prepared. Dev token: ${result.devResetToken}` : result.message);
+      const form = event.currentTarget;
+      setFormBusy(form, true, 'Sending...');
+      setAccountStatus('Preparing reset instructions...', 'info');
+      try {
+        const data = accountFormData(form);
+        const result = await api.post('/auth/forgot-password', data);
+        setAccountStatus(result.devResetToken ? `Reset prepared. Dev token: ${result.devResetToken}` : result.message, 'success');
+        toast('Reset request prepared.');
+      } catch (error) {
+        setAccountStatus(error.message || 'Password reset could not be prepared.', 'error');
+        toast(error.message);
+      } finally {
+        setFormBusy(form, false);
+      }
     });
 
     document.getElementById('addressForm')?.addEventListener('submit', async (event) => {
       event.preventDefault();
-      if (!state.user) return toast('Login to save addresses.');
-      const data = Object.fromEntries(new FormData(event.currentTarget).entries());
-      const result = await api.post('/auth/addresses', data);
-      state.user = result.user;
-      api.setUser(result.user);
-      renderAccount();
-      toast('Address saved.');
+      const form = event.currentTarget;
+      if (!state.user) {
+        setAccountTab('login');
+        setAccountStatus('Login or create an account before saving addresses.', 'error');
+        return toast('Login to save addresses.');
+      }
+      const data = accountFormData(form);
+      data.country = normalizeCountryCode(data.country);
+      setFormBusy(form, true, 'Saving...');
+      try {
+        const result = await api.post('/auth/addresses', data);
+        state.user = result.user;
+        api.setUser(result.user);
+        renderAccount();
+        setAccountStatus('Address saved.', 'success');
+        toast('Address saved.');
+      } catch (error) {
+        setAccountStatus(error.message || 'Address could not be saved.', 'error');
+        toast(error.message);
+      } finally {
+        setFormBusy(form, false);
+      }
     });
   }
 
@@ -1552,6 +2489,7 @@
     else if (state.page === 'product') await initProduct();
     else if (state.page === 'cart') await initCartPage();
     else if (state.page === 'checkout') await initCheckout();
+    else if (state.page === 'payment') await initPayment();
     else if (state.page === 'account') await initAccount();
     else if (state.page === 'wishlist') await initWishlist();
     else if (state.page === 'orders') await initOrders();

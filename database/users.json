@@ -1,5 +1,48 @@
 [
   {
+    "id": "4ff9bf15-b9d5-41cb-b175-0fef0f98f4c7",
+    "name": "EBUBE OKOYE",
+    "email": "zgifantasy@gmail.com",
+    "passwordHash": "$2a$12$EsKowxeFxNYRa7//qHUqa.Lfh4iCOcCfYgmVchPpM9Yf.FFdfPSzq",
+    "role": "user",
+    "country": "US",
+    "currency": "GMD",
+    "addresses": [
+      {
+        "id": "0f308aec-6a46-45c9-a5db-a8f3e0846618",
+        "label": "Primary",
+        "name": "EBUBE OKOYE",
+        "line1": "Iyamu street",
+        "line2": "",
+        "city": "banjul",
+        "region": "Anambra",
+        "postalCode": "102103",
+        "country": "US",
+        "phone": "+2206785316",
+        "updatedAt": "2026-05-29T10:17:13.990Z"
+      }
+    ],
+    "wishlist": [],
+    "preferences": {
+      "theme": "dark",
+      "marketingOptIn": true
+    },
+    "refreshTokens": [
+      {
+        "id": "fefa7578-d9f5-4308-8d8f-20bbb3580408",
+        "hash": "b069d5d278f2042d830f74c05dfcecaca4e3d32d0d7d3abca1e2945a34d42960",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "ip": "::1",
+        "createdAt": "2026-05-29T11:59:38.924Z",
+        "expiresAt": "2026-06-28T11:59:38.924Z"
+      }
+    ],
+    "resetTokens": [],
+    "createdAt": "2026-05-29T10:16:59.824Z",
+    "updatedAt": "2026-05-29T11:59:38.930Z",
+    "lastLoginAt": "2026-05-29T11:59:38.930Z"
+  },
+  {
     "id": "275d2822-6909-48e4-9124-1d4ed404c5d2",
     "name": "MAT STORE Admin",
     "email": "admin@matstore.local",
@@ -14,14 +57,6 @@
       "marketingOptIn": true
     },
     "refreshTokens": [
-      {
-        "id": "0dc52942-af11-4b9f-b508-9d434ceeb55e",
-        "hash": "0647c3328f8ec881c8466b69fadbc56dcf4af72f287a5ece038b62af9ca21ecc",
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Microsoft Windows 10.0.18363; en-US) PowerShell/7.5.5",
-        "ip": "::1",
-        "createdAt": "2026-05-27T00:45:06.006Z",
-        "expiresAt": "2026-06-26T00:45:06.006Z"
-      },
       {
         "id": "480e58e5-b12e-49ab-9449-da300800b2da",
         "hash": "9e7bc8eb898b0badc000f5c85408483bf34b2ec9c856c84d430fa3fd165df9eb",
@@ -77,11 +112,19 @@
         "ip": "::ffff:127.0.0.1",
         "createdAt": "2026-05-27T17:46:19.706Z",
         "expiresAt": "2026-06-26T17:46:19.706Z"
+      },
+      {
+        "id": "246a2e40-9db9-4dac-894e-e5282624faf6",
+        "hash": "88706bd02be83950da9df82d17308e3f453e0737f027a9cffd052e2f3f5c6f3b",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+        "ip": "::1",
+        "createdAt": "2026-05-29T10:16:23.373Z",
+        "expiresAt": "2026-06-28T10:16:23.374Z"
       }
     ],
     "resetTokens": [],
     "createdAt": "2026-05-26T16:31:54.112Z",
-    "updatedAt": "2026-05-27T17:46:19.711Z",
-    "lastLoginAt": "2026-05-27T17:46:19.711Z"
+    "updatedAt": "2026-05-29T10:16:23.375Z",
+    "lastLoginAt": "2026-05-29T10:16:23.375Z"
   }
 ]

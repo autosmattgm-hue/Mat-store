@@ -1,5 +1,2561 @@
 [
   {
+    "id": "6dad56bc-45bf-4965-8a28-7189b50e1433",
+    "sku": "MAT-MPQR1L71",
+    "title": "Global Version Redmagic 10 Pro NX789J",
+    "slug": "global-version-redmagic-10-pro-nx789j",
+    "description": "Global Version Redmagic 10 Pro NX789J. 30% off. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005010074825488.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005010074825488",
+    "supplierPrice": 839.53,
+    "price": 1175.99,
+    "currency": "USD",
+    "markupPercent": 40.1,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FSd2b26883ca254d0b8177275a55694c2dD.png"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/Sd2b26883ca254d0b8177275a55694c2dD.png",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005010074825488"
+      },
+      {
+        "name": "Deal badge",
+        "value": "30% off"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005010074825488",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 839.53,
+      "price": 1175.99,
+      "minStorePrice": 1175.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 336.46,
+      "marginPercent": 28.6,
+      "paymentBuffer": 29.03,
+      "riskBuffer": 33.58,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "high-ticket",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $839.53",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $62.62 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Global Version Redmagic 10 Pro NX789J | MAT STORE",
+      "description": "Shop Global Version Redmagic 10 Pro NX789J at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure checkout, and premium merchandising.",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "30% off",
+      "listPrice": 0,
+      "savingsPercent": 30,
+      "about": [
+        "30% off highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005010074825488",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005010074825488"
+        },
+        {
+          "name": "Detected deal",
+          "value": "30% off"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.105Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.845Z",
+    "updatedAt": "2026-05-29T09:58:32.845Z"
+  },
+  {
+    "id": "d5e983ae-cd4c-41b4-8c95-7be783cdf6ea",
+    "sku": "MAT-MPQR1L70",
+    "title": "9H HD Original Tempered Glass For ZTE Nubia Red Magic 9 Pro+ Plus 6.8\" RedMagic9Pro 9Pro Screen Protection Protector Cover Film",
+    "slug": "9h-hd-original-tempered-glass-for-zte-nubia-red-magic-9-pro-plus-6-8-redmagic9pr",
+    "description": "9H HD Original Tempered Glass For ZTE Nubia Red Magic 9 Pro+ Plus 6.8\" RedMagic9Pro 9Pro Screen Protection Protector Cover Film. 20% off. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005006282870268.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005006282870268",
+    "supplierPrice": 3.01,
+    "price": 6.99,
+    "currency": "USD",
+    "markupPercent": 132.2,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FSa6c8282ce7674177b0033887bd29f72eJ.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/Sa6c8282ce7674177b0033887bd29f72eJ.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005006282870268"
+      },
+      {
+        "name": "Deal badge",
+        "value": "20% off"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005006282870268",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 3.01,
+      "price": 6.99,
+      "minStorePrice": 6.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 3.98,
+      "marginPercent": 56.9,
+      "paymentBuffer": 0.59,
+      "riskBuffer": 0.12,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "low-cost impulse",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $3.01",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $0.71 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "9H HD Original Tempered Glass For ZTE Nubia Red Magic 9 Pro+ Plus 6.8\" RedMagic9Pro 9Pro Screen Protection Protector Cover Film | MAT STORE",
+      "description": "Shop 9H HD Original Tempered Glass For ZTE Nubia Red Magic 9 Pro+ Plus 6.8\" RedMagic9Pro 9Pro Screen Protection Protector Cover Film at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure chec",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "20% off",
+      "listPrice": 0,
+      "savingsPercent": 20,
+      "about": [
+        "20% off highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005006282870268",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005006282870268"
+        },
+        {
+          "name": "Detected deal",
+          "value": "20% off"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.105Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.844Z",
+    "updatedAt": "2026-05-29T09:58:32.845Z"
+  },
+  {
+    "id": "e7e4247b-5582-4e06-87ec-32662d961710",
+    "sku": "MAT-MPQR1L6Z",
+    "title": "Global Version Redmagic 10 Pro NX789J Snapdragon 8 Elite 6.853inch Q9+ 144Hz 2688x1216 AMOLED 50MP+50MP+2MP 7050mAh 100W NFC",
+    "slug": "global-version-redmagic-10-pro-nx789j-snapdragon-8-elite-6-853inch-q9-144hz-2688",
+    "description": "Global Version Redmagic 10 Pro NX789J Snapdragon 8 Elite 6.853inch Q9+ 144Hz 2688x1216 AMOLED 50MP+50MP+2MP 7050mAh 100W NFC. 30% off. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005010001535327.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005010001535327",
+    "supplierPrice": 839.53,
+    "price": 1175.99,
+    "currency": "USD",
+    "markupPercent": 40.1,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS129b4315682846c3aa966c64154b51e6X.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S129b4315682846c3aa966c64154b51e6X.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005010001535327"
+      },
+      {
+        "name": "Deal badge",
+        "value": "30% off"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005010001535327",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 839.53,
+      "price": 1175.99,
+      "minStorePrice": 1175.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 336.46,
+      "marginPercent": 28.6,
+      "paymentBuffer": 29.03,
+      "riskBuffer": 33.58,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "high-ticket",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $839.53",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $62.62 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Global Version Redmagic 10 Pro NX789J Snapdragon 8 Elite 6.853inch Q9+ 144Hz 2688x1216 AMOLED 50MP+50MP+2MP 7050mAh 100W NFC | MAT STORE",
+      "description": "Shop Global Version Redmagic 10 Pro NX789J Snapdragon 8 Elite 6.853inch Q9+ 144Hz 2688x1216 AMOLED 50MP+50MP+2MP 7050mAh 100W NFC at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure checkou",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "30% off",
+      "listPrice": 0,
+      "savingsPercent": 30,
+      "about": [
+        "30% off highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005010001535327",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005010001535327"
+        },
+        {
+          "name": "Detected deal",
+          "value": "30% off"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.105Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.843Z",
+    "updatedAt": "2026-05-29T09:58:32.843Z"
+  },
+  {
+    "id": "79126e2f-8601-4d43-9b42-9a74b3d72961",
+    "sku": "MAT-MPQR1L6Y",
+    "title": "Global Version Redmagic 9S Pro NX769J",
+    "slug": "global-version-redmagic-9s-pro-nx769j",
+    "description": "Global Version Redmagic 9S Pro NX769J. AliExpress pick. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005010122514317.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005010122514317",
+    "supplierPrice": 861.8,
+    "price": 1206.99,
+    "currency": "USD",
+    "markupPercent": 40.1,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS9eb367e549b04191bf4799cb41b03068g.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S9eb367e549b04191bf4799cb41b03068g.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005010122514317"
+      },
+      {
+        "name": "Deal badge",
+        "value": "AliExpress pick"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005010122514317",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 861.8,
+      "price": 1206.99,
+      "minStorePrice": 1206.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 345.19,
+      "marginPercent": 28.6,
+      "paymentBuffer": 29.79,
+      "riskBuffer": 34.47,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "high-ticket",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $861.80",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $64.26 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Global Version Redmagic 9S Pro NX769J | MAT STORE",
+      "description": "Shop Global Version Redmagic 9S Pro NX769J at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure checkout, and premium merchandising.",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "AliExpress pick",
+      "listPrice": 0,
+      "savingsPercent": 0,
+      "about": [
+        "AliExpress pick highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005010122514317",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005010122514317"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.105Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.843Z",
+    "updatedAt": "2026-05-29T09:58:32.843Z"
+  },
+  {
+    "id": "53c30fcf-24c7-4849-baf6-8b445cd9805e",
+    "sku": "MAT-MPQR1L6Y",
+    "title": "Global Version Redmagic 10S Pro NX789J",
+    "slug": "global-version-redmagic-10s-pro-nx789j",
+    "description": "Global Version Redmagic 10S Pro NX789J. AliExpress pick. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005010074838476.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005010074838476",
+    "supplierPrice": 1276.34,
+    "price": 1786.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS4eaa992cdcc34dae88e665f559718020n.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S4eaa992cdcc34dae88e665f559718020n.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005010074838476"
+      },
+      {
+        "name": "Deal badge",
+        "value": "AliExpress pick"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005010074838476",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 1276.34,
+      "price": 1786.99,
+      "minStorePrice": 1786.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 510.65,
+      "marginPercent": 28.6,
+      "paymentBuffer": 43.89,
+      "riskBuffer": 51.05,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "luxury high-ticket",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $1276.34",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $94.94 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Global Version Redmagic 10S Pro NX789J | MAT STORE",
+      "description": "Shop Global Version Redmagic 10S Pro NX789J at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure checkout, and premium merchandising.",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "AliExpress pick",
+      "listPrice": 0,
+      "savingsPercent": 0,
+      "about": [
+        "AliExpress pick highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005010074838476",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005010074838476"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.105Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.842Z",
+    "updatedAt": "2026-05-29T09:58:32.842Z"
+  },
+  {
+    "id": "630490c7-5cea-4357-b359-d602c3fc7d4a",
+    "sku": "MAT-MPQR1L6X",
+    "title": "9H HD Original Tempered Glass For ZTE Nubia Red Magic 9S Pro+ 6.8\" RedMagic 9 Plus 9Pro Screen Protection Protector Cover Film",
+    "slug": "9h-hd-original-tempered-glass-for-zte-nubia-red-magic-9s-pro-6-8-redmagic-9-plus",
+    "description": "9H HD Original Tempered Glass For ZTE Nubia Red Magic 9S Pro+ 6.8\" RedMagic 9 Plus 9Pro Screen Protection Protector Cover Film. 20% off. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005007404245927.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005007404245927",
+    "supplierPrice": 3.01,
+    "price": 6.99,
+    "currency": "USD",
+    "markupPercent": 132.2,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS0cd6fe2fb0ea460e8cf523bfaea97c035.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S0cd6fe2fb0ea460e8cf523bfaea97c035.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005007404245927"
+      },
+      {
+        "name": "Deal badge",
+        "value": "20% off"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005007404245927",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 3.01,
+      "price": 6.99,
+      "minStorePrice": 6.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 3.98,
+      "marginPercent": 56.9,
+      "paymentBuffer": 0.59,
+      "riskBuffer": 0.12,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "low-cost impulse",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $3.01",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $0.71 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "9H HD Original Tempered Glass For ZTE Nubia Red Magic 9S Pro+ 6.8\" RedMagic 9 Plus 9Pro Screen Protection Protector Cover Film | MAT STORE",
+      "description": "Shop 9H HD Original Tempered Glass For ZTE Nubia Red Magic 9S Pro+ 6.8\" RedMagic 9 Plus 9Pro Screen Protection Protector Cover Film at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure check",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "20% off",
+      "listPrice": 0,
+      "savingsPercent": 20,
+      "about": [
+        "20% off highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005007404245927",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005007404245927"
+        },
+        {
+          "name": "Detected deal",
+          "value": "20% off"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.104Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.842Z",
+    "updatedAt": "2026-05-29T09:58:32.842Z"
+  },
+  {
+    "id": "696964ae-3b80-4af6-83cd-15c8693ec0fa",
+    "sku": "MAT-MPQR1L6X",
+    "title": "Global Version Redmagic 10S Pro NX789J Snapdragon 8 Elite Leading Version 6.853\" Q9+ 144Hz AMOLED 50*2+2+16MP 7050mAh 80W NFC",
+    "slug": "global-version-redmagic-10s-pro-nx789j-snapdragon-8-elite-leading-version-6-853-",
+    "description": "Global Version Redmagic 10S Pro NX789J Snapdragon 8 Elite Leading Version 6.853\" Q9+ 144Hz AMOLED 50*2+2+16MP 7050mAh 80W NFC. AliExpress pick. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005010001491807.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005010001491807",
+    "supplierPrice": 988.38,
+    "price": 1383.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS20b4dfadac7347f1ba43cdd977388afcv.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S20b4dfadac7347f1ba43cdd977388afcv.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005010001491807"
+      },
+      {
+        "name": "Deal badge",
+        "value": "AliExpress pick"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005010001491807",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 988.38,
+      "price": 1383.99,
+      "minStorePrice": 1383.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 395.61,
+      "marginPercent": 28.6,
+      "paymentBuffer": 34.09,
+      "riskBuffer": 39.54,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "high-ticket",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $988.38",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $73.63 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Global Version Redmagic 10S Pro NX789J Snapdragon 8 Elite Leading Version 6.853\" Q9+ 144Hz AMOLED 50*2+2+16MP 7050mAh 80W NFC | MAT STORE",
+      "description": "Shop Global Version Redmagic 10S Pro NX789J Snapdragon 8 Elite Leading Version 6.853\" Q9+ 144Hz AMOLED 50*2+2+16MP 7050mAh 80W NFC at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure checko",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "AliExpress pick",
+      "listPrice": 0,
+      "savingsPercent": 0,
+      "about": [
+        "AliExpress pick highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005010001491807",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005010001491807"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.104Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.841Z",
+    "updatedAt": "2026-05-29T09:58:32.841Z"
+  },
+  {
+    "id": "2f07c51c-ad5b-467f-a378-94d5fe51d270",
+    "sku": "MAT-MPQR1L6V",
+    "title": "Global Version Redmagic 10 Air NX779J Snapdragon 8 Gen 3 6.8\" AMOLED 120Hz 2480 x 1116 50MP*2+16MP 6000mAh 80W NFC",
+    "slug": "global-version-redmagic-10-air-nx779j-snapdragon-8-gen-3-6-8-amoled-120hz-2480-x",
+    "description": "Global Version Redmagic 10 Air NX779J Snapdragon 8 Gen 3 6.8\" AMOLED 120Hz 2480 x 1116 50MP*2+16MP 6000mAh 80W NFC. 30% off. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
+    "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
+    "category": "gadgets",
+    "collection": "AliExpress Search: Redmagic",
+    "supplierUrl": "https://www.aliexpress.com/item/1005010001372931.html",
+    "supplierName": "AliExpress",
+    "supplierProductCode": "1005010001372931",
+    "supplierPrice": 617.07,
+    "price": 863.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS79a6baa1990844419336ee84c12cba54Y.jpg"
+    ],
+    "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S79a6baa1990844419336ee84c12cba54Y.jpg",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 1,
+    "variants": [
+      {
+        "name": "Collection",
+        "value": "AliExpress Front Page Deals"
+      },
+      {
+        "name": "Fulfillment",
+        "value": "AliExpress"
+      },
+      {
+        "name": "Supplier code",
+        "value": "1005010001372931"
+      },
+      {
+        "name": "Deal badge",
+        "value": "30% off"
+      }
+    ],
+    "tags": [
+      "aliexpress-deal",
+      "collection-import",
+      "ai-curated",
+      "premium",
+      "gadgets",
+      "marketplace-search",
+      "exact-search",
+      "aliexpress"
+    ],
+    "features": [
+      "Supplier image secured through MAT media proxy",
+      "AI-polished product presentation",
+      "Secure MAT STORE checkout",
+      "Curated marketplace sourcing",
+      "Premium customer support workflow",
+      "Supplier code tracked: 1005010001372931",
+      "Discovered from AliExpress search for \"redmagic\"",
+      "Saved into MAT STORE for local browsing and checkout"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 617.07,
+      "price": 863.99,
+      "minStorePrice": 863.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 246.92,
+      "marginPercent": 28.6,
+      "paymentBuffer": 21.47,
+      "riskBuffer": 24.68,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "high-ticket",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 1.5,
+      "scarcityReasons": [
+        "Supplier availability is unstable"
+      ],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": true,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $617.07",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $46.15 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Global Version Redmagic 10 Air NX779J Snapdragon 8 Gen 3 6.8\" AMOLED 120Hz 2480 x 1116 50MP*2+16MP 6000mAh 80W NFC | MAT STORE",
+      "description": "Shop Global Version Redmagic 10 Air NX779J Snapdragon 8 Gen 3 6.8\" AMOLED 120Hz 2480 x 1116 50MP*2+16MP 6000mAh 80W NFC at MAT STORE, imported from AliExpress Front Page Deals with smart pricing, secure checkout, and pre",
+      "keywords": [
+        "gadgets",
+        "AliExpress",
+        "MAT STORE",
+        "AliExpress Front Page Deals",
+        "aliexpress-deal",
+        "collection-import",
+        "ai-curated",
+        "premium"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "AliExpress",
+      "availability": "Deal availability may change on supplier site",
+      "seller": "AliExpress marketplace seller",
+      "shipper": "AliExpress / marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "30% off",
+      "listPrice": 0,
+      "savingsPercent": 30,
+      "about": [
+        "30% off highlighted from AliExpress Front Page Deals",
+        "Supplier code tracked: 1005010001372931",
+        "Curated into MAT STORE with premium presentation and secure checkout",
+        "Price is automatically marked up using the active MAT STORE pricing rule",
+        "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation."
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "AliExpress"
+        },
+        {
+          "name": "Collection",
+          "value": "AliExpress Front Page Deals"
+        },
+        {
+          "name": "Supplier code",
+          "value": "1005010001372931"
+        },
+        {
+          "name": "Detected deal",
+          "value": "30% off"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout",
+        "Supplier availability synced from collection import"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when the product page provides media"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review intelligence is enriched when supplier product pages expose customer ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information",
+        "Videos",
+        "Reviews"
+      ]
+    },
+    "ai": {
+      "provider": "collection-fast-import",
+      "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
+      "lastEnhancedAt": "2026-05-29T09:58:29.104Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.839Z",
+    "updatedAt": "2026-05-29T09:58:32.839Z"
+  },
+  {
+    "id": "af0cb3cc-52a2-437d-83e0-e369412f49ab",
+    "sku": "MAT-MPQR1L6T",
+    "title": "Redmagic Portable",
+    "slug": "redmagic-portable",
+    "description": "Redmagic Portable from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-8",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-8",
+    "supplierPrice": 49.99,
+    "price": 69.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "/api/media/image?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FS%2Faplus-media-library-service-media%2F8275cd54-36b3-4b56-9f5f-21362ff6bc91._AC_SL1500_.png"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 49.99,
+      "price": 69.99,
+      "minStorePrice": 69.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 20,
+      "marginPercent": 28.6,
+      "paymentBuffer": 2.19,
+      "riskBuffer": 2,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "core catalog",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $49.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $4.19 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic Portable | MAT STORE",
+      "description": "Shop Redmagic Portable from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.157Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.837Z",
+    "updatedAt": "2026-05-29T09:58:32.837Z"
+  },
+  {
+    "id": "a5521c79-e217-4a2b-97c2-1fadddeba93a",
+    "sku": "MAT-MPQR1L6S",
+    "title": "Redmagic Standard",
+    "slug": "redmagic-standard",
+    "description": "Redmagic Standard from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-7",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-7",
+    "supplierPrice": 29.99,
+    "price": 41.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://sg.redmagic.gg/cdn/shop/articles/banner2_dfc7da12-b84f-47a5-8248-1fa0c3116a26_1100x.png?v=1764227838"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 29.99,
+      "price": 41.99,
+      "minStorePrice": 41.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 12,
+      "marginPercent": 28.6,
+      "paymentBuffer": 1.51,
+      "riskBuffer": 1.2,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "core catalog",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $29.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $2.71 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic Standard | MAT STORE",
+      "description": "Shop Redmagic Standard from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.379Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.837Z",
+    "updatedAt": "2026-05-29T09:58:32.837Z"
+  },
+  {
+    "id": "e3511801-af1c-46b7-838f-2d36de023477",
+    "sku": "MAT-MPQR1L6R",
+    "title": "Redmagic Set",
+    "slug": "redmagic-set",
+    "description": "Redmagic Set from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-6",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-6",
+    "supplierPrice": 18.99,
+    "price": 27.99,
+    "currency": "USD",
+    "markupPercent": 47.4,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://img.lazcdn.com/g/p/7f82154361603dc49516556c2e5f394e.png_720x720q80.png"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 18.99,
+      "price": 27.99,
+      "minStorePrice": 27.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 9,
+      "marginPercent": 32.2,
+      "paymentBuffer": 1.14,
+      "riskBuffer": 0.76,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "core catalog",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": true,
+      "notes": [
+        "Supplier cost protected at $18.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $1.90 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic Set | MAT STORE",
+      "description": "Shop Redmagic Set from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.233Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.836Z",
+    "updatedAt": "2026-05-29T09:58:32.836Z"
+  },
+  {
+    "id": "4eac589a-3fdb-4a52-a3f1-67c70260f45c",
+    "sku": "MAT-MPQR1L6R",
+    "title": "Redmagic Bundle",
+    "slug": "redmagic-bundle",
+    "description": "Redmagic Bundle from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-5",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-5",
+    "supplierPrice": 119.99,
+    "price": 167.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://mx.redmagic.gg/cdn/shop/files/REDMAGIC-Gaming-Bundles-Collection-PC.jpg?v=1681807153"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 119.99,
+      "price": 167.99,
+      "minStorePrice": 167.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 48,
+      "marginPercent": 28.6,
+      "paymentBuffer": 4.57,
+      "riskBuffer": 4.8,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "premium everyday",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $119.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $9.37 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic Bundle | MAT STORE",
+      "description": "Shop Redmagic Bundle from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.251Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.835Z",
+    "updatedAt": "2026-05-29T09:58:32.835Z"
+  },
+  {
+    "id": "a5c3bb70-571a-47b8-9a42-77c79ef2c2c7",
+    "sku": "MAT-MPQR1L6Q",
+    "title": "Redmagic New Arrival",
+    "slug": "redmagic-new-arrival",
+    "description": "Redmagic New Arrival from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-4",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-4",
+    "supplierPrice": 79.99,
+    "price": 111.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://lookaside.fbsbx.com/lookaside/crawler/media/?media_id=779123220140377"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 79.99,
+      "price": 111.99,
+      "minStorePrice": 111.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 32,
+      "marginPercent": 28.6,
+      "paymentBuffer": 3.21,
+      "riskBuffer": 3.2,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "premium everyday",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $79.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $6.41 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic New Arrival | MAT STORE",
+      "description": "Shop Redmagic New Arrival from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.133Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.835Z",
+    "updatedAt": "2026-05-29T09:58:32.835Z"
+  },
+  {
+    "id": "5d7585ef-e1b6-4af9-af9c-49d089a87982",
+    "sku": "MAT-MPQR1L6P",
+    "title": "Redmagic Plus",
+    "slug": "redmagic-plus",
+    "description": "Redmagic Plus from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-3",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-3",
+    "supplierPrice": 49.99,
+    "price": 69.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://media.karousell.com/media/photos/products/2025/4/22/redmagic_10_pro_plus_1tb_24gb__1745294679_73e838cc.jpg"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 49.99,
+      "price": 69.99,
+      "minStorePrice": 69.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 20,
+      "marginPercent": 28.6,
+      "paymentBuffer": 2.19,
+      "riskBuffer": 2,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "core catalog",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $49.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $4.19 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic Plus | MAT STORE",
+      "description": "Shop Redmagic Plus from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.182Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.834Z",
+    "updatedAt": "2026-05-29T09:58:32.834Z"
+  },
+  {
+    "id": "86bd4cb7-3b9d-4c53-b73f-1988ac9423c9",
+    "sku": "MAT-MPQR1L6O",
+    "title": "Redmagic Pro",
+    "slug": "redmagic-pro",
+    "description": "Redmagic Pro from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-2",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-2",
+    "supplierPrice": 29.99,
+    "price": 41.99,
+    "currency": "USD",
+    "markupPercent": 40,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://media.pasionmovil.com/2025/11/Lanzamiento-Red-Magic-11-Pro.webp"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 29.99,
+      "price": 41.99,
+      "minStorePrice": 41.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 12,
+      "marginPercent": 28.6,
+      "paymentBuffer": 1.51,
+      "riskBuffer": 1.2,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "core catalog",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": false,
+      "notes": [
+        "Supplier cost protected at $29.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $2.71 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic Pro | MAT STORE",
+      "description": "Shop Redmagic Pro from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.084Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.833Z",
+    "updatedAt": "2026-05-29T09:58:32.833Z"
+  },
+  {
+    "id": "4854d90f-ccf3-40b5-b508-66749d2dbbc5",
+    "sku": "MAT-MPQR1L6M",
+    "title": "Redmagic",
+    "slug": "redmagic",
+    "description": "Redmagic from Amazon search results for \"redmagic\". This listing keeps customers on MAT STORE while linking supplier discovery, smart pricing, secure checkout, and admin verification before fulfillment.",
+    "shortDescription": "Amazon search match for redmagic, prepared for MAT STORE checkout.",
+    "category": "trending products",
+    "collection": "Amazon Search: Redmagic",
+    "supplierUrl": "https://www.amazon.com/s?k=redmagic#mat-search-1",
+    "supplierName": "Amazon",
+    "supplierProductCode": "amazon-redmagic-1",
+    "supplierPrice": 18.99,
+    "price": 27.99,
+    "currency": "USD",
+    "markupPercent": 47.4,
+    "stock": 24,
+    "lowStockThreshold": 6,
+    "status": "active",
+    "images": [
+      "https://cdn.shopify.com/s/files/1/0024/0684/2441/files/tile_3_2x_7a514941-95f4-4a19-ad6b-2d9f1932f07b.jpg?v=1672929646&width=2400"
+    ],
+    "supplierImageUrl": "",
+    "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
+    "imageStatus": "discovered-product-image",
+    "imageSource": "Live product image discovery",
+    "mediaConfidence": "high",
+    "imageCandidateCount": 0,
+    "variants": [],
+    "tags": [
+      "marketplace-search",
+      "exact-search",
+      "amazon"
+    ],
+    "features": [
+      "Exact Amazon search entry for \"redmagic\"",
+      "Supplier page should be verified before fulfillment",
+      "Saved into MAT STORE for local browsing and checkout",
+      "AI smart pricing applies the 40% standard rule"
+    ],
+    "rating": 4.8,
+    "reviewsCount": 0,
+    "pricingPlan": {
+      "supplierPrice": 18.99,
+      "price": 27.99,
+      "minStorePrice": 27.99,
+      "requestedMarkupPercent": 40,
+      "appliedMarkupPercent": 40,
+      "grossProfit": 9,
+      "marginPercent": 32.2,
+      "paymentBuffer": 1.14,
+      "riskBuffer": 0.76,
+      "fixedMargin": 0,
+      "strategy": "AI business standard 40% rule",
+      "tier": "core catalog",
+      "businessRule": "standard 40% rule",
+      "hardToFind": false,
+      "scarcityScore": 0,
+      "scarcityReasons": [],
+      "demandSignal": 1.5,
+      "protected": true,
+      "manualPricePreserved": false,
+      "adjusted": true,
+      "notes": [
+        "Supplier cost protected at $18.99",
+        "Standard product priced with 40% markup",
+        "Estimated fee reserve $1.90 stays inside gross margin",
+        "Customer-facing price rounded for conversion"
+      ]
+    },
+    "seo": {
+      "title": "Redmagic | MAT STORE",
+      "description": "Shop Redmagic from Amazon search results on MAT STORE with smart pricing and secure checkout.",
+      "keywords": [
+        "trending products",
+        "Amazon",
+        "redmagic",
+        "MAT STORE"
+      ]
+    },
+    "marketplaceDetails": {
+      "brand": "Amazon",
+      "availability": "Verify live supplier availability before fulfillment",
+      "seller": "Amazon marketplace seller",
+      "shipper": "Amazon marketplace fulfillment",
+      "returns": "MAT STORE support review with supplier return policy",
+      "payment": "Secure MAT STORE transaction",
+      "delivery": "Delivery calculated at checkout",
+      "shipping": "Shipping and import charges calculated at checkout",
+      "boughtInPastMonth": "",
+      "badge": "Exact search match",
+      "listPrice": null,
+      "savingsPercent": null,
+      "about": [
+        "Matched to \"redmagic\" on Amazon",
+        "Created only when supplier search parsing is blocked or incomplete",
+        "Use the supplier URL to verify live item details"
+      ],
+      "specs": [
+        {
+          "name": "Marketplace",
+          "value": "Amazon"
+        },
+        {
+          "name": "Search query",
+          "value": "redmagic"
+        },
+        {
+          "name": "Supplier search URL",
+          "value": "https://www.amazon.com/s?k=redmagic"
+        }
+      ],
+      "buyingOptions": [
+        "Add to cart",
+        "Buy now",
+        "Secure MAT STORE checkout"
+      ],
+      "videos": {
+        "count": 0,
+        "label": "Supplier product videos appear when media is available"
+      },
+      "reviews": {
+        "rating": 4.8,
+        "count": 0,
+        "summary": "Review details appear when supplier pages expose ratings."
+      },
+      "sourceSections": [
+        "Buying options",
+        "About this item",
+        "Product information"
+      ]
+    },
+    "ai": {
+      "provider": "exact-search-fallback",
+      "luxuryAngle": "Exact Amazon search fallback for redmagic.",
+      "lastEnhancedAt": "2026-05-29T09:58:31.339Z"
+    },
+    "createdAt": "2026-05-29T09:58:32.832Z",
+    "updatedAt": "2026-05-29T09:58:32.832Z"
+  },
+  {
     "id": "b2b3339c-fd75-468c-8b0d-3f02effd4b34",
     "sku": "MAT-MPOH8S8G",
     "title": "Skechers Go Walk Shoes",
@@ -15,7 +2571,7 @@
     "price": 83.99,
     "currency": "USD",
     "markupPercent": 40,
-    "stock": 24,
+    "stock": 19,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
@@ -137,7 +2693,7 @@
       "lastEnhancedAt": "2026-05-27T19:48:38.389Z"
     },
     "createdAt": "2026-05-27T19:48:40.049Z",
-    "updatedAt": "2026-05-27T19:48:40.049Z"
+    "updatedAt": "2026-05-29T00:21:55.876Z"
   },
   {
     "id": "e9ee05ca-492e-4332-a00a-ce4f17d0e12a",
@@ -2928,7 +5484,7 @@
     "price": 1259.99,
     "currency": "USD",
     "markupPercent": 40,
-    "stock": 24,
+    "stock": 22,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
@@ -3086,7 +5642,7 @@
       "lastEnhancedAt": "2026-05-27T19:47:08.495Z"
     },
     "createdAt": "2026-05-27T19:47:09.955Z",
-    "updatedAt": "2026-05-27T19:47:09.955Z"
+    "updatedAt": "2026-05-29T10:19:28.939Z"
   },
   {
     "id": "5c85fde2-1cfd-4fb8-b739-791f593b818b",
@@ -8613,7 +11169,7 @@
     "price": 1259.99,
     "currency": "USD",
     "markupPercent": 40,
-    "stock": 24,
+    "stock": 23,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
@@ -8771,7 +11327,7 @@
       "lastEnhancedAt": "2026-05-27T19:47:07.874Z"
     },
     "createdAt": "2026-05-27T19:11:15.915Z",
-    "updatedAt": "2026-05-27T19:48:32.557Z"
+    "updatedAt": "2026-05-28T20:19:18.385Z"
   },
   {
     "id": "96c5f38b-acf1-47e9-8465-e99c37bdb2b8",
@@ -8789,7 +11345,7 @@
     "price": 111.99,
     "currency": "USD",
     "markupPercent": 40,
-    "stock": 24,
+    "stock": 22,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
@@ -8947,7 +11503,7 @@
       "lastEnhancedAt": "2026-05-27T19:47:08.414Z"
     },
     "createdAt": "2026-05-27T19:11:15.915Z",
-    "updatedAt": "2026-05-27T19:47:10.604Z"
+    "updatedAt": "2026-05-28T20:33:39.935Z"
   },
   {
     "id": "1b614ced-9fd8-4d7f-a79d-ce4890a4ffb3",
@@ -16313,24 +18869,24 @@
     "description": "Global Version Redmagic 11 Pro NX809J. 30% off. Curated from AliExpress Front Page Deals and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.",
     "shortDescription": "Curated gadgets deal from AliExpress Front Page Deals with MAT STORE checkout and premium product presentation.",
     "category": "gadgets",
-    "collection": "AliExpress Search: Smartphones",
+    "collection": "AliExpress Search: Redmagic",
     "supplierUrl": "https://www.aliexpress.com/item/1005010305603618.html",
     "supplierName": "AliExpress",
     "supplierProductCode": "1005010305603618",
-    "supplierPrice": 1426.24,
-    "price": 1996.99,
+    "supplierPrice": 1430.33,
+    "price": 2002.99,
     "currency": "USD",
     "markupPercent": 40,
     "stock": 24,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
-      "https://media.karousell.com/media/photos/products/2025/12/5/global_premiere_global_version_1764923330_54f631d8_progressive"
+      "/api/media/image?url=https%3A%2F%2Fae-pic-a1.aliexpress-media.com%2Fkf%2FS1cdac304228b4162b03f6ab3ba034da9m.jpg"
     ],
     "supplierImageUrl": "https://ae-pic-a1.aliexpress-media.com/kf/S1cdac304228b4162b03f6ab3ba034da9m.jpg",
     "fallbackImage": "/api/media/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1594223274512-ad4803739b7c%3Fauto%3Dformat%26fit%3Dcrop%26w%3D1400%26q%3D88",
-    "imageStatus": "discovered-product-image",
-    "imageSource": "Live product image discovery",
+    "imageStatus": "supplier-image",
+    "imageSource": "Supplier media via MAT STORE proxy",
     "mediaConfidence": "high",
     "imageCandidateCount": 1,
     "variants": [
@@ -16368,21 +18924,21 @@
       "Curated marketplace sourcing",
       "Premium customer support workflow",
       "Supplier code tracked: 1005010305603618",
-      "Discovered from AliExpress search for \"smartphones\"",
+      "Discovered from AliExpress search for \"redmagic\"",
       "Saved into MAT STORE for local browsing and checkout"
     ],
     "rating": 4.8,
     "reviewsCount": 0,
     "pricingPlan": {
-      "supplierPrice": 1426.24,
-      "price": 1996.99,
-      "minStorePrice": 1996.99,
+      "supplierPrice": 1430.33,
+      "price": 2002.99,
+      "minStorePrice": 2002.99,
       "requestedMarkupPercent": 40,
       "appliedMarkupPercent": 40,
-      "grossProfit": 570.75,
+      "grossProfit": 572.66,
       "marginPercent": 28.6,
-      "paymentBuffer": 48.98,
-      "riskBuffer": 57.05,
+      "paymentBuffer": 49.12,
+      "riskBuffer": 57.21,
       "fixedMargin": 0,
       "strategy": "AI business standard 40% rule",
       "tier": "luxury high-ticket",
@@ -16397,9 +18953,9 @@
       "manualPricePreserved": true,
       "adjusted": false,
       "notes": [
-        "Supplier cost protected at $1426.24",
+        "Supplier cost protected at $1430.33",
         "Standard product priced with 40% markup",
-        "Estimated fee reserve $106.03 stays inside gross margin",
+        "Estimated fee reserve $106.33 stays inside gross margin",
         "Customer-facing price rounded for conversion"
       ]
     },
@@ -16481,10 +19037,10 @@
     "ai": {
       "provider": "collection-fast-import",
       "luxuryAngle": "Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.",
-      "lastEnhancedAt": "2026-05-27T16:39:41.969Z"
+      "lastEnhancedAt": "2026-05-29T09:58:29.104Z"
     },
     "createdAt": "2026-05-27T16:39:44.020Z",
-    "updatedAt": "2026-05-27T18:31:26.566Z"
+    "updatedAt": "2026-05-29T09:58:33.431Z"
   },
   {
     "id": "fce35a33-b09c-43c3-9ea9-0ac716f2005b",
@@ -111115,7 +113671,7 @@
     "price": 57.99,
     "currency": "USD",
     "markupPercent": 41.5,
-    "stock": 24,
+    "stock": 23,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
@@ -111234,7 +113790,7 @@
       "lastEnhancedAt": "2026-05-26T23:13:17.903Z"
     },
     "createdAt": "2026-05-26T22:56:30.930Z",
-    "updatedAt": "2026-05-27T11:14:03.414Z",
+    "updatedAt": "2026-05-28T20:18:01.175Z",
     "pricingPlan": {
       "supplierPrice": 40.99,
       "price": 57.99,
@@ -131903,7 +134459,7 @@
     "price": 3848.99,
     "currency": "USD",
     "markupPercent": 40,
-    "stock": 24,
+    "stock": 23,
     "lowStockThreshold": 6,
     "status": "active",
     "images": [
@@ -131956,7 +134512,7 @@
       "lastEnhancedAt": "2026-05-26T17:40:39.788Z"
     },
     "createdAt": "2026-05-26T17:40:39.793Z",
-    "updatedAt": "2026-05-27T11:14:03.466Z",
+    "updatedAt": "2026-05-28T21:24:18.278Z",
     "fallbackImage": "/api/media/fallback?title=MAT+Amazon.com%3A+Lenovo+Legion+Tower+5i+%E2%80%93+AI-Powered+Gaming+PC+-+Intel%C2%AE+Core+Ultra+7+265F+P&marketplace=Amazon&code=&category=trending+products",
     "marketplaceDetails": {
       "brand": "Lenovo",
