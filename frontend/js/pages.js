@@ -1837,7 +1837,8 @@
         note.textContent = config.currency !== config.requestedCurrency ? `PayPal settles in ${config.currency}` : `${config.currency} secure payment`;
       }
       if (!config.enabled || !config.clientId) {
-        setPayPalStatus('PayPal credentials are not configured yet. Add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET on the server.', 'error');
+        const missing = config.diagnostics?.missing?.length ? config.diagnostics.missing.join(' and ') : 'PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET';
+        setPayPalStatus(`PayPal is not configured on the server. Add ${missing} in Vercel Environment Variables, then redeploy.`, 'error');
         return;
       }
 
@@ -2152,7 +2153,8 @@
       const note = document.getElementById('paypalCurrencyNote');
       if (note) note.textContent = config.currency !== config.requestedCurrency ? `PayPal settles in ${config.currency}` : `${config.currency} secure payment`;
       if (!config.enabled || !config.clientId) {
-        setPayPalStatus('PayPal credentials are missing. Add PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET, then restart the server.', 'error');
+        const missing = config.diagnostics?.missing?.length ? config.diagnostics.missing.join(' and ') : 'PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET';
+        setPayPalStatus(`PayPal is not configured on the server. Add ${missing} in Vercel Environment Variables, then redeploy.`, 'error');
         return;
       }
 

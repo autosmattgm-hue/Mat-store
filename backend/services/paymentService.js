@@ -78,6 +78,9 @@ function publicPayPalDetails(data = {}) {
 function paypalClientConfig(requestedCurrency = 'USD') {
   const currency = paypalCurrency(requestedCurrency);
   const sandbox = config.paypal.apiBase.includes('sandbox');
+  const missing = [];
+  if (!config.paypal.clientId) missing.push('PAYPAL_CLIENT_ID');
+  if (!config.paypal.clientSecret) missing.push('PAYPAL_CLIENT_SECRET');
   return {
     enabled: configuredPayPal(),
     clientId: config.paypal.clientId || '',
@@ -88,7 +91,12 @@ function paypalClientConfig(requestedCurrency = 'USD') {
     buyerCountry: sandbox ? 'US' : '',
     enableFunding: 'venmo',
     sandbox,
-    mode: sandbox ? 'sandbox' : 'live'
+    mode: sandbox ? 'sandbox' : 'live',
+    diagnostics: {
+      hasClientId: Boolean(config.paypal.clientId),
+      hasClientSecret: Boolean(config.paypal.clientSecret),
+      missing
+    }
   };
 }
 
