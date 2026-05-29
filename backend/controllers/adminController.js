@@ -2,6 +2,7 @@ const analyticsService = require('../services/analyticsService');
 const userService = require('../services/userService');
 const pricingService = require('../services/pricingService');
 const productService = require('../services/productService');
+const notificationService = require('../services/notificationService');
 const store = require('../database/jsonStore');
 
 async function dashboard(req, res, next) {
@@ -17,6 +18,15 @@ async function customers(req, res, next) {
   try {
     const items = await userService.listCustomers();
     res.json({ customers: items });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function notifications(req, res, next) {
+  try {
+    const items = await notificationService.listNotifications(req.query);
+    res.json({ notifications: items });
   } catch (error) {
     next(error);
   }
@@ -128,6 +138,7 @@ async function repairImages(req, res, next) {
 module.exports = {
   dashboard,
   customers,
+  notifications,
   settings,
   updatePricing,
   inventorySync,

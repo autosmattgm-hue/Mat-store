@@ -1,7 +1,6 @@
 const { randomUUID } = require('crypto');
 const config = require('../config');
 const orderService = require('./orderService');
-const currencyService = require('./currencyService');
 const HttpError = require('../utils/httpError');
 const { sanitizeString } = require('../utils/sanitize');
 
@@ -53,12 +52,15 @@ function paypalAmountForOrder(order) {
 function friendlyPayPalError(data = {}) {
   const detail = data.details?.[0] || {};
   const issue = sanitizeString(detail.issue || data.name || '', 120);
+  const description = sanitizeString(detail.description || data.message || '', 280);
   if (issue === 'PAYEE_ACCOUNT_RESTRICTED') {
     return 'PayPal cannot create live orders because the merchant account is restricted. Open PayPal Business Resolution Center or use valid Sandbox credentials until PayPal removes the restriction.';
   }
+  if (issue === 'DUPLICATE_INVOICE_ID') return 'PayPal rejected this order because the invoice id was already used. Please restart checkout.';
   if (issue === 'INVALID_RESOURCE_ID') return 'PayPal could not find this payment session. Please restart checkout.';
   if (issue === 'INSTRUMENT_DECLINED') return 'PayPal declined this payment method. Choose another PayPal funding source or card.';
-  return data.message || detail.description || 'PayPal order could not be created.';
+  if (issue && description) return `PayPal rejected the order: ${issue} - ${description}`;
+  return description || 'PayPal order could not be created.';
 }
 
 function publicPayPalDetails(data = {}) {
@@ -85,54 +87,8 @@ function paypalClientConfig(requestedCurrency = 'USD') {
     intent: 'capture',
     buyerCountry: sandbox ? 'US' : '',
     enableFunding: 'venmo',
-    sandbox
-  };
-}
-
-async function createStripeCheckout(order) {
-  if (!config.stripe.secretKey) {
-    return {
-      provider: 'stripe',
-      mode: 'demo',
-      checkoutUrl: `/orders.html?created=${encodeURIComponent(order.orderNumber)}&payment=stripe-demo`,
-      requiresConfiguration: true,
-      message: 'Stripe is not configured yet. Order was created without redirecting to the homepage.'
-    };
-  }
-
-  const body = new URLSearchParams();
-  body.set('mode', 'payment');
-  body.set('success_url', `${config.clientUrl}/?order=${order.orderNumber}&payment=success`);
-  body.set('cancel_url', `${config.clientUrl}/?order=${order.orderNumber}&payment=cancelled`);
-  body.set('customer_email', order.customer.email);
-  body.set('metadata[orderId]', order.id);
-  body.set('metadata[orderNumber]', order.orderNumber);
-
-  order.items.forEach((item, index) => {
-    body.set(`line_items[${index}][quantity]`, String(item.quantity));
-    body.set(`line_items[${index}][price_data][currency]`, order.currency.toLowerCase());
-    body.set(`line_items[${index}][price_data][unit_amount]`, String(Math.round(currencyService.convertFromUsd(item.unitPrice, order.currency) * 100)));
-    body.set(`line_items[${index}][price_data][product_data][name]`, item.title);
-    if (item.image) body.set(`line_items[${index}][price_data][product_data][images][0]`, item.image);
-  });
-
-  const response = await fetch('https://api.stripe.com/v1/checkout/sessions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${config.stripe.secretKey}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body
-  });
-
-  const session = await response.json();
-  if (!response.ok) throw new Error(session.error?.message || 'Stripe checkout could not be created.');
-
-  return {
-    provider: 'stripe',
-    mode: 'live',
-    checkoutUrl: session.url,
-    sessionId: session.id
+    sandbox,
+    mode: sandbox ? 'sandbox' : 'live'
   };
 }
 
@@ -152,7 +108,10 @@ async function paypalAccessToken(options = {}) {
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    if (options.required) throw new HttpError(424, data.error_description || 'PayPal authentication failed.');
+    if (options.required) {
+      const mode = config.paypal.apiBase.includes('sandbox') ? 'sandbox' : 'live';
+      throw new HttpError(424, data.error_description || `PayPal authentication failed for ${mode} credentials. Check PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, and PAYPAL_API_BASE.`);
+    }
     return null;
   }
   return data.access_token;
@@ -264,10 +223,11 @@ async function capturePayPalOrder(payload = {}) {
 
   const purchaseUnit = data.purchase_units?.[0] || {};
   const capture = purchaseUnit.payments?.captures?.[0] || {};
-  const localOrderId = sanitizeString(payload.localOrderId || purchaseUnit.custom_id || purchaseUnit.reference_id || '', 120);
+  const localOrderId = sanitizeString(purchaseUnit.custom_id || purchaseUnit.reference_id || payload.localOrderId || '', 120);
   let order = null;
   if (localOrderId) {
     order = await orderService.updateOrderPayment(localOrderId, {
+      userId: payload.userId || '',
       provider: 'paypal',
       paymentStatus: paymentStatusFromPayPal(data.status),
       processorOrderId: data.id || paypalOrderId,
@@ -293,20 +253,11 @@ async function capturePayPalOrder(payload = {}) {
 }
 
 async function createPaymentHandoff(order) {
-  if (order.paymentMethod === 'paypal') return createPayPalOrder(order);
-  if (order.paymentMethod === 'whatsapp') {
-    return {
-      provider: 'whatsapp',
-      mode: 'direct',
-      whatsappUrl: orderService.buildWhatsAppOrderUrl(order, config.whatsappNumber)
-    };
-  }
-  return createStripeCheckout(order);
+  return createPayPalOrder(order);
 }
 
 module.exports = {
   createPaymentHandoff,
-  createStripeCheckout,
   createPayPalOrder,
   capturePayPalOrder,
   paypalClientConfig,

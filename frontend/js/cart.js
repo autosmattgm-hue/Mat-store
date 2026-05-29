@@ -198,12 +198,25 @@
     document.body.classList.remove('modal-open');
   }
 
+  function hasCheckoutAccount() {
+    return Boolean(storage.getItem('mat_access_token') && api.getUser()?.id);
+  }
+
+  function requireCheckoutAccount() {
+    if (hasCheckoutAccount()) return true;
+    storage.setItem('mat_return_after_login', '/checkout.html');
+    window.MATApp?.toast('Login or register before checkout. You can still browse products without an account.');
+    window.location.assign('/account.html?returnTo=%2Fcheckout.html');
+    return false;
+  }
+
   function openCheckout(event) {
     event?.preventDefault();
     if (!state.items.length) {
       window.MATApp?.toast('Add a product before checkout.');
       return;
     }
+    if (!requireCheckoutAccount()) return;
     closeCart();
     window.location.assign('/checkout.html');
   }
@@ -216,6 +229,7 @@
 
   async function submitCheckout(event) {
     event.preventDefault();
+    if (!requireCheckoutAccount()) return;
     if (!state.items.length) return;
     const form = event.currentTarget;
     const data = Object.fromEntries(new FormData(form).entries());
@@ -227,7 +241,7 @@
         sessionId: api.getSessionId(),
         currency: currency(),
         promoCode: state.promoCode,
-        paymentMethod: data.paymentMethod,
+        paymentMethod: 'paypal',
         customer: {
           name: data.name,
           email: data.email,
@@ -256,7 +270,7 @@
       window.MATApp?.reloadProducts();
 
       const handoff = result.payment || {};
-      const url = handoff.checkoutUrl || handoff.approvalUrl || handoff.whatsappUrl;
+      const url = handoff.approvalUrl || handoff.checkoutUrl;
       if (url) window.open(url, '_blank', 'noopener,noreferrer');
       window.MATApp?.toast(`Order ${result.order.orderNumber} created.`);
     } catch (error) {

@@ -202,7 +202,7 @@ function buildPricingPlan(supplierPriceInput, options = {}, settingsInput = DEFA
     supplierPrice * (settings.profitProtectionPercent / 100),
     markupProfit
   );
-  const targetPrice = supplierPrice + protectedProfit + settings.fixedMargin;
+  const targetPrice = supplierPrice + protectedProfit + feeReserve + riskReserve + settings.fixedMargin;
   const price = roundLuxuryPrice(targetPrice, settings.rounding);
   const grossProfit = moneyNumber(price - supplierPrice);
   const marginPercent = price > 0 ? Math.round((grossProfit / price) * 1000) / 10 : 0;
@@ -231,7 +231,7 @@ function buildPricingPlan(supplierPriceInput, options = {}, settingsInput = DEFA
     notes: [
       `Supplier cost protected at $${supplierPrice.toFixed(2)}`,
       `${scarcity.isHardToFind ? 'Hard-to-find product priced with 50% markup' : 'Standard product priced with 40% markup'}`,
-      `Estimated fee reserve $${moneyNumber(feeReserve + riskReserve).toFixed(2)} stays inside gross margin`,
+      `Estimated PayPal fee and risk reserve $${moneyNumber(feeReserve + riskReserve).toFixed(2)} included before rounding`,
       `Customer-facing price rounded for conversion`
     ]
   };

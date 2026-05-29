@@ -12,14 +12,13 @@ function securityMiddleware(app) {
         directives: {
           defaultSrc: ["'self'"],
           baseUri: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", 'https://js.stripe.com', 'https://www.paypal.com', 'https://www.paypalobjects.com'],
+          scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.paypal.com', 'https://www.paypalobjects.com'],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
           imgSrc: ["'self'", 'data:', 'https:'],
           mediaSrc: ["'self'", 'https:'],
           connectSrc: [
             "'self'",
-            'https://api.stripe.com',
             'https://www.paypal.com',
             'https://www.sandbox.paypal.com',
             'https://www.paypalobjects.com',
@@ -28,7 +27,7 @@ function securityMiddleware(app) {
             'https://integrate.api.nvidia.com',
             'https://api.nvidia.com'
           ],
-          frameSrc: ['https://js.stripe.com', 'https://www.paypal.com', 'https://www.sandbox.paypal.com', 'https://www.paypalobjects.com'],
+          frameSrc: ['https://www.paypal.com', 'https://www.sandbox.paypal.com', 'https://www.paypalobjects.com'],
           objectSrc: ["'none'"],
           upgradeInsecureRequests: []
         }

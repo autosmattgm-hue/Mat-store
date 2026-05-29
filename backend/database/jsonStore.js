@@ -1,7 +1,11 @@
 const fs = require('fs/promises');
 const path = require('path');
 
-const databaseDir = path.join(__dirname, '..', '..', 'database');
+const sourceDatabaseDir = path.join(__dirname, '..', '..', 'database');
+const databaseDir =
+  process.env.MAT_DATABASE_DIR ||
+  process.env.DATABASE_DIR ||
+  (process.env.VERCEL ? path.join('/tmp', 'mat-store-database') : sourceDatabaseDir);
 const locks = new Map();
 
 const defaults = {
@@ -10,6 +14,8 @@ const defaults = {
   orders: [],
   carts: [],
   abandonedCarts: [],
+  reviews: [],
+  notifications: [],
   settings: {
     pricing: {
       defaultMarkupPercent: 40,
@@ -33,13 +39,21 @@ function filePath(collection) {
   return path.join(databaseDir, `${collection}.json`);
 }
 
+function sourceFilePath(collection) {
+  return path.join(sourceDatabaseDir, `${collection}.json`);
+}
+
 async function ensureCollection(collection) {
   await fs.mkdir(databaseDir, { recursive: true });
   const target = filePath(collection);
   try {
     await fs.access(target);
   } catch {
-    await fs.writeFile(target, JSON.stringify(defaults[collection] ?? [], null, 2));
+    try {
+      await fs.copyFile(sourceFilePath(collection), target);
+    } catch {
+      await fs.writeFile(target, JSON.stringify(defaults[collection] ?? [], null, 2));
+    }
   }
 }
 
@@ -83,5 +97,6 @@ module.exports = {
   read,
   write,
   update,
-  databaseDir
+  databaseDir,
+  sourceDatabaseDir
 };

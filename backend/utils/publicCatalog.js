@@ -200,6 +200,9 @@ function publicCatalogResult(result = {}) {
   return {
     ...result,
     items: (result.items || []).map(publicProduct),
+    brands: (result.brands || [])
+      .map((brand) => cleanSourceText(brand))
+      .filter((brand) => brand && !hasSourceText(brand)),
     marketplaceStats: undefined
   };
 }

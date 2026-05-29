@@ -44,6 +44,14 @@
           <h2>Filters</h2>
           <div id="pageCategoryFilters" class="filter-list"></div>
           <label>Sort<select id="sortSelect" class="sort-select"><option value="featured">Featured</option><option value="newest">Newest</option><option value="rating">Top rated</option><option value="price-asc">Price low to high</option><option value="price-desc">Price high to low</option></select></label>
+          <div class="shop-filter-grid">
+            <label>Min price<input id="minPriceInput" class="page-input" type="number" min="0" step="1" placeholder="0"></label>
+            <label>Max price<input id="maxPriceInput" class="page-input" type="number" min="0" step="1" placeholder="500"></label>
+            <label>Minimum rating<select id="minRatingSelect" class="page-select"><option value="">Any rating</option><option value="4.8">4.8+</option><option value="4.5">4.5+</option><option value="4">4.0+</option><option value="3">3.0+</option></select></label>
+            <label>Brand or model<input id="brandFilterInput" class="page-input" type="search" placeholder="Samsung, iPhone, HP"></label>
+          </div>
+          <label class="check-line filter-check"><input id="inStockOnly" type="checkbox"> In stock only</label>
+          <div class="filter-actions"><button class="button primary full" id="applyFiltersButton" type="button">Apply Filters</button><button class="button ghost full" id="clearFiltersButton" type="button">Clear Filters</button></div>
           <a class="button ghost full" href="/categories.html">Browse Categories</a>
         </aside>
         <div>

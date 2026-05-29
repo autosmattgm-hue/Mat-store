@@ -7,6 +7,7 @@ const router = express.Router();
 router.use(requireAuth, requireAdmin);
 router.get('/dashboard', adminController.dashboard);
 router.get('/customers', adminController.customers);
+router.get('/notifications', adminController.notifications);
 router.get('/settings', adminController.settings);
 router.patch('/settings/pricing', adminController.updatePricing);
 router.post('/inventory/sync', adminController.inventorySync);

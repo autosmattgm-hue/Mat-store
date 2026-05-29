@@ -56,7 +56,10 @@ async function createPaypalOrder(req, res, next) {
 
 async function capturePaypalOrder(req, res, next) {
   try {
-    const payment = await paymentService.capturePayPalOrder(req.body);
+    const payment = await paymentService.capturePayPalOrder({
+      ...req.body,
+      userId: req.user.id
+    });
     res.json({ payment, order: payment.order });
   } catch (error) {
     next(error);
@@ -67,6 +70,15 @@ async function myOrders(req, res, next) {
   try {
     const orders = await orderService.listOrders({ userId: req.user.id });
     res.json({ orders });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function track(req, res, next) {
+  try {
+    const tracking = await orderService.trackOrder(req.query);
+    res.json({ tracking });
   } catch (error) {
     next(error);
   }
@@ -95,6 +107,7 @@ module.exports = {
   paypalConfig,
   createPaypalOrder,
   capturePaypalOrder,
+  track,
   myOrders,
   list,
   update

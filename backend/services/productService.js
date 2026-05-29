@@ -4,6 +4,7 @@ const slugify = require('../utils/slug');
 const pricingService = require('./pricingService');
 const currencyService = require('./currencyService');
 const mediaService = require('./mediaService');
+const reviewService = require('./reviewService');
 const searchMatch = require('../utils/searchMatch');
 const { sanitizeString } = require('../utils/sanitize');
 const { cleanProductTitle } = require('../utils/productTitle');
@@ -396,6 +397,9 @@ async function listProducts(query = {}) {
   const category = sanitizeString(query.category || '', 80).toLowerCase();
   const minPrice = query.minPrice ? Number(query.minPrice) : null;
   const maxPrice = query.maxPrice ? Number(query.maxPrice) : null;
+  const minRating = query.minRating ? Number(query.minRating) : null;
+  const inStock = ['true', '1', 'yes', 'on'].includes(String(query.inStock || '').toLowerCase());
+  const brand = sanitizeString(query.brand || '', 120).toLowerCase();
   const trending = isTrendingRequest(query);
 
   let filtered = products.filter((product) => product.status !== 'archived');
@@ -409,6 +413,9 @@ async function listProducts(query = {}) {
   if (category && category !== 'all' && !(trending && category === 'trending products')) filtered = filtered.filter((product) => categoryMatchesProduct(category, product));
   if (minPrice !== null) filtered = filtered.filter((product) => product.price >= minPrice);
   if (maxPrice !== null) filtered = filtered.filter((product) => product.price <= maxPrice);
+  if (minRating !== null) filtered = filtered.filter((product) => Number(product.rating || 0) >= minRating);
+  if (inStock) filtered = filtered.filter((product) => Number(product.stock || 0) > 0);
+  if (brand) filtered = filtered.filter((product) => productSearchText(product).includes(brand));
 
   const sort = query.sort || 'featured';
   const compareProducts = (a, b) => {
@@ -433,6 +440,11 @@ async function listProducts(query = {}) {
   const total = filtered.length;
   const items = filtered.slice((page - 1) * limit, page * limit).map((product) => productForCurrency(product, currency));
   const categories = [...new Set(products.map((product) => product.category))].sort();
+  const brands = [...new Set(products
+    .map((product) => product.marketplaceDetails?.brand || product.supplierName || '')
+    .map((value) => sanitizeString(value, 120))
+    .filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
 
   return {
     items,
@@ -440,7 +452,8 @@ async function listProducts(query = {}) {
     page,
     limit,
     pages: Math.ceil(total / limit),
-    categories
+    categories,
+    brands
   };
 }
 
@@ -454,9 +467,21 @@ async function getProduct(idOrSlug, currency = 'USD') {
     .slice(0, 6)
     .map((item) => productForCurrency(item, currency));
 
+  const reviews = await reviewService.listProductReviews(product.id, { limit: 12 });
+  let reviewSummary = await reviewService.productReviewSummary(product.id);
+  if (Number(product.reviewsCount || 0) > Number(reviewSummary.count || 0)) {
+    reviewSummary = {
+      ...reviewSummary,
+      rating: Number(product.rating || product.marketplaceDetails?.reviews?.rating || 0),
+      count: Math.max(0, Math.floor(Number(product.reviewsCount || product.marketplaceDetails?.reviews?.count || 0)))
+    };
+  }
+
   return {
     ...productForCurrency(product, currency),
-    related
+    related,
+    reviews,
+    reviewSummary
   };
 }
 

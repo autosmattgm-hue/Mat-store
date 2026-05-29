@@ -4,6 +4,7 @@
     products: [],
     orders: [],
     customers: [],
+    notifications: [],
     preview: [],
     importOptions: {},
     dashboard: null,
@@ -161,7 +162,7 @@
 
   async function loadAll() {
     try {
-      await Promise.all([loadDashboard(), loadProducts(), loadOrders(), loadCustomers(), loadAbandoned()]);
+      await Promise.all([loadDashboard(), loadProducts(), loadOrders(), loadCustomers(), loadAbandoned(), loadNotifications()]);
       state.loaded = true;
     } catch (error) {
       toast(error.message);
@@ -378,28 +379,68 @@
     const data = await api.get('/orders');
     state.orders = data.orders || [];
     const table = document.getElementById('adminOrders');
+    const orderCount = document.getElementById('adminOrderCount');
+    if (orderCount) {
+      const open = state.orders.filter((order) => !['delivered', 'cancelled'].includes(order.fulfillmentStatus)).length;
+      orderCount.textContent = `${open} open · ${state.orders.length} total`;
+    }
     if (!table) return;
     table.innerHTML = state.orders.length
       ? state.orders
           .map(
             (order) => `
-              <article class="table-row">
-                <div>
+              <article class="table-row order-fulfillment-row" data-admin-order="${escapeHtml(order.id)}">
+                <div class="table-title">
                   <strong>${escapeHtml(order.orderNumber)}</strong>
-                  <span>${escapeHtml(order.customer?.email)} · ${new Date(order.createdAt).toLocaleDateString()}</span>
+                  <span>${escapeHtml(order.customer?.email)} · ${new Date(order.createdAt).toLocaleDateString()} · ${escapeHtml(order.items?.length || 0)} item${Number(order.items?.length || 0) === 1 ? '' : 's'}</span>
+                  <span>${(order.items || []).map((item) => `${item.quantity}x ${escapeHtml(item.title)}`).join(', ')}</span>
                 </div>
-                <span>${money(order.totals?.total)}</span>
-                <span>${escapeHtml(order.paymentMethod)} · ${escapeHtml(order.paymentStatus)}</span>
-                <span>${escapeHtml(order.fulfillmentStatus)}</span>
+                <span class="price-stack"><strong>${money(order.totals?.total)}</strong><small>${escapeHtml(order.checkout?.shippingLabel || 'MAT Standard')}</small></span>
+                <label>Payment
+                  <select data-order-field="paymentStatus">
+                    ${['pending', 'approved', 'paid', 'failed', 'cancelled'].map((status) => `<option value="${status}" ${order.paymentStatus === status ? 'selected' : ''}>${status}</option>`).join('')}
+                  </select>
+                </label>
+                <label>Fulfillment
+                  <select data-order-field="fulfillmentStatus">
+                    ${['new', 'processing', 'shipped', 'delivered', 'cancelled'].map((status) => `<option value="${status}" ${order.fulfillmentStatus === status ? 'selected' : ''}>${status}</option>`).join('')}
+                  </select>
+                </label>
+                <label>Carrier
+                  <input data-order-field="trackingCarrier" value="${escapeHtml(order.trackingCarrier || '')}" placeholder="DHL, UPS, local carrier">
+                </label>
+                <label>Tracking
+                  <input data-order-field="trackingNumber" value="${escapeHtml(order.trackingNumber || '')}" placeholder="Tracking number">
+                </label>
                 <div class="row-actions">
-                  <button type="button" data-order-status="${order.id}" data-status="processing">Process</button>
-                  <button type="button" data-order-status="${order.id}" data-status="delivered">Deliver</button>
+                  <button type="button" data-order-save="${order.id}">Save</button>
+                  ${order.trackingUrl ? `<a href="${escapeHtml(order.trackingUrl)}" target="_blank" rel="noopener noreferrer">Track</a>` : ''}
                 </div>
               </article>
             `
           )
           .join('')
       : '<div class="empty-state">Orders appear after checkout.</div>';
+  }
+
+  async function loadNotifications() {
+    const target = document.getElementById('adminNotifications');
+    if (!target) return;
+    const data = await api.get('/admin/notifications', { limit: 60 });
+    state.notifications = data.notifications || [];
+    target.innerHTML = state.notifications.length
+      ? state.notifications
+          .map(
+            (item) => `
+              <div class="list-row notification-row">
+                <strong>${escapeHtml(item.subject || item.type)}</strong>
+                <span>${escapeHtml(item.recipient || 'No recipient')} · ${escapeHtml(item.status)} · ${new Date(item.createdAt).toLocaleString()}</span>
+                <span>${escapeHtml(item.preview || '')}</span>
+              </div>
+            `
+          )
+          .join('')
+      : '<div class="empty-state">Customer emails will queue here after order events.</div>';
   }
 
   async function loadCustomers() {
@@ -709,8 +750,33 @@
         paymentStatus: status === 'delivered' ? 'paid' : 'pending',
         message: `Marked ${status} from admin dashboard.`
       });
-      await Promise.all([loadOrders(), loadDashboard()]);
+      await Promise.all([loadOrders(), loadDashboard(), loadNotifications()]);
       toast('Order updated.');
+    } catch (error) {
+      toast(error.message);
+    }
+  }
+
+  async function saveOrderFulfillment(id) {
+    const row = document.querySelector(`[data-admin-order="${CSS.escape(id)}"]`);
+    if (!row) return;
+    const value = (field) => row.querySelector(`[data-order-field="${field}"]`)?.value || '';
+    const trackingNumber = value('trackingNumber').trim();
+    const trackingCarrier = value('trackingCarrier').trim();
+    const payload = {
+      paymentStatus: value('paymentStatus'),
+      fulfillmentStatus: value('fulfillmentStatus'),
+      trackingNumber,
+      trackingCarrier,
+      trackingUrl: trackingCarrier && trackingNumber
+        ? `https://www.google.com/search?q=${encodeURIComponent(`${trackingCarrier} ${trackingNumber} tracking`)}`
+        : '',
+      message: `Admin updated order to ${value('fulfillmentStatus')}.`
+    };
+    try {
+      await api.patch(`/orders/${id}`, payload);
+      await Promise.all([loadOrders(), loadDashboard(), loadNotifications()]);
+      toast('Fulfillment saved and notification queued.');
     } catch (error) {
       toast(error.message);
     }
@@ -793,6 +859,7 @@
       const editButton = event.target.closest('[data-edit-product]');
       const deleteButton = event.target.closest('[data-delete-product]');
       const statusButton = event.target.closest('[data-order-status]');
+      const saveOrderButton = event.target.closest('[data-order-save]');
       if (editButton) {
         const product = state.products.find((item) => item.id === editButton.dataset.editProduct);
         fillProductForm(product);
@@ -800,6 +867,7 @@
       }
       if (deleteButton) deleteProduct(deleteButton.dataset.deleteProduct);
       if (statusButton) updateOrderStatus(statusButton.dataset.orderStatus, statusButton.dataset.status);
+      if (saveOrderButton) saveOrderFulfillment(saveOrderButton.dataset.orderSave);
     });
   }
 

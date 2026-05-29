@@ -16,6 +16,11 @@
       category: '',
       query: '',
       sort: 'featured',
+      minPrice: '',
+      maxPrice: '',
+      minRating: '',
+      inStock: false,
+      brand: '',
       trending: false,
       loading: false,
       marketplaceLoading: false,
@@ -32,6 +37,7 @@
   const SHOP_AUTO_LOADS = 2;
   const SEARCH_MARKETPLACE_STEP = 50;
   const SEARCH_MARKETPLACE_MAX = 160;
+  const RECENTLY_VIEWED_KEY = 'mat_recently_viewed_products';
   const CHECKOUT_SHIPPING_OPTIONS = {
     standard: { label: 'MAT Standard', fee: 0, window: '7-14 business days' },
     express: { label: 'MAT Express', fee: 12.95, window: '4-8 business days' },
@@ -760,6 +766,33 @@
     });
   }
 
+  function safeReturnTarget(value = '') {
+    const target = String(value || '').trim();
+    if (!target || !target.startsWith('/') || target.startsWith('//')) return '';
+    return target;
+  }
+
+  function accountReturnTarget() {
+    return safeReturnTarget(params().get('returnTo') || localStorage.getItem('mat_return_after_login') || '');
+  }
+
+  function redirectAfterAccountAuth() {
+    const target = accountReturnTarget();
+    localStorage.removeItem('mat_return_after_login');
+    if (!target) return false;
+    window.location.href = target;
+    return true;
+  }
+
+  function requireCheckoutAccount(message = 'Login or register before checkout.') {
+    if (state.user?.id) return true;
+    const returnTo = state.page === 'payment' ? '/payment.html' : '/checkout.html';
+    localStorage.setItem('mat_return_after_login', returnTo);
+    toast(message);
+    window.location.href = `/account.html?returnTo=${encodeURIComponent(returnTo)}`;
+    return false;
+  }
+
   function ensureMobileMenu() {
     const header = document.querySelector('.site-header');
     if (!header) return {};
@@ -875,6 +908,96 @@
     `;
   }
 
+  function recentlyViewedItems() {
+    try {
+      const items = JSON.parse(localStorage.getItem(RECENTLY_VIEWED_KEY) || '[]');
+      return Array.isArray(items) ? items : [];
+    } catch {
+      return [];
+    }
+  }
+
+  function rememberProductView(product = {}) {
+    const snapshot = {
+      id: product.id,
+      slug: product.slug || product.id,
+      title: product.title,
+      category: product.category,
+      collection: product.collection,
+      image: productImage(product),
+      fallbackImage: productFallback(product),
+      formattedPrice: product.formattedPrice || money(product.displayPrice || product.price),
+      displayPrice: product.displayPrice || product.price,
+      rating: product.rating,
+      reviewsCount: product.reviewsCount
+    };
+    if (!snapshot.id || !snapshot.title) return;
+    const items = recentlyViewedItems().filter((item) => item.id !== snapshot.id);
+    localStorage.setItem(RECENTLY_VIEWED_KEY, JSON.stringify([snapshot, ...items].slice(0, 10)));
+  }
+
+  function renderRecentlyViewed(currentId) {
+    const target = document.getElementById('recentlyViewedGrid');
+    if (!target) return;
+    const items = recentlyViewedItems().filter((item) => item.id !== currentId).slice(0, 6);
+    target.innerHTML = items.length ? items.map(card).join('') : '<div class="empty-state">Products you view will appear here for quick return shopping.</div>';
+  }
+
+  function renderProductReviews(product = {}) {
+    const target = document.getElementById('productReviews');
+    const label = document.getElementById('reviewSummaryLabel');
+    const summary = product.reviewSummary || product.marketplaceDetails?.reviews || {};
+    const reviews = product.reviews || [];
+    if (label) {
+      const count = Number(summary.count ?? product.reviewsCount ?? reviews.length ?? 0);
+      const rating = Number(summary.rating ?? product.rating ?? 0);
+      label.textContent = count ? `${rating.toFixed(1)} from ${count} review${count === 1 ? '' : 's'}` : 'No reviews yet';
+    }
+    if (!target) return;
+    target.innerHTML = reviews.length
+      ? reviews
+          .map(
+            (review) => `
+              <article class="review-card customer-review-card">
+                <strong>${escapeHtml(review.title || `${review.rating}-star review`)}</strong>
+                <span>${Number(review.rating || 0).toFixed(1)} stars${review.verified ? ' · Verified' : ''}</span>
+                <p>${escapeHtml(review.comment)}</p>
+                <small>${escapeHtml(review.name || 'MAT STORE Customer')} · ${new Date(review.createdAt).toLocaleDateString()}</small>
+              </article>
+            `
+          )
+          .join('')
+      : '<article class="review-card"><strong>Be the first reviewer</strong><p>Share fit, quality, setup, delivery, or buying advice to help the next customer choose with confidence.</p></article>';
+  }
+
+  function bindReviewForm(product = {}) {
+    const form = document.getElementById('reviewForm');
+    if (!form || form.dataset.bound === 'true') return;
+    form.dataset.bound = 'true';
+    const nameInput = form.querySelector('[name="name"]');
+    if (nameInput && state.user?.name) nameInput.value = state.user.name;
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const submit = form.querySelector('button[type="submit"]');
+      if (submit) submit.disabled = true;
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const result = await api.post(`/products/${encodeURIComponent(product.id)}/reviews`, payload);
+        product.reviews = [result.review, ...(product.reviews || [])].slice(0, 12);
+        product.reviewSummary = result.stats;
+        product.rating = result.stats?.rating || product.rating;
+        product.reviewsCount = result.stats?.count || product.reviewsCount;
+        renderProductReviews(product);
+        form.reset();
+        toast('Review published. Thank you.');
+      } catch (error) {
+        toast(error.message);
+      } finally {
+        if (submit) submit.disabled = false;
+      }
+    });
+  }
+
   function ensureShopLoadControls() {
     const grid = document.getElementById('pageProductGrid');
     if (!grid) return {};
@@ -964,6 +1087,37 @@
     if (String(state.shop.query || '').trim()) return '';
     if (state.shop.trending) return 'trending products';
     return String(state.shop.category || '').trim();
+  }
+
+  function currentShopFilterValues() {
+    return {
+      minPrice: document.getElementById('minPriceInput')?.value.trim() || state.shop.minPrice || '',
+      maxPrice: document.getElementById('maxPriceInput')?.value.trim() || state.shop.maxPrice || '',
+      minRating: document.getElementById('minRatingSelect')?.value || state.shop.minRating || '',
+      inStock: Boolean(document.getElementById('inStockOnly')?.checked || state.shop.inStock),
+      brand: document.getElementById('brandFilterInput')?.value.trim() || state.shop.brand || '',
+      sort: document.getElementById('sortSelect')?.value || state.shop.sort || 'featured'
+    };
+  }
+
+  function navigateShop(overrides = {}) {
+    const target = state.page === 'categories' ? '/categories.html' : state.page === 'search' ? '/search.html' : '/shop.html';
+    const filters = { ...currentShopFilterValues(), ...overrides };
+    const search = new URLSearchParams();
+    const category = overrides.category !== undefined ? overrides.category : state.shop.category;
+    const trending = overrides.trending !== undefined ? overrides.trending : state.shop.trending;
+    const query = overrides.query !== undefined ? overrides.query : state.shop.query;
+    if (query) search.set('q', query);
+    if (trending) search.set('trending', 'true');
+    else if (category) search.set('category', category);
+    if (filters.sort && filters.sort !== 'featured') search.set('sort', filters.sort);
+    if (filters.minPrice) search.set('minPrice', filters.minPrice);
+    if (filters.maxPrice) search.set('maxPrice', filters.maxPrice);
+    if (filters.minRating) search.set('minRating', filters.minRating);
+    if (filters.inStock) search.set('inStock', 'true');
+    if (filters.brand) search.set('brand', filters.brand);
+    const suffix = search.toString();
+    window.location.href = suffix ? `${target}?${suffix}` : target;
   }
 
   async function enrichMarketplaceSearch(query, options = {}) {
@@ -1071,7 +1225,12 @@
         category: state.shop.category,
         q: state.shop.query,
         trending: state.shop.trending ? 'true' : '',
-        sort: state.shop.sort
+        sort: state.shop.sort,
+        minPrice: state.shop.minPrice,
+        maxPrice: state.shop.maxPrice,
+        minRating: state.shop.minRating,
+        inStock: state.shop.inStock ? 'true' : '',
+        brand: state.shop.brand
       });
       const incoming = uniqueProducts(data.items || []);
       state.shop.items = reset ? incoming : appendUniqueProducts(state.shop.items, incoming);
@@ -1141,7 +1300,9 @@
         const selectedVariant = addButton.dataset.variantScope ? selectedProductOptions(addButton.dataset.variantScope) : addButton.dataset.variant || '';
         if (product) {
           window.MATCart?.add(product, 1, selectedVariant);
-          if (addButton.dataset.buyNow === 'true') window.location.href = '/checkout.html';
+          if (addButton.dataset.buyNow === 'true') {
+            if (requireCheckoutAccount('Login or register before buying.')) window.location.href = '/checkout.html';
+          }
         }
       }
       if (suggestionButton) {
@@ -1162,13 +1323,32 @@
   }
 
   async function initShopLike() {
-    const selectedCategory = params().get('category') || 'all';
-    const query = params().get('q') || '';
-    const wantsTrending = ['true', '1', 'yes'].includes(String(params().get('trending') || '').toLowerCase()) || selectedCategory === 'trending products';
+    const urlParams = params();
+    const selectedCategory = urlParams.get('category') || 'all';
+    const query = urlParams.get('q') || '';
+    const wantsTrending = ['true', '1', 'yes'].includes(String(urlParams.get('trending') || '').toLowerCase()) || selectedCategory === 'trending products';
     state.shop.trending = wantsTrending;
     state.shop.category = selectedCategory === 'all' || wantsTrending ? '' : selectedCategory;
     state.shop.query = query;
-    state.shop.sort = document.getElementById('sortSelect')?.value || 'featured';
+    state.shop.sort = urlParams.get('sort') || document.getElementById('sortSelect')?.value || 'featured';
+    state.shop.minPrice = urlParams.get('minPrice') || '';
+    state.shop.maxPrice = urlParams.get('maxPrice') || '';
+    state.shop.minRating = urlParams.get('minRating') || '';
+    state.shop.inStock = ['true', '1', 'yes'].includes(String(urlParams.get('inStock') || '').toLowerCase());
+    state.shop.brand = urlParams.get('brand') || '';
+
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect) sortSelect.value = state.shop.sort;
+    const minPriceInput = document.getElementById('minPriceInput');
+    const maxPriceInput = document.getElementById('maxPriceInput');
+    const minRatingSelect = document.getElementById('minRatingSelect');
+    const inStockOnly = document.getElementById('inStockOnly');
+    const brandFilterInput = document.getElementById('brandFilterInput');
+    if (minPriceInput) minPriceInput.value = state.shop.minPrice;
+    if (maxPriceInput) maxPriceInput.value = state.shop.maxPrice;
+    if (minRatingSelect) minRatingSelect.value = state.shop.minRating;
+    if (inStockOnly) inStockOnly.checked = state.shop.inStock;
+    if (brandFilterInput) brandFilterInput.value = state.shop.brand;
 
     const title = document.getElementById('resultTitle');
     if (title) title.textContent = query ? `Search results for "${query}"` : wantsTrending ? 'Trending Products' : selectedCategory === 'all' ? 'All Products' : `${selectedCategory} Edit`;
@@ -1190,17 +1370,24 @@
 
     await loadShopPage({ reset: true });
 
-    const sortSelect = document.getElementById('sortSelect');
     if (sortSelect && sortSelect.dataset.bound !== 'true') {
       sortSelect.dataset.bound = 'true';
-      sortSelect.addEventListener('change', () => initShopLike());
+      sortSelect.addEventListener('change', () => navigateShop());
     }
+    document.getElementById('applyFiltersButton')?.addEventListener('click', () => navigateShop());
+    document.getElementById('clearFiltersButton')?.addEventListener('click', () => navigateShop({
+      minPrice: '',
+      maxPrice: '',
+      minRating: '',
+      inStock: false,
+      brand: '',
+      sort: 'featured'
+    }));
     document.querySelectorAll('[data-page-category]').forEach((button) => {
       button.addEventListener('click', () => {
         const category = button.dataset.pageCategory;
-        const target = state.page === 'categories' ? '/categories.html' : '/shop.html';
-        if (category === 'trending products') window.location.href = `${target}?trending=true`;
-        else window.location.href = `${target}?category=${encodeURIComponent(category)}`;
+        if (category === 'trending products') navigateShop({ trending: true, category: '' });
+        else navigateShop({ trending: false, category: category === 'all' ? '' : category });
       });
     });
   }
@@ -1275,6 +1462,10 @@
 
     const related = document.getElementById('relatedGrid');
     if (related) related.innerHTML = (product.related || []).map(card).join('');
+    rememberProductView(product);
+    renderProductReviews(product);
+    bindReviewForm(product);
+    renderRecentlyViewed(product.id);
 
     document.querySelectorAll('[data-detail-thumb]').forEach((button) => {
       button.addEventListener('click', () => {
@@ -1479,6 +1670,9 @@
   }
 
   function validateCheckoutForm(form) {
+    if (!requireCheckoutAccount('Login or register to place an order. You can still browse products without an account.')) {
+      return false;
+    }
     if (!checkoutCartItems().length) {
       toast('Your cart is empty.');
       return false;
@@ -1543,6 +1737,9 @@
   }
 
   async function createPayPalOrderFromPayload(payload) {
+    if (!requireCheckoutAccount('Login or register before making a payment.')) {
+      throw new Error('Login required before payment.');
+    }
     const fingerprint = checkoutFingerprint(payload);
     if (paypalCheckout.orderId && paypalCheckout.fingerprint === fingerprint) return paypalCheckout.orderId;
 
@@ -1802,6 +1999,7 @@
   }
 
   async function initCheckout() {
+    if (!requireCheckoutAccount('Login or register before checkout.')) return;
     await loadProducts();
     renderSummary();
     const form = document.getElementById('checkoutPageForm');
@@ -2060,6 +2258,7 @@
   }
 
   async function initPayment() {
+    if (!requireCheckoutAccount('Login or register before payment.')) return;
     await loadProducts();
     const payload = storedCheckoutPayload();
     renderPaymentSummary(payload);
@@ -2319,6 +2518,7 @@
         renderAccount();
         setAccountStatus('Welcome back.', 'success');
         toast('Logged in.');
+        if (redirectAfterAccountAuth()) return;
       } catch (error) {
         setAccountStatus(error.message || 'Login failed. Check your email and password.', 'error');
         toast(error.message);
@@ -2359,6 +2559,7 @@
         renderAccount();
         setAccountStatus('Account created. Your secure profile is ready.', 'success');
         toast('Account created.');
+        if (redirectAfterAccountAuth()) return;
       } catch (error) {
         setAccountStatus(error.message || 'Account creation failed. Try another email.', 'error');
         toast(error.message);
@@ -2437,9 +2638,72 @@
           <header><strong>${escapeHtml(order.orderNumber)}</strong><span>${money(order.totals?.displayTotal || order.totals?.total, order.currency)}</span></header>
           <span>${escapeHtml(order.paymentMethod)} · ${escapeHtml(order.paymentStatus)} · ${escapeHtml(order.fulfillmentStatus)}</span>
           <p>${(order.items || []).map((item) => `${item.quantity}x ${escapeHtml(item.title)}`).join(', ')}</p>
+          <a class="button ghost full" href="/tracking.html?orderNumber=${encodeURIComponent(order.orderNumber)}&email=${encodeURIComponent(order.customer?.email || '')}">Track Order</a>
         </article>
       `).join('')
       : '<div class="empty-state">No orders yet.</div>';
+  }
+
+  function renderTrackingResult(tracking = null) {
+    const target = document.getElementById('trackingResult');
+    if (!target) return;
+    if (!tracking) {
+      target.innerHTML = '<h2>Tracking Result</h2><div class="empty-state">Enter your order details to view progress.</div>';
+      return;
+    }
+    target.innerHTML = `
+      <h2>${escapeHtml(tracking.orderNumber)}</h2>
+      <div class="cart-totals">
+        <div><span>Payment</span><strong>${escapeHtml(tracking.paymentStatus)}</strong></div>
+        <div><span>Fulfillment</span><strong>${escapeHtml(tracking.fulfillmentStatus)}</strong></div>
+        <div><span>Total</span><strong>${money(tracking.totals?.displayTotal || tracking.totals?.total || 0)}</strong></div>
+        <div><span>Delivery</span><strong>${escapeHtml(tracking.checkout?.deliveryWindow || 'Calculated after dispatch')}</strong></div>
+      </div>
+      <div class="tracking-steps">
+        ${(tracking.trackingSteps || []).map((step) => `
+          <div class="tracking-step ${step.complete ? 'complete' : ''} ${step.active ? 'active' : ''} ${step.cancelled ? 'cancelled' : ''}">
+            <strong>${escapeHtml(step.label)}</strong>
+            <span>${escapeHtml(step.description)}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="checkout-review-list">
+        ${(tracking.items || []).map((item) => `
+          <article class="checkout-review-item">
+            <img ${imageAttrs(item.image || generatedFallback(item), generatedFallback(item))} alt="${escapeHtml(item.title)}">
+            <div><strong>${escapeHtml(item.title)}</strong><span>${item.quantity}x${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</span></div>
+          </article>
+        `).join('')}
+      </div>
+      ${tracking.trackingNumber ? `<a class="button ghost full" href="${escapeHtml(tracking.trackingUrl || '#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(tracking.trackingCarrier || 'Carrier')} ${escapeHtml(tracking.trackingNumber)}</a>` : '<div class="empty-state">Carrier tracking will appear after dispatch.</div>'}
+    `;
+  }
+
+  async function initTracking() {
+    renderTrackingResult(null);
+    const form = document.getElementById('trackingForm');
+    const orderNumber = params().get('orderNumber') || params().get('order') || '';
+    const email = params().get('email') || '';
+    if (form) {
+      form.elements.orderNumber.value = orderNumber;
+      form.elements.email.value = email;
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const data = Object.fromEntries(new FormData(form).entries());
+        const submit = form.querySelector('button[type="submit"]');
+        if (submit) submit.disabled = true;
+        try {
+          const result = await api.get('/orders/track', data);
+          renderTrackingResult(result.tracking);
+        } catch (error) {
+          renderTrackingResult(null);
+          toast(error.message);
+        } finally {
+          if (submit) submit.disabled = false;
+        }
+      });
+      if (orderNumber && email) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+    }
   }
 
   async function initAdminPage() {
@@ -2493,6 +2757,7 @@
     else if (state.page === 'account') await initAccount();
     else if (state.page === 'wishlist') await initWishlist();
     else if (state.page === 'orders') await initOrders();
+    else if (state.page === 'tracking') await initTracking();
     else if (state.page === 'admin') await initAdminPage();
     else await initStaticEnhancements();
   }

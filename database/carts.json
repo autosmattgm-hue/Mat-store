@@ -1,5 +1,29 @@
 [
   {
+    "id": "318fd094-1b0b-46f7-8876-1da943c01842",
+    "sessionId": "a9613af6-8027-4944-8061-2925435a9fa3",
+    "currency": "GMD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-05-29T14:17:48.588Z",
+    "createdAt": "2026-05-29T14:17:48.588Z"
+  },
+  {
+    "id": "2d691976-3da2-402c-aa19-0b93ca649070",
+    "sessionId": "ea76c3f7-84e2-4b1a-b127-3fa6051959b8",
+    "currency": "GMD",
+    "items": [
+      {
+        "productId": "96c5f38b-acf1-47e9-8465-e99c37bdb2b8",
+        "quantity": 1,
+        "variant": ""
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-29T13:55:35.506Z",
+    "createdAt": "2026-05-29T13:55:35.506Z"
+  },
+  {
     "id": "443a37b9-77a5-48c7-b61b-dacb13300166",
     "userId": "4ff9bf15-b9d5-41cb-b175-0fef0f98f4c7",
     "currency": "GMD",
@@ -13,30 +37,6 @@
     "status": "active",
     "updatedAt": "2026-05-29T12:03:19.148Z",
     "createdAt": "2026-05-29T12:03:19.148Z"
-  },
-  {
-    "id": "e0fbf416-95be-4706-8f8b-9f9bef28f6c5",
-    "sessionId": "ea76c3f7-84e2-4b1a-b127-3fa6051959b8",
-    "currency": "GMD",
-    "items": [
-      {
-        "productId": "e03f87a2-7692-472b-98ad-c77562ec4721",
-        "quantity": 1,
-        "variant": ""
-      }
-    ],
-    "status": "active",
-    "updatedAt": "2026-05-29T11:59:29.021Z",
-    "createdAt": "2026-05-29T11:59:29.021Z"
-  },
-  {
-    "id": "52bac102-7e71-4f37-9ccc-ac16dbd17fea",
-    "sessionId": "a9613af6-8027-4944-8061-2925435a9fa3",
-    "currency": "GMD",
-    "items": [],
-    "status": "empty",
-    "updatedAt": "2026-05-29T10:18:20.307Z",
-    "createdAt": "2026-05-29T10:18:20.307Z"
   },
   {
     "id": "7c0fc129-c1f8-48ad-8c99-b89c0225dec7",

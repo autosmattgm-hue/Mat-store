@@ -15,7 +15,7 @@ const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const aiAgentRoutes = require('./routes/aiAgentRoutes');
 const orderController = require('./controllers/orderController');
-const { optionalAuth } = require('./middleware/auth');
+const { requireAuth } = require('./middleware/auth');
 
 const app = express();
 
@@ -38,8 +38,8 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/importer', importerRoutes);
 app.use('/api/cart', cartRoutes);
 app.get('/api/paypal/config', orderController.paypalConfig);
-app.post('/api/paypal/orders', optionalAuth, orderController.createPaypalOrder);
-app.post('/api/paypal/orders/:orderID/capture', optionalAuth, (req, res, next) => {
+app.post('/api/paypal/orders', requireAuth, orderController.createPaypalOrder);
+app.post('/api/paypal/orders/:orderID/capture', requireAuth, (req, res, next) => {
   req.body = { ...req.body, orderID: req.params.orderID };
   return orderController.capturePaypalOrder(req, res, next);
 });
@@ -47,7 +47,15 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/ai', aiAgentRoutes);
 
-app.use(notFound);
+app.use('/api', (req, res) => {
+  res.status(404).json({
+    error: {
+      message: 'API route not found.',
+      status: 404
+    }
+  });
+});
+
 app.use(
   express.static(path.join(__dirname, '..', 'frontend'), {
     extensions: ['html'],
@@ -60,6 +68,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
 });
 
+app.use(notFound);
 app.use(errorHandler);
 
 async function start() {

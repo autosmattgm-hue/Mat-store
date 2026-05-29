@@ -1,4 +1,5 @@
 const productService = require('../services/productService');
+const reviewService = require('../services/reviewService');
 const { publicCatalogResult, publicProduct, publicSuggestion } = require('../utils/publicCatalog');
 
 function isAdminRequest(req) {
@@ -27,6 +28,25 @@ async function suggestions(req, res, next) {
   try {
     const items = await productService.searchSuggestions(req.query.q);
     res.json({ items: isAdminRequest(req) ? items : items.map(publicSuggestion) });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function reviews(req, res, next) {
+  try {
+    const items = await reviewService.listProductReviews(req.params.id, req.query);
+    const summary = await reviewService.productReviewSummary(req.params.id);
+    res.json({ reviews: items, summary });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function createReview(req, res, next) {
+  try {
+    const result = await reviewService.createReview(req.params.id, req.body, req.user || null);
+    res.status(201).json(result);
   } catch (error) {
     next(error);
   }
@@ -81,6 +101,8 @@ module.exports = {
   list,
   get,
   suggestions,
+  reviews,
+  createReview,
   create,
   update,
   remove,
