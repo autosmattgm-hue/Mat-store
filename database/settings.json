@@ -17,6 +17,6 @@
   },
   "seo": {
     "siteName": "MAT STORE",
-    "canonicalBaseUrl": "http://localhost:3000"
+    "canonicalBaseUrl": "https://mat-store-dun.vercel.app"
   }
 }

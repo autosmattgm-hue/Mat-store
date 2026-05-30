@@ -12,7 +12,14 @@ function securityMiddleware(app) {
         directives: {
           defaultSrc: ["'self'"],
           baseUri: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'", 'https://www.paypal.com', 'https://www.paypalobjects.com'],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            'https://www.paypal.com',
+            'https://www.paypalobjects.com',
+            'https://www.gstatic.com',
+            'https://www.googletagmanager.com'
+          ],
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
           imgSrc: ["'self'", 'data:', 'https:'],
@@ -24,6 +31,9 @@ function securityMiddleware(app) {
             'https://www.paypalobjects.com',
             'https://api-m.sandbox.paypal.com',
             'https://api-m.paypal.com',
+            'https://www.google-analytics.com',
+            'https://region1.google-analytics.com',
+            'https://firebase.googleapis.com',
             'https://integrate.api.nvidia.com',
             'https://api.nvidia.com'
           ],

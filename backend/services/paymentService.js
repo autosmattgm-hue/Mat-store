@@ -1,4 +1,4 @@
-const { randomUUID } = require('crypto');
+const { createHash, randomUUID } = require('crypto');
 const config = require('../config');
 const orderService = require('./orderService');
 const HttpError = require('../utils/httpError');
@@ -32,6 +32,18 @@ const PAYPAL_SUPPORTED_CURRENCIES = new Set([
 
 function configuredPayPal() {
   return Boolean(config.paypal.clientId && config.paypal.clientSecret);
+}
+
+function paypalMode() {
+  return config.paypal.apiBase.includes('sandbox') ? 'sandbox' : 'live';
+}
+
+function credentialHash(value = '') {
+  return createHash('sha256').update(String(value || '')).digest('hex').slice(0, 12);
+}
+
+function clientIdSuffix() {
+  return String(config.paypal.clientId || '').slice(-8);
 }
 
 function paypalCurrency(requestedCurrency = 'USD') {
@@ -75,6 +87,30 @@ function publicPayPalDetails(data = {}) {
   };
 }
 
+function paypalAuthFailureMessage(data = {}) {
+  const mode = paypalMode();
+  const description = sanitizeString(data.error_description || data.message || data.error || '', 260);
+  const base =
+    'PayPal client authentication failed. The PayPal Client ID and Client Secret on Vercel do not match, or they are from the wrong PayPal environment.';
+  const fix =
+    mode === 'live'
+      ? 'Use LIVE credentials from the same PayPal app, keep PAYPAL_API_BASE=https://api-m.paypal.com, then redeploy Vercel.'
+      : 'Use SANDBOX credentials from the same PayPal app, keep PAYPAL_API_BASE=https://api-m.sandbox.paypal.com, then redeploy Vercel.';
+  return `${base} ${fix}${description ? ` PayPal said: ${description}.` : ''}`;
+}
+
+function publicPayPalAuthDetails(data = {}) {
+  return {
+    mode: paypalMode(),
+    apiBase: config.paypal.apiBase,
+    clientIdSuffix: clientIdSuffix(),
+    clientIdHash: credentialHash(config.paypal.clientId),
+    hasClientSecret: Boolean(config.paypal.clientSecret),
+    issue: sanitizeString(data.error || data.name || 'PAYPAL_AUTH_FAILED', 120),
+    description: sanitizeString(data.error_description || data.message || '', 260)
+  };
+}
+
 function paypalClientConfig(requestedCurrency = 'USD') {
   const currency = paypalCurrency(requestedCurrency);
   const sandbox = config.paypal.apiBase.includes('sandbox');
@@ -95,6 +131,8 @@ function paypalClientConfig(requestedCurrency = 'USD') {
     diagnostics: {
       hasClientId: Boolean(config.paypal.clientId),
       hasClientSecret: Boolean(config.paypal.clientSecret),
+      clientIdSuffix: clientIdSuffix(),
+      clientIdHash: credentialHash(config.paypal.clientId),
       missing
     }
   };
@@ -117,8 +155,7 @@ async function paypalAccessToken(options = {}) {
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     if (options.required) {
-      const mode = config.paypal.apiBase.includes('sandbox') ? 'sandbox' : 'live';
-      throw new HttpError(424, data.error_description || `PayPal authentication failed for ${mode} credentials. Check PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, and PAYPAL_API_BASE.`);
+      throw new HttpError(424, paypalAuthFailureMessage(data), publicPayPalAuthDetails(data));
     }
     return null;
   }
@@ -182,7 +219,7 @@ async function createPayPalOrder(order, options = {}) {
     paymentStatus: 'pending',
     processorOrderId: data.id,
     processorStatus: data.status,
-    processorMode: config.paypal.apiBase.includes('sandbox') ? 'sandbox' : 'live',
+    processorMode: paypalMode(),
     settlementCurrency: settlement.currency,
     settlementAmount: Number(settlement.value),
     message: settlement.convertedFrom
@@ -192,7 +229,7 @@ async function createPayPalOrder(order, options = {}) {
 
   return {
     provider: 'paypal',
-    mode: 'live',
+    mode: paypalMode(),
     orderId: data.id,
     approvalUrl,
     currency: settlement.currency,
@@ -241,7 +278,7 @@ async function capturePayPalOrder(payload = {}) {
       processorOrderId: data.id || paypalOrderId,
       processorCaptureId: capture.id || '',
       processorStatus: capture.status || data.status,
-      processorMode: config.paypal.apiBase.includes('sandbox') ? 'sandbox' : 'live',
+      processorMode: paypalMode(),
       settlementCurrency: capture.amount?.currency_code || purchaseUnit.amount?.currency_code || '',
       settlementAmount: Number(capture.amount?.value || purchaseUnit.amount?.value || 0),
       payerEmail: data.payer?.email_address || '',
@@ -251,7 +288,7 @@ async function capturePayPalOrder(payload = {}) {
 
   return {
     provider: 'paypal',
-    mode: config.paypal.apiBase.includes('sandbox') ? 'sandbox' : 'live',
+    mode: paypalMode(),
     status: data.status,
     paypalOrderId: data.id || paypalOrderId,
     captureId: capture.id || '',

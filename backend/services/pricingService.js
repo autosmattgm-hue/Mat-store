@@ -220,7 +220,7 @@ function buildPricingPlan(supplierPriceInput, options = {}, settingsInput = DEFA
     paymentBuffer: moneyNumber(feeReserve),
     riskBuffer: moneyNumber(riskReserve),
     fixedMargin: settings.fixedMargin,
-    strategy: `AI business ${businessRule}`,
+    strategy: `MAT AI business ${businessRule}`,
     tier: tier.label,
     businessRule,
     hardToFind: scarcity.isHardToFind,

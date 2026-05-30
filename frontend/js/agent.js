@@ -33,6 +33,26 @@
     return element;
   }
 
+  function professionalText(value = '') {
+    return String(value || '')
+      .replace(/[<>]/g, '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .replace(/```[\s\S]*?```/g, (block) => block.replace(/```[a-zA-Z]*\n?/g, '').replace(/```/g, ''))
+      .split('\n')
+      .map((line) => line
+        .replace(/^\s{0,3}#{1,6}\s*/g, '')
+        .replace(/^\s*[-*•]\s+/g, '')
+        .replace(/^\s*\d+\.\s+/g, '')
+        .replace(/\[([^\]]+)]\(([^)]+)\)/g, '$1')
+        .replace(/[*#`~]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim())
+      .filter(Boolean)
+      .join('\n\n')
+      .trim();
+  }
+
   function currentMode() {
     const user = api.getUser?.();
     return user?.role === 'admin' ? 'business' : 'shopper';
@@ -52,7 +72,7 @@
     const message = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
       role,
-      content,
+      content: role === 'assistant' ? professionalText(content) : String(content || '').trim(),
       suggestions: Array.isArray(suggestions) ? suggestions.slice(0, 4) : []
     };
     state.messages.push(message);
@@ -147,7 +167,7 @@
       });
       addMessage('assistant', result.reply || 'I am ready to help with MAT STORE.', result.suggestions || []);
     } catch (error) {
-      addMessage('assistant', error.message || 'The MAT AI Agent could not answer right now. Try again in a moment.');
+      addMessage('assistant', error.message || 'MAT AI could not answer right now. Try again in a moment.');
     } finally {
       setBusy(false);
     }
@@ -165,20 +185,20 @@
     launcher.setAttribute('aria-controls', 'matAiAgentPanel');
     launcher.setAttribute('aria-expanded', 'false');
     launcher.appendChild(create('span', 'ai-agent-mark', 'AI'));
-    launcher.appendChild(create('span', '', 'MAT Agent'));
+    launcher.appendChild(create('span', '', 'MAT AI'));
 
     const panel = create('aside', 'ai-agent-panel');
     panel.id = 'matAiAgentPanel';
     panel.hidden = true;
-    panel.setAttribute('aria-label', 'MAT AI Agent');
+    panel.setAttribute('aria-label', 'MAT AI');
 
     const header = create('header', 'ai-agent-header');
     const heading = create('div');
-    heading.appendChild(create('span', 'eyebrow', 'NVIDIA AI'));
-    heading.appendChild(create('h2', '', 'MAT AI Agent'));
+    heading.appendChild(create('span', 'eyebrow', 'Commerce assistant'));
+    heading.appendChild(create('h2', '', 'MAT AI'));
     const close = create('button', 'ai-agent-icon', 'x');
     close.type = 'button';
-    close.setAttribute('aria-label', 'Close MAT AI Agent');
+    close.setAttribute('aria-label', 'Close MAT AI');
     header.append(heading, close);
 
     const chips = create('div', 'ai-agent-chips');

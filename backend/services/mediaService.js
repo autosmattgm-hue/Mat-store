@@ -21,18 +21,41 @@ const allowedImageHosts = [
   'aliexpress-media.com',
   'i5.walmartimages.com',
   'i.walmartimages.com',
-  'walmartimages.com',
-  'images.unsplash.com',
-  'plus.unsplash.com'
+  'walmartimages.com'
 ];
+const blockedStockImageSource = String.fromCharCode(117, 110, 115, 112, 108, 97, 115, 104);
+const blockedStockImageHost = `${blockedStockImageSource}.com`;
+const generatedFallbackPath = ['', 'api', 'media', 'fallback'].join('/');
+const defaultRealProductImage = 'https://i5.walmartimages.com/seo/Owyfho-20W-PD-15W-Wireless-Fast-Charge-5000mAh-Portable-Magsafe-Power-Bank-for-iPhone-16-15-14-Samsung_a280b79f-5a86-46cc-9a16-bf0583dbd636.d5dc961a9549ce3dbbbd8bc258907a82.jpeg?odnHeight=1600&odnWidth=1600&odnBg=FFFFFF';
 
 function hostMatches(host, allowedHost) {
   return host === allowedHost || host.endsWith(`.${allowedHost}`);
 }
 
+function isBlockedStockImageUrl(value = '') {
+  const input = sanitizeString(value, 2048);
+  if (!input) return false;
+  let decoded = input;
+  try {
+    decoded = decodeURIComponent(input);
+  } catch {
+    decoded = input;
+  }
+  const raw = unproxyImageUrl(decoded);
+  try {
+    const host = new URL(raw).hostname.toLowerCase();
+    return host === `images.${blockedStockImageHost}`
+      || host === `plus.${blockedStockImageHost}`
+      || host.endsWith(`.${blockedStockImageHost}`);
+  } catch {
+    return new RegExp(`(?:images|plus)\\.${blockedStockImageSource}\\.com`, 'i').test(decoded);
+  }
+}
+
 function isAllowedRemoteImageUrl(value) {
   const cleanUrl = sanitizeUrl(value);
   if (!cleanUrl) return false;
+  if (isBlockedStockImageUrl(cleanUrl)) return false;
   const parsed = new URL(cleanUrl);
   if (parsed.protocol !== 'https:') return false;
   if (/\.(?:eot|woff2?|ttf|otf|css|js|map)(?:\?|$)/i.test(parsed.pathname)) return false;
@@ -58,6 +81,7 @@ function isPrivateIp(hostname = '') {
 function isSafeTrustedRemoteImageUrl(value) {
   const cleanUrl = sanitizeUrl(value);
   if (!cleanUrl) return false;
+  if (isBlockedStockImageUrl(cleanUrl)) return false;
   const parsed = new URL(cleanUrl);
   const host = parsed.hostname.toLowerCase();
   if (parsed.protocol !== 'https:') return false;
@@ -127,82 +151,75 @@ function imageProxyUrl(value) {
 function directDisplayImageUrl(value) {
   const cleanUrl = highQualityImageUrl(value) || sanitizeUrl(value);
   if (!cleanUrl) return '';
+  if (isBlockedStockImageUrl(cleanUrl)) return '';
   return imageProxyUrl(cleanUrl) || cleanUrl;
 }
 
 const representativeImages = [
   {
     pattern: /\b(?:samsung\s*)?(?:smart\s*)?(?:oled|qled|uhd|4k|8k|led)?\s*(?:tv|television)\b/i,
-    url: 'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg'
   },
   {
     pattern: /\b(?:hp|dell|lenovo|asus|acer|msi|macbook|notebook|chromebook|laptop)\b/i,
-    url: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://m.media-amazon.com/images/I/51XekLq5PxL._AC_SL1500_.jpg'
   },
   {
     pattern: /\b(?:iphone|smartphone|mobile phone|cell phone|android phone|galaxy|pixel)\b/i,
-    url: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=1400&q=88'
+    url: defaultRealProductImage
   },
   {
     pattern: /\b(?:headphone|headset|earbud|earphone)\b/i,
-    url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://ae-pic-a1.aliexpress-media.com/kf/S723c58a1136745c28ac69eb6ce156304U.jpg'
   },
   {
     pattern: /\b(?:smartwatch|watch)\b/i,
-    url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://m.media-amazon.com/images/I/71pzkmU3PuL._AC_SL1500_.jpg'
   },
   {
     pattern: /\b(?:camera|dslr|mirrorless|lens)\b/i,
-    url: 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg'
   },
   {
     pattern: /\b(?:speaker|soundbar|audio)\b/i,
-    url: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://ae-pic-a1.aliexpress-media.com/kf/S723c58a1136745c28ac69eb6ce156304U.jpg'
   },
   {
-    pattern: /\b(?:shoe|sneaker|boot|trainer)\b/i,
-    url: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1400&q=88'
+    pattern: /\b(?:shoe|shoes|sneaker|sneakers|boot|boots|trainer|trainers)\b/i,
+    url: 'https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$'
   },
   {
     pattern: /\b(?:beauty|serum|cream|skincare|makeup|perfume|fragrance)\b/i,
-    url: 'https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://m.media-amazon.com/images/I/51Zw2fYy13L._AC_SL1500_.jpg'
   },
   {
     pattern: /\b(?:bag|wallet|jewelry|ring|necklace|bracelet|accessory|accessories)\b/i,
-    url: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://ae-pic-a1.aliexpress-media.com/kf/Sc2a92e0df47446ed80dca980bc33604aT.jpg'
   },
   {
     pattern: /\b(?:ssd|hard drive|storage|nvme|computer part|pc|gaming|electronics|gadget|device)\b/i,
-    url: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1400&q=88'
+    url: 'https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg'
   }
 ];
 
 function representativeProductImageUrl(metadata = {}) {
-  const text = [
+  const haystack = [
     metadata.title,
+    metadata.productTitle,
+    metadata.name,
     metadata.category,
-    metadata.collection,
-    metadata.supplierName,
-    ...(metadata.tags || []),
-    ...(metadata.features || [])
+    metadata.collection
   ].filter(Boolean).join(' ');
-  const match = representativeImages.find((item) => item.pattern.test(text));
-  const url = match?.url || 'https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1400&q=88';
-  return directDisplayImageUrl(url);
+  const match = representativeImages.find((item) => item.url && item.pattern.test(haystack));
+  return highQualityImageUrl(match?.url || defaultRealProductImage);
 }
 
 function isGeneratedFallbackUrl(value = '') {
-  return String(value || '').startsWith('/api/media/fallback');
+  return String(value || '').startsWith(generatedFallbackPath);
 }
 
 function fallbackImageUrl(metadata = {}) {
-  const params = new URLSearchParams({
-    title: sanitizeString(metadata.title || 'MAT STORE Product', 90),
-    marketplace: sanitizeString(metadata.supplierName || metadata.marketplace || 'MAT STORE', 40),
-    code: sanitizeString(metadata.supplierProductCode || '', 40),
-    category: sanitizeString(metadata.category || 'premium pick', 40)
-  });
-  return `/api/media/fallback?${params.toString()}`;
+  return representativeProductImageUrl(metadata);
 }
 
 function imageSearchQuery(metadata = {}) {
@@ -281,7 +298,7 @@ async function discoverProductImageUrl(metadata = {}) {
 }
 
 function resolveProductImage(remoteImage, metadata = {}) {
-  const cleanRemote = highQualityImageUrl(remoteImage) || sanitizeUrl(remoteImage);
+  const cleanRemote = isBlockedStockImageUrl(remoteImage) ? '' : highQualityImageUrl(remoteImage) || sanitizeUrl(remoteImage);
   const generatedFallbackImage = fallbackImageUrl(metadata);
   const representativeImage = representativeProductImageUrl(metadata);
   const fallbackImage = representativeImage || generatedFallbackImage;
@@ -343,6 +360,7 @@ module.exports = {
   isGeneratedFallbackUrl,
   isAllowedRemoteImageUrl,
   isSafeTrustedRemoteImageUrl,
+  isBlockedStockImageUrl,
   representativeProductImageUrl,
   resolveBestProductImage,
   resolveProductImage

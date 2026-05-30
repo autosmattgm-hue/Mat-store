@@ -8,10 +8,12 @@ const reviewService = require('./reviewService');
 const searchMatch = require('../utils/searchMatch');
 const { sanitizeString } = require('../utils/sanitize');
 const { cleanProductTitle } = require('../utils/productTitle');
+const { hasRealProductMedia, isQuestionableProduct, primaryRealProductMedia } = require('../utils/catalogQuality');
 const HttpError = require('../utils/httpError');
 
 function sanitizeImageUrl(value) {
   const clean = sanitizeString(value, 2048);
+  if (mediaService.isBlockedStockImageUrl(clean)) return '';
   if (/^https?:\/\//i.test(clean)) return clean;
   if (/^\/(?:api\/media|assets)\//i.test(clean)) return clean;
   return '';
@@ -104,7 +106,8 @@ function isGeneratedCategoryProduct(product = {}) {
 function isWeakProductImage(product = {}) {
   const imageText = [product.imageStatus, product.imageSource, product.images?.[0]].filter(Boolean).join(' ');
   return !product.images?.length
-    || /curated-photo-fallback|generated-fallback|representative|unsplash|fallback/i.test(imageText)
+    || /curated-photo-fallback|generated-fallback|representative|fallback/i.test(imageText)
+    || mediaService.isBlockedStockImageUrl(imageText)
     || mediaService.isGeneratedFallbackUrl(product.images?.[0] || '');
 }
 
@@ -270,7 +273,7 @@ function normalizePricingPlan(value = {}, product = {}) {
     paymentBuffer: Number(value.paymentBuffer ?? 0),
     riskBuffer: Number(value.riskBuffer ?? 0),
     fixedMargin: Number(value.fixedMargin ?? 0),
-    strategy: sanitizeString(value.strategy || 'AI smart pricing', 120),
+    strategy: sanitizeString(value.strategy || 'MAT AI smart pricing', 120),
     tier: sanitizeString(value.tier || '', 80),
     businessRule: sanitizeString(value.businessRule || '', 120),
     hardToFind: Boolean(value.hardToFind),
@@ -285,11 +288,13 @@ function normalizePricingPlan(value = {}, product = {}) {
 }
 
 function productWithFallbackImage(product) {
-  const representativeImage = mediaService.representativeProductImageUrl(product);
-  const fallbackImage = product.fallbackImage && !mediaService.isGeneratedFallbackUrl(product.fallbackImage)
+  const imageMetadata = { ...product, title: cleanProductTitle(product.title || 'MAT STORE Product') };
+  const primaryRealImage = primaryRealProductMedia(product);
+  const representativeImage = mediaService.representativeProductImageUrl(imageMetadata);
+  const fallbackImage = primaryRealImage || (product.fallbackImage && !mediaService.isGeneratedFallbackUrl(product.fallbackImage)
     ? product.fallbackImage
-    : representativeImage || mediaService.fallbackImageUrl(product);
-  const sourceImages = Array.isArray(product.images) && product.images.length ? product.images : [representativeImage];
+    : representativeImage || mediaService.fallbackImageUrl(imageMetadata));
+  const sourceImages = Array.isArray(product.images) && product.images.length ? product.images : [primaryRealImage || representativeImage];
   const images = sourceImages
     .map((image) => (mediaService.isGeneratedFallbackUrl(image) ? representativeImage : highQualityDisplayImage(image)))
     .filter(Boolean);
@@ -310,6 +315,10 @@ function normalizeProduct(payload, existing = {}) {
   const supplierPrice = Number(payload.supplierPrice ?? existing.supplierPrice ?? payload.price ?? existing.price ?? 0);
   const price = Number(payload.price ?? existing.price ?? supplierPrice);
   const stock = Math.max(0, Math.floor(Number(payload.stock ?? existing.stock ?? 0)));
+  const requestedStatus = sanitizeString(payload.status || existing.status || 'active', 40);
+  const status = requestedStatus === 'active' && isQuestionableProduct({ ...existing, ...payload, title })
+    ? 'draft'
+    : requestedStatus;
 
   return {
     ...existing,
@@ -330,7 +339,7 @@ function normalizeProduct(payload, existing = {}) {
     markupPercent: Number(payload.markupPercent ?? existing.markupPercent ?? 40),
     stock,
     lowStockThreshold: Math.max(1, Math.floor(Number(payload.lowStockThreshold ?? existing.lowStockThreshold ?? 6))),
-    status: sanitizeString(payload.status || existing.status || 'active', 40),
+    status,
     images: sanitizeImages(payload.images, existing.images || []),
     supplierImageUrl: sanitizeImageUrl(payload.supplierImageUrl || existing.supplierImageUrl || ''),
     fallbackImage: sanitizeImageUrl(payload.fallbackImage || existing.fallbackImage || ''),
@@ -401,8 +410,13 @@ async function listProducts(query = {}) {
   const inStock = ['true', '1', 'yes', 'on'].includes(String(query.inStock || '').toLowerCase());
   const brand = sanitizeString(query.brand || '', 120).toLowerCase();
   const trending = isTrendingRequest(query);
+  const includeDrafts = ['true', '1', 'yes', 'on'].includes(String(query.includeDrafts || '').toLowerCase());
 
-  let filtered = products.filter((product) => product.status !== 'archived');
+  let filtered = products.filter((product) => (
+    includeDrafts
+      ? product.status !== 'archived'
+      : product.status === 'active' && hasRealProductMedia(product) && !isQuestionableProduct(product)
+  ));
   let scoredSearchProducts = null;
   if (search) {
     scoredSearchProducts = filtered
@@ -463,7 +477,7 @@ async function getProduct(idOrSlug, currency = 'USD') {
   if (!product) throw new HttpError(404, 'Product not found.');
 
   const related = products
-    .filter((item) => item.id !== product.id && (item.category === product.category || item.collection === product.collection))
+    .filter((item) => item.status === 'active' && hasRealProductMedia(item) && item.id !== product.id && (item.category === product.category || item.collection === product.collection))
     .slice(0, 6)
     .map((item) => productForCurrency(item, currency));
 
@@ -617,7 +631,7 @@ async function repairPricing(options = {}) {
             newPrice: nextProduct.price,
             supplierPrice: nextProduct.supplierPrice,
             grossProfit: nextProduct.pricingPlan?.grossProfit || afterProfit,
-            strategy: nextProduct.pricingPlan?.strategy || 'AI smart pricing'
+            strategy: nextProduct.pricingPlan?.strategy || 'MAT AI smart pricing'
           });
         }
       }
@@ -880,7 +894,7 @@ async function searchSuggestions(q) {
   if (!search) return [];
   return products
     .map((product) => ({ product, search: searchMatch.scoreProduct(search, product) }))
-    .filter((entry) => entry.product.status !== 'archived' && entry.search.relevant)
+    .filter((entry) => entry.product.status === 'active' && hasRealProductMedia(entry.product) && !isQuestionableProduct(entry.product) && entry.search.relevant)
     .sort((a, b) => b.search.score - a.search.score)
     .filter((entry, index, entries) => entries.findIndex((candidate) => visibleProductKey(candidate.product) === visibleProductKey(entry.product)) === index)
     .slice(0, 8)

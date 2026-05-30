@@ -434,9 +434,10 @@ function normalizeImageUrl(value, baseUrl = '') {
 function scoreImageUrl(url, marketplace = '') {
   const value = String(url || '').toLowerCase();
   if (!value || /(sprite|logo|icon|pixel|blank|transparent|loading|placeholder|spinner)/i.test(value)) return -100;
+  if (mediaService.isBlockedStockImageUrl(value)) return -100;
   if (/\.(?:eot|woff2?|ttf|otf|css|js|map)(?:\?|$)/i.test(value)) return -100;
   let score = 10;
-  if (/(media-amazon|ssl-images-amazon|alicdn|ebayimg|kwcdn|walmartimages|unsplash)/i.test(value)) score += 30;
+  if (/(media-amazon|ssl-images-amazon|alicdn|ebayimg|kwcdn|walmartimages)/i.test(value)) score += 30;
   if (/m\.media-amazon\.com\/images\/i\//i.test(value)) score += 60;
   if (/\/images\/s\/aplus-media/i.test(value)) score -= 45;
   if (/\._ac_s[lsx]?/i.test(value) || /\._sl\d+/i.test(value)) score += 25;
@@ -531,7 +532,7 @@ function extractImage(html, baseUrl = '', marketplace = '') {
 
 function fallbackFeatures(metadata, imageStatus) {
   const base = [
-    'AI-polished product presentation',
+    'MAT AI-polished product presentation',
     'Secure MAT STORE checkout',
     'Curated marketplace sourcing',
     'Premium customer support workflow'

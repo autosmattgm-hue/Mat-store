@@ -38,7 +38,7 @@
     const price = Number(product.price || 0);
     const grossProfit = Number(product.pricingPlan?.grossProfit ?? (price - supplierPrice));
     const marginPercent = Number(product.pricingPlan?.marginPercent ?? (price ? (grossProfit / price) * 100 : 0));
-    const strategy = product.pricingPlan?.strategy || 'AI smart pricing';
+    const strategy = product.pricingPlan?.strategy || 'MAT AI smart pricing';
     return {
       supplierPrice,
       price,
@@ -50,14 +50,23 @@
     };
   }
 
+  const REAL_PRODUCT_FALLBACK_IMAGES = {
+    beauty: 'https://m.media-amazon.com/images/I/51Zw2fYy13L._AC_SL1500_.jpg',
+    electronics: 'https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg',
+    gadgets: 'https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg',
+    gaming: 'https://ae-pic-a1.aliexpress-media.com/kf/S723c58a1136745c28ac69eb6ce156304U.jpg',
+    fashion: 'https://ae-pic-a1.aliexpress-media.com/kf/S66eaa0a2ae354e35aac7c1f59272ef96Z.jpg',
+    accessories: 'https://ae-pic-a1.aliexpress-media.com/kf/Sc2a92e0df47446ed80dca980bc33604aT.jpg',
+    shoes: 'https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$',
+    home: 'https://ae-pic-a1.aliexpress-media.com/kf/S893dd8fb60674a73b45aad6d0cf1e3d6R.png',
+    fitness: 'https://m.media-amazon.com/images/I/71pzkmU3PuL._AC_SL1500_.jpg',
+    default: 'https://i5.walmartimages.com/seo/Owyfho-20W-PD-15W-Wireless-Fast-Charge-5000mAh-Portable-Magsafe-Power-Bank-for-iPhone-16-15-14-Samsung_a280b79f-5a86-46cc-9a16-bf0583dbbbd8bc258907a82.jpeg?odnHeight=1600&odnWidth=1600&odnBg=FFFFFF'
+  };
+
   function generatedFallback(product = {}) {
-    const query = new URLSearchParams({
-      title: product.title || 'MAT STORE Product',
-      marketplace: product.supplierName || 'MAT STORE',
-      code: product.supplierProductCode || '',
-      category: product.category || 'premium pick'
-    });
-    return `/api/media/fallback?${query.toString()}`;
+    const key = `${product.category || ''} ${product.title || ''}`.toLowerCase();
+    const match = Object.keys(REAL_PRODUCT_FALLBACK_IMAGES).find((category) => category !== 'default' && key.includes(category));
+    return REAL_PRODUCT_FALLBACK_IMAGES[match] || REAL_PRODUCT_FALLBACK_IMAGES.default;
   }
 
   function productImage(product = {}) {
@@ -279,7 +288,7 @@
         <div><strong>${money(analytics.marginValue || 0)}</strong><span>gross margin</span></div>
       </div>
       <div class="metric-row">
-        <div><strong>Pricing protection</strong><span>${Number(pricingHealth.protected || 0)} AI-priced · ${Number(pricingHealth.hardToFind || 0)} hard-to-find at 50%</span></div>
+        <div><strong>Pricing protection</strong><span>${Number(pricingHealth.protected || 0)} MAT AI-priced · ${Number(pricingHealth.hardToFind || 0)} hard-to-find at 50%</span></div>
         <div><strong>${Number(pricingHealth.underpriced || 0)}</strong><span>underpriced</span></div>
       </div>
       <div class="metric-row">
@@ -512,7 +521,7 @@
         }));
       renderImportPreview();
       document.getElementById('confirmImportButton').disabled = !state.preview.length;
-      toast(`${state.preview.length} AI import preview${state.preview.length === 1 ? '' : 's'} ready.`);
+      toast(`${state.preview.length} MAT AI import preview${state.preview.length === 1 ? '' : 's'} ready.`);
     } catch (error) {
       toast(error.message);
     } finally {
@@ -709,7 +718,7 @@
   }
 
   async function repairPricing() {
-    const confirmed = window.confirm('Recalculate all product prices with AI business pricing? Standard products use 40% markup and hard-to-find products use 50% markup.');
+    const confirmed = window.confirm('Recalculate all product prices with MAT AI business pricing? Standard products use 40% markup and hard-to-find products use 50% markup.');
     if (!confirmed) return;
     const button = document.getElementById('repairPricingButton');
     if (button) button.disabled = true;
@@ -718,7 +727,7 @@
       const result = await api.post('/admin/products/repair-pricing', { markupPercent });
       await Promise.all([loadProducts(), loadDashboard()]);
       window.MATApp?.reloadProducts();
-      toast(`AI pricing repaired ${result.updated || 0} product${Number(result.updated || 0) === 1 ? '' : 's'}.`);
+      toast(`MAT AI pricing repaired ${result.updated || 0} product${Number(result.updated || 0) === 1 ? '' : 's'}.`);
     } catch (error) {
       toast(error.message);
     } finally {

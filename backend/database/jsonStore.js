@@ -1,5 +1,6 @@
 const fs = require('fs/promises');
 const path = require('path');
+const firestoreStore = require('./firestoreStore');
 
 const sourceDatabaseDir = path.join(__dirname, '..', '..', 'database');
 const databaseDir =
@@ -30,7 +31,7 @@ const defaults = {
     },
     seo: {
       siteName: 'MAT STORE',
-      canonicalBaseUrl: 'http://localhost:3000'
+      canonicalBaseUrl: 'https://mat-store-dun.vercel.app'
     }
   }
 };
@@ -57,19 +58,41 @@ async function ensureCollection(collection) {
   }
 }
 
-async function read(collection) {
+function cloneDefault(collection) {
+  return JSON.parse(JSON.stringify(defaults[collection] ?? []));
+}
+
+async function localRead(collection) {
   await ensureCollection(collection);
   const raw = await fs.readFile(filePath(collection), 'utf8');
-  if (!raw.trim()) return defaults[collection] ?? [];
+  if (!raw.trim()) return cloneDefault(collection);
   return JSON.parse(raw);
 }
 
-async function write(collection, data) {
+async function localWrite(collection, data) {
   await ensureCollection(collection);
   const tempFile = `${filePath(collection)}.tmp`;
   await fs.writeFile(tempFile, JSON.stringify(data, null, 2));
   await fs.rename(tempFile, filePath(collection));
   return data;
+}
+
+async function read(collection) {
+  if (firestoreStore.enabled()) {
+    const cloudData = await firestoreStore.read(collection);
+    if (cloudData !== null && (!Array.isArray(cloudData) || cloudData.length)) return cloudData;
+    try {
+      return await localRead(collection);
+    } catch {
+      return cloneDefault(collection);
+    }
+  }
+  return localRead(collection);
+}
+
+async function write(collection, data) {
+  if (firestoreStore.enabled()) return firestoreStore.write(collection, data);
+  return localWrite(collection, data);
 }
 
 async function update(collection, mutator) {
@@ -97,6 +120,9 @@ module.exports = {
   read,
   write,
   update,
+  localRead,
+  localWrite,
+  usingFirestore: firestoreStore.enabled,
   databaseDir,
   sourceDatabaseDir
 };

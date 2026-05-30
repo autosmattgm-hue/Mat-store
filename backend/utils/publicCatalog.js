@@ -1,4 +1,5 @@
 const { cleanProductTitle, formatBrandTitle } = require('./productTitle');
+const mediaService = require('../services/mediaService');
 
 const SOURCE_PATTERN = /\b(?:amazon(?:\.com)?|walmart|aliexpress|ali\s*express|alibaba|ebay|temu|supplier|marketplace|seller|shipper|fulfillment|source)\b/i;
 const SOURCE_LABEL_PATTERN = /^(?:marketplace|supplier(?:\s+(?:code|list\s+price|search\s+url|price|cost))?|source|seller|shipper|fulfillment|image\s+override)$/i;
@@ -92,21 +93,44 @@ function publicVariants(product = {}) {
   return variants;
 }
 
-function publicFallbackImage(product = {}) {
-  const params = new URLSearchParams({
-    title: cleanProductTitle(cleanSourceText(product.title || 'MAT STORE Product')),
-    marketplace: 'MAT STORE',
-    code: '',
-    category: product.category || 'premium pick'
-  });
-  return `/api/media/fallback?${params.toString()}`;
+function unproxiedImageUrl(value = '') {
+  const raw = String(value || '').trim();
+  if (!raw.startsWith('/api/media/image')) return raw;
+  try {
+    const parsed = new URL(raw, 'https://matstore.local');
+    return parsed.searchParams.get('url') || '';
+  } catch {
+    return '';
+  }
+}
+
+function publicRemoteImageUrl(value = '') {
+  const raw = unproxiedImageUrl(value);
+  if (!/^https?:\/\//i.test(raw)) return '';
+  if (mediaService.isBlockedStockImageUrl(raw)) return '';
+  return mediaService.highQualityImageUrl(raw) || raw;
 }
 
 function publicImages(product = {}) {
-  const fallback = publicFallbackImage(product);
-  const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
-  if (!images.length || !product.id) return [fallback];
-  return images.map((_, index) => `/api/media/product/${encodeURIComponent(product.id)}/${index}`);
+  const candidates = [
+    ...(Array.isArray(product.images) ? product.images : []),
+    product.image,
+    product.supplierImageUrl,
+    product.fallbackImage
+  ];
+  const seen = new Set();
+  const images = [];
+
+  for (const candidate of candidates) {
+    const image = publicRemoteImageUrl(candidate);
+    const key = image.toLowerCase();
+    if (!image || seen.has(key)) continue;
+    seen.add(key);
+    images.push(image);
+    if (images.length >= 8) break;
+  }
+
+  return images;
 }
 
 function publicMarketplaceDetails(product = {}) {
@@ -144,10 +168,31 @@ function publicMarketplaceDetails(product = {}) {
   };
 }
 
+function publicRelatedProduct(product = {}) {
+  const title = cleanProductTitle(cleanSourceText(product.title || 'MAT STORE Product'));
+  const images = publicImages(product);
+  return {
+    id: product.id,
+    slug: product.slug || product.id,
+    title,
+    category: publicCategoryLabel(product.category),
+    collection: publicCollection(product),
+    price: product.price,
+    formattedPrice: product.formattedPrice,
+    currency: product.currency,
+    rating: product.rating,
+    reviewsCount: product.reviewsCount,
+    images,
+    image: images[0] || undefined,
+    fallbackImage: images[0] || undefined
+  };
+}
+
 function publicProduct(product = {}) {
   const title = cleanProductTitle(cleanSourceText(product.title || 'MAT STORE Product'));
   const description = publicDescription({ ...product, title });
   const shortDescription = cleanSourceText(product.shortDescription || '');
+  const images = publicImages(product);
   return {
     ...product,
     slug: product.id || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
@@ -157,8 +202,9 @@ function publicProduct(product = {}) {
       ? shortDescription
       : `${publicCategoryLabel(product.category)} selected for secure MAT STORE checkout.`,
     collection: publicCollection(product),
-    images: publicImages(product),
-    fallbackImage: publicFallbackImage(product),
+    images,
+    image: images[0] || undefined,
+    fallbackImage: images[0] || undefined,
     supplierUrl: undefined,
     supplierName: undefined,
     supplierProductCode: undefined,
@@ -176,6 +222,7 @@ function publicProduct(product = {}) {
     imageCandidateCount: undefined,
     mediaConfidence: undefined,
     markupPercent: undefined,
+    related: Array.isArray(product.related) ? product.related.map(publicRelatedProduct) : undefined,
     createdAt: undefined,
     updatedAt: undefined,
     variants: publicVariants(product),
@@ -208,11 +255,12 @@ function publicCatalogResult(result = {}) {
 }
 
 function publicSuggestion(item = {}) {
+  const realImage = publicImages(item)[0] || publicRemoteImageUrl(item.image);
   return {
     ...item,
     slug: item.id || item.slug,
     title: cleanProductTitle(cleanSourceText(item.title || 'MAT STORE Product')),
-    image: item.image || publicFallbackImage(item),
+    image: realImage,
     supplierName: undefined,
     supplierProductCode: undefined
   };

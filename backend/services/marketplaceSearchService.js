@@ -389,7 +389,7 @@ async function fallbackSearchProducts(source, query, sourceUrl, perSourceLimit, 
         `Exact ${source.name} search entry for "${query}"`,
         'Supplier page should be verified before fulfillment',
         'Saved into MAT STORE for local browsing and checkout',
-        'AI smart pricing applies the 40% standard rule'
+        'MAT AI smart pricing applies the 40% standard rule'
       ],
       marketplaceDetails: {
         brand: source.name,

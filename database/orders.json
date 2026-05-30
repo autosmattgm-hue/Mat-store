@@ -25,7 +25,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 1259.99,
-        "lineTotal": 1259.99
+        "lineTotal": 1259.99,
+        "fallbackImage": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6549/6549071ld.jpg"
       }
     ],
     "currency": "GMD",
@@ -118,7 +119,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 83.99,
-        "lineTotal": 83.99
+        "lineTotal": 83.99,
+        "fallbackImage": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$"
       }
     ],
     "currency": "USD",
@@ -195,7 +197,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 83.99,
-        "lineTotal": 83.99
+        "lineTotal": 83.99,
+        "fallbackImage": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$"
       }
     ],
     "currency": "USD",
@@ -288,7 +291,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 83.99,
-        "lineTotal": 83.99
+        "lineTotal": 83.99,
+        "fallbackImage": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$"
       }
     ],
     "currency": "USD",
@@ -381,7 +385,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 83.99,
-        "lineTotal": 83.99
+        "lineTotal": 83.99,
+        "fallbackImage": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$"
       }
     ],
     "currency": "USD",
@@ -463,7 +468,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 83.99,
-        "lineTotal": 83.99
+        "lineTotal": 83.99,
+        "fallbackImage": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$"
       }
     ],
     "currency": "USD",
@@ -540,7 +546,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 83.99,
-        "lineTotal": 83.99
+        "lineTotal": 83.99,
+        "fallbackImage": "https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$"
       }
     ],
     "currency": "USD",
@@ -613,11 +620,12 @@
       {
         "productId": "196dbfd0-746f-410a-bd67-144566e7f1f7",
         "title": "Lenovo Legion Tower 5i – AI-Powered Gaming PC - Intel® Core Ultra 7 265F P",
-        "image": "/api/media/image?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F51XekLq5PxL._AC_SX679_.jpg",
+        "image": "https://m.media-amazon.com/images/I/51XekLq5PxL._AC_SX679_.jpg",
         "quantity": 1,
         "variant": "",
         "unitPrice": 3848.99,
-        "lineTotal": 3848.99
+        "lineTotal": 3848.99,
+        "fallbackImage": "https://m.media-amazon.com/images/I/51XekLq5PxL._AC_SX679_.jpg"
       }
     ],
     "currency": "USD",
@@ -694,7 +702,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 111.99,
-        "lineTotal": 111.99
+        "lineTotal": 111.99,
+        "fallbackImage": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6514/6514475_sd.jpg"
       }
     ],
     "currency": "USD",
@@ -767,11 +776,12 @@
       {
         "productId": "024232cb-fe04-4b35-90d2-4f4f6300088c",
         "title": "Logitech Wireless Gaming Mouse",
-        "image": "/api/media/image?url=https%3A%2F%2Fi5.walmartimages.com%2Fseo%2FLogitech-G305-Wireless-Gaming-Mouse-12-000-DPI-Lightweight-6-Programmable-Buttons-Black_644a1b19-537a-40da-939e-905b4fa143e0.62c7af24c06385421106a7f059761ad0.jpeg%3FodnHeight%3D1600%26odnWidth%3D1600%26odnBg%3DFFFFFF",
+        "image": "https://i5.walmartimages.com/seo/Logitech-G305-Wireless-Gaming-Mouse-12-000-DPI-Lightweight-6-Programmable-Buttons-Black_644a1b19-537a-40da-939e-905b4fa143e0.62c7af24c06385421106a7f059761ad0.jpeg?odnHeight=1600&odnWidth=1600&odnBg=FFFFFF",
         "quantity": 1,
         "variant": "",
         "unitPrice": 1259.99,
-        "lineTotal": 1259.99
+        "lineTotal": 1259.99,
+        "fallbackImage": "https://i5.walmartimages.com/seo/Logitech-G305-Wireless-Gaming-Mouse-12-000-DPI-Lightweight-6-Programmable-Buttons-Black_644a1b19-537a-40da-939e-905b4fa143e0.62c7af24c06385421106a7f059761ad0.jpeg?odnHeight=1600&odnWidth=1600&odnBg=FFFFFF"
       }
     ],
     "currency": "GMD",
@@ -829,7 +839,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 111.99,
-        "lineTotal": 111.99
+        "lineTotal": 111.99,
+        "fallbackImage": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6514/6514475_sd.jpg"
       }
     ],
     "currency": "GMD",
@@ -883,11 +894,12 @@
       {
         "productId": "c5ce402e-fa90-4a09-a125-aee743b051c5",
         "title": "Arolina 2 Piece Swimsuit for Women Tummy Control Bathing Suits Full Covera",
-        "image": "/api/media/image?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71C1InSWaEL._AC_SL1500_.jpg",
+        "image": "https://m.media-amazon.com/images/I/71C1InSWaEL._AC_SL1500_.jpg",
         "quantity": 1,
         "variant": "",
         "unitPrice": 57.99,
-        "lineTotal": 57.99
+        "lineTotal": 57.99,
+        "fallbackImage": "https://m.media-amazon.com/images/I/71C1InSWaEL._AC_SL1500_.jpg"
       }
     ],
     "currency": "GMD",
@@ -945,7 +957,8 @@
         "quantity": 1,
         "variant": "",
         "unitPrice": 1259.99,
-        "lineTotal": 1259.99
+        "lineTotal": 1259.99,
+        "fallbackImage": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6549/6549071ld.jpg"
       }
     ],
     "currency": "USD",
@@ -999,11 +1012,12 @@
       {
         "productId": "prd_rose_bag_003",
         "title": "Rose Gold Structured Carryall",
-        "image": "https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=1100&q=82",
+        "image": "https://i5.walmartimages.com/seo/Owyfho-20W-PD-15W-Wireless-Fast-Charge-5000mAh-Portable-Magsafe-Power-Bank-for-iPhone-16-15-14-Samsung_a280b79f-5a86-46cc-9a16-bf0583dbd636.d5dc961a9549ce3dbbbd8bc258907a82.jpeg?odnHeight=1600&odnWidth=1600&odnBg=FFFFFF",
         "quantity": 1,
         "variant": "",
         "unitPrice": 68.99,
-        "lineTotal": 68.99
+        "lineTotal": 68.99,
+        "fallbackImage": "https://i5.walmartimages.com/seo/Owyfho-20W-PD-15W-Wireless-Fast-Charge-5000mAh-Portable-Magsafe-Power-Bank-for-iPhone-16-15-14-Samsung_a280b79f-5a86-46cc-9a16-bf0583dbd636.d5dc961a9549ce3dbbbd8bc258907a82.jpeg?odnHeight=1600&odnWidth=1600&odnBg=FFFFFF"
       }
     ],
     "currency": "USD",

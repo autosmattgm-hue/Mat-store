@@ -1,5 +1,31 @@
 [
   {
+    "id": "d4cf8cec-db7c-40af-b07c-ab00847bf910",
+    "cartId": "8588d037-5c90-443b-a9e0-420ee0a19707",
+    "userId": "4ff9bf15-b9d5-41cb-b175-0fef0f98f4c7",
+    "sessionId": null,
+    "currency": "GMD",
+    "itemCount": 1,
+    "estimatedValue": 111.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-30T19:55:58.224Z",
+    "lastReminderAt": null
+  },
+  {
+    "id": "92bdccfe-5b7c-4ed7-a803-e35daf255fd9",
+    "cartId": "a9684611-e3e9-4dea-aed8-d101cfbfb7cd",
+    "userId": null,
+    "sessionId": "ea76c3f7-84e2-4b1a-b127-3fa6051959b8",
+    "currency": "GMD",
+    "itemCount": 1,
+    "estimatedValue": 111.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-05-30T19:55:58.224Z",
+    "lastReminderAt": null
+  },
+  {
     "id": "0a5b53d0-02af-4495-bd01-3b7dfbbd500d",
     "cartId": "f13df3c6-c5b5-45ab-b020-0662470721d4",
     "userId": null,

@@ -12,10 +12,10 @@ function fallbackLuxuryCopy(product) {
       `A carefully sourced ${category} piece refined for MAT STORE customers, selected for elevated everyday style, clean presentation, and dependable marketplace value.`,
     shortDescription: `Luxury-curated ${category} selection with premium MAT STORE presentation.`,
     category: inferCategory(`${title} ${product.description || ''}`),
-    tags: ['ai-curated', 'premium', 'marketplace', category].filter(Boolean),
+    tags: ['mat-ai-curated', 'premium', 'marketplace', category].filter(Boolean),
     seoTitle: `${title} | MAT STORE`,
     seoDescription: `Shop ${title} at MAT STORE with secure checkout, curated styling, and premium marketplace fulfillment.`,
-    luxuryAngle: 'AI-polished merchandising, elevated imagery, premium pricing, and trust-focused conversion copy.'
+    luxuryAngle: 'MAT AI-polished merchandising, elevated imagery, premium pricing, and trust-focused conversion copy.'
   };
 }
 
@@ -89,7 +89,7 @@ async function chatCompletion(options = {}) {
 
     if (!response.ok) {
       return {
-        provider: 'nvidia-error-fallback',
+        provider: 'mat-ai-fallback',
         model: config.nvidia.model,
         content: '',
         status: response.status
@@ -98,17 +98,17 @@ async function chatCompletion(options = {}) {
 
     const data = await response.json();
     return {
-      provider: 'nvidia',
+      provider: 'mat-ai',
       model: data?.model || config.nvidia.model,
       content: String(data?.choices?.[0]?.message?.content || '').trim(),
       usage: data?.usage || null
     };
   } catch (error) {
     return {
-      provider: 'nvidia-error-fallback',
+      provider: 'mat-ai-fallback',
       model: config.nvidia.model,
       content: '',
-      error: error.name === 'AbortError' ? 'NVIDIA request timed out.' : 'NVIDIA request failed.'
+      error: error.name === 'AbortError' ? 'MAT AI request timed out.' : 'MAT AI request failed.'
     };
   } finally {
     clearTimeout(timeout);
@@ -123,7 +123,7 @@ async function enhanceProduct(product) {
     };
   }
 
-  const prompt = `You are the merchandising AI for MAT STORE, an ultra-premium ecommerce marketplace.
+  const prompt = `You are MAT AI, the merchandising engine for MAT STORE, an ultra-premium ecommerce marketplace.
 Return strict JSON only with keys: title, description, shortDescription, category, tags, seoTitle, seoDescription, luxuryAngle.
 Create elegant, conversion-focused, truthful ecommerce copy without unsupported claims.
 Keep the title as the real supplier product name. Do not prefix the product title with MAT or MAT STORE.
@@ -141,7 +141,7 @@ Product source data: ${JSON.stringify(product).slice(0, 5000)}`;
 
   if (!response.content) {
     return {
-      provider: response.provider || 'nvidia-error-fallback',
+      provider: response.provider || 'mat-ai-fallback',
       ...fallbackLuxuryCopy(product)
     };
   }
@@ -153,7 +153,7 @@ Product source data: ${JSON.stringify(product).slice(0, 5000)}`;
   const title = realTitle;
 
   return {
-    provider: response.provider || 'nvidia',
+    provider: response.provider || 'mat-ai',
     ...fallback,
     ...(parsed || {}),
     title,

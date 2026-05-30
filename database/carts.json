@@ -1,30 +1,24 @@
 [
   {
-    "id": "318fd094-1b0b-46f7-8876-1da943c01842",
+    "id": "977f3ca3-33c7-4537-91a9-d34e190113f4",
     "sessionId": "a9613af6-8027-4944-8061-2925435a9fa3",
     "currency": "GMD",
     "items": [],
     "status": "empty",
-    "updatedAt": "2026-05-29T14:17:48.588Z",
-    "createdAt": "2026-05-29T14:17:48.588Z"
+    "updatedAt": "2026-05-30T20:13:21.097Z",
+    "createdAt": "2026-05-30T20:13:21.097Z"
   },
   {
-    "id": "2d691976-3da2-402c-aa19-0b93ca649070",
-    "sessionId": "ea76c3f7-84e2-4b1a-b127-3fa6051959b8",
+    "id": "9130d229-3ac0-4f2a-a326-005353794ebc",
+    "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",
     "currency": "GMD",
-    "items": [
-      {
-        "productId": "96c5f38b-acf1-47e9-8465-e99c37bdb2b8",
-        "quantity": 1,
-        "variant": ""
-      }
-    ],
-    "status": "active",
-    "updatedAt": "2026-05-29T13:55:35.506Z",
-    "createdAt": "2026-05-29T13:55:35.506Z"
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-05-30T19:56:40.322Z",
+    "createdAt": "2026-05-30T19:56:40.322Z"
   },
   {
-    "id": "443a37b9-77a5-48c7-b61b-dacb13300166",
+    "id": "8588d037-5c90-443b-a9e0-420ee0a19707",
     "userId": "4ff9bf15-b9d5-41cb-b175-0fef0f98f4c7",
     "currency": "GMD",
     "items": [
@@ -35,17 +29,23 @@
       }
     ],
     "status": "active",
-    "updatedAt": "2026-05-29T12:03:19.148Z",
-    "createdAt": "2026-05-29T12:03:19.148Z"
+    "updatedAt": "2026-05-30T19:22:59.221Z",
+    "createdAt": "2026-05-30T19:22:59.221Z"
   },
   {
-    "id": "7c0fc129-c1f8-48ad-8c99-b89c0225dec7",
-    "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",
+    "id": "a9684611-e3e9-4dea-aed8-d101cfbfb7cd",
+    "sessionId": "ea76c3f7-84e2-4b1a-b127-3fa6051959b8",
     "currency": "GMD",
-    "items": [],
-    "status": "empty",
-    "updatedAt": "2026-05-27T17:19:39.031Z",
-    "createdAt": "2026-05-27T17:19:39.031Z"
+    "items": [
+      {
+        "productId": "96c5f38b-acf1-47e9-8465-e99c37bdb2b8",
+        "quantity": 1,
+        "variant": ""
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-05-30T19:21:24.892Z",
+    "createdAt": "2026-05-30T19:21:24.892Z"
   },
   {
     "id": "f13df3c6-c5b5-45ab-b020-0662470721d4",
