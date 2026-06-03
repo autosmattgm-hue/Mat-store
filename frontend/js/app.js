@@ -50,10 +50,9 @@
   function rawProductImage(product = {}) {
     const candidates = [
       ...(Array.isArray(product.images) ? product.images : []),
-      product.image,
-      product.fallbackImage
+      product.image
     ].filter(Boolean);
-    return candidates.find((candidate) => !isBlockedStockImageUrl(candidate)) || generatedFallback(product);
+    return candidates.find((candidate) => !isBlockedStockImageUrl(candidate)) || '';
   }
 
   function productImage(product = {}) {
@@ -132,11 +131,24 @@
   }
 
   function clearViewImage(product = {}, src = '') {
+    const original = String(src || '');
+    if (/^\/api\/media\/(?:catalog|product)\//i.test(original) || /^\/api\/media\/image\?/i.test(original)) return original;
     const raw = unproxiedImageUrl(product.supplierImageUrl || src);
     if (isBlockedStockImageUrl(raw)) return '';
     if (!/^https?:\/\//i.test(raw)) return /^https?:\/\//i.test(src) ? src : '';
     const highRes = highQualityImageUrl(raw);
     return highRes;
+  }
+
+  function comparableImageUrl(src = '') {
+    const raw = highQualityImageUrl(unproxiedImageUrl(src));
+    try {
+      const parsed = new URL(raw, window.location.origin);
+      parsed.hash = '';
+      return parsed.toString();
+    } catch {
+      return String(raw || '').trim();
+    }
   }
 
   function halfDescription(product = {}) {
@@ -147,13 +159,16 @@
   }
 
   function productFallback(product = {}) {
+    const primary = comparableImageUrl(rawProductImage(product));
     const candidates = [
-      product.fallbackImage,
       product.image,
       ...(Array.isArray(product.images) ? product.images : [])
     ].filter(Boolean);
-    const fallback = candidates.find((candidate) => /^https?:\/\//i.test(unproxiedImageUrl(candidate)) && !isBlockedStockImageUrl(candidate));
-    return fallback ? highQualityImageUrl(unproxiedImageUrl(fallback)) : '/assets/icons/favicon.svg';
+    const fallback = candidates.find((candidate) => {
+      const raw = unproxiedImageUrl(candidate);
+      return /^https?:\/\//i.test(raw) && !isBlockedStockImageUrl(candidate) && comparableImageUrl(candidate) !== primary;
+    });
+    return fallback ? highQualityImageUrl(unproxiedImageUrl(fallback)) : rawProductImage(product);
   }
 
   function productUrl(product = {}) {
@@ -234,9 +249,11 @@
   }
 
   function imageAttrs(src, fallback) {
-    const nextFallback = fallback && !isBlockedStockImageUrl(fallback) ? fallback : '/assets/icons/favicon.svg';
-    const nextSrc = src && !isBlockedStockImageUrl(src) ? src : nextFallback;
-    return `src="${escapeHtml(nextSrc || nextFallback)}" data-fallback-src="${escapeHtml(nextFallback)}"`;
+    const cleanSrc = src && !isBlockedStockImageUrl(src) ? src : '';
+    const cleanFallback = fallback && !isBlockedStockImageUrl(fallback) ? fallback : cleanSrc;
+    const nextSrc = cleanSrc || cleanFallback || '/assets/icons/favicon.svg';
+    const fallbackAttr = cleanFallback ? ` data-fallback-src="${escapeHtml(cleanFallback)}"` : '';
+    return `src="${escapeHtml(nextSrc)}"${fallbackAttr}`;
   }
 
   function bindImageFallbacks() {
@@ -245,8 +262,11 @@
       (event) => {
         const image = event.target;
         if (!(image instanceof HTMLImageElement)) return;
-        const fallback = image.dataset.fallbackSrc || generatedFallback({ title: image.alt || 'MAT STORE Product' });
+        const fallback = image.dataset.fallbackSrc || '';
         if (!fallback || image.dataset.fallbackApplied === 'true') return;
+        try {
+          if (new URL(fallback, window.location.origin).href === image.currentSrc) return;
+        } catch {}
         image.dataset.fallbackApplied = 'true';
         image.src = fallback;
       },
@@ -309,7 +329,7 @@
     if (/\b(trending|popular|best seller|amazon's choice|choice|deal|goldbox|front page|global deals|new arrival|customer favorite)\b/i.test(text)) score += 95;
     if (/\b(iphone|galaxy|laptop|tv|smartwatch|headphone|ssd|gaming|speaker|tablet|camera|shoe|beauty)\b/i.test(text)) score += 35;
     if (Number(product.stock || 0) > 0) score += 18;
-    if (product.images?.length || product.supplierImageUrl || product.fallbackImage) score += 12;
+    if (product.images?.length || product.supplierImageUrl || product.image) score += 12;
     return score;
   }
 
@@ -537,7 +557,7 @@
             .map(
               (item) => `
                 <button class="suggestion-item" type="button" data-suggestion-product="${item.id}">
-                  <img ${imageAttrs(item.image || generatedFallback(item), generatedFallback(item))} alt="${escapeHtml(item.title)}">
+                  <img ${imageAttrs(item.image, item.image)} alt="${escapeHtml(item.title)}">
                   <strong>${escapeHtml(item.title)}<span>${escapeHtml(item.category)}</span></strong>
                 </button>
               `

@@ -19,6 +19,13 @@
     <meta name="twitter:title" content="MAT STORE | AI Luxury Marketplace">
     <meta name="twitter:description" content="MAT AI-curated luxury ecommerce with secure checkout and premium mobile experience.">
     <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <meta name="application-name" content="MAT STORE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MAT STORE">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -281,7 +288,7 @@
               <div id="adminCollectionStats" class="admin-list"></div>
             </div>
             <div>
-              <h2>Marketplace Sources</h2>
+              <h2>Private Sources</h2>
               <div id="adminMarketplaceStats" class="admin-list"></div>
             </div>
             <div>
@@ -295,7 +302,7 @@
           <div class="admin-two-col">
             <form id="importPreviewForm" class="admin-form">
               <h2>MAT AI Product Importer</h2>
-              <label for="importUrl">Marketplace product links or collection pages</label>
+              <label for="importUrl">Private product links or collection pages</label>
               <textarea id="importUrl" name="url" rows="6" placeholder="Paste supported private sourcing product links or collection pages. One link per line is best." required></textarea>
               <div class="form-grid two">
                 <label for="importMarkup">Markup percent
@@ -322,8 +329,8 @@
               <label>Title<input id="productTitle" required></label>
               <label>Category<input id="productCategory" required></label>
               <label>Collection<input id="productCollection" placeholder="Premium Deal Collection"></label>
-              <label>Supplier<input id="productSupplierName" placeholder="Private source"></label>
-              <label>Supplier URL<input id="productSupplierUrl" type="url"></label>
+              <label>Private source<input id="productSupplierName" placeholder="MAT STORE source"></label>
+              <label>Private source URL<input id="productSupplierUrl" type="url"></label>
               <label>Status
                 <select id="productStatus">
                   <option value="active">Active</option>
@@ -331,7 +338,7 @@
                   <option value="archived">Archived</option>
                 </select>
               </label>
-              <label>Supplier price<input id="productSupplierPrice" type="number" step="0.01" required></label>
+              <label>Cost price<input id="productSupplierPrice" type="number" step="0.01" required></label>
               <label>Store price<input id="productPrice" type="number" step="0.01" required></label>
               <label>Markup %<input id="productMarkupPercent" type="number" step="1" value="40"></label>
               <label>Stock<input id="productStock" type="number" step="1" required></label>
@@ -345,9 +352,9 @@
             </div>
           </form>
           <div class="admin-toolbar">
-            <label>Search products <input id="adminProductSearch" type="search" placeholder="Title, SKU, category, supplier"></label>
+            <label>Search products <input id="adminProductSearch" type="search" placeholder="Title, SKU, category, private source"></label>
             <label>Collection <select id="adminCollectionFilter"></select></label>
-            <label>Source <select id="adminSupplierFilter"></select></label>
+            <label>Private source <select id="adminSupplierFilter"></select></label>
             <label>Status <select id="adminProductStatusFilter"></select></label>
             <label>Bulk markup <input id="bulkMarkupInput" type="number" value="40" min="1"></label>
             <button class="button ghost" id="bulkMarkupButton" type="button">Apply</button>
@@ -508,5 +515,6 @@
     <script src="/js/admin.js" defer></script>
     <script src="/js/app.js" defer></script>
     <script type="module" src="/js/firebase.js"></script>
+    <script src="/js/pwa.js" defer></script>
   </body>
 </html>

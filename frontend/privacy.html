@@ -3,9 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050505">
     <title>Privacy Policy | MAT STORE</title>
     <meta name="description" content="MAT STORE privacy policy covering accounts, orders, carts, region preferences, MAT AI importing, analytics, and security.">
     <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <meta name="application-name" content="MAT STORE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MAT STORE">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -48,7 +56,7 @@
           <article class="policy-row"><span>01</span><div><h2>Account information</h2><p>We store name, email, hashed password, country, currency, wishlist, saved addresses, and session records to provide account access and localized shopping.</p></div></article>
           <article class="policy-row"><span>02</span><div><h2>Order information</h2><p>Orders store customer contact details, shipping address, purchased items, totals, payment method, fulfillment status, and audit trail events.</p></div></article>
           <article class="policy-row"><span>03</span><div><h2>Cart and recovery data</h2><p>Cart records support checkout continuity and abandoned cart recovery logic. Recovery messages are email-ready but require a production email provider before launch.</p></div></article>
-          <article class="policy-row"><span>04</span><div><h2>MAT AI importing data</h2><p>When configured, supplier product metadata can be sent to MAT AI services to rewrite product titles, descriptions, SEO metadata, tags, and categories.</p></div></article>
+          <article class="policy-row"><span>04</span><div><h2>MAT AI catalog data</h2><p>When configured, private catalog metadata can be sent to MAT AI services to rewrite product titles, descriptions, SEO metadata, tags, and categories.</p></div></article>
         </div>
         <aside class="support-stack">
           <article class="support-card"><h2>Security controls</h2><p>Protected APIs require JWT authorization. Admin routes require the admin role. Passwords are never stored in plain text.</p></article>
@@ -69,5 +77,6 @@
     <div id="toastRegion" class="toast-region" aria-live="polite"></div>
     <script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
     <script type="module" src="/js/firebase.js"></script>
+    <script src="/js/pwa.js" defer></script>
   </body>
 </html>

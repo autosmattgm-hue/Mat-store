@@ -206,7 +206,7 @@
       ['Find a product', 'shopper', 'Find me the best value product for my needs.'],
       ['Improve prices', 'pricing', 'Check MAT STORE pricing and profit rules.'],
       ['Business growth', 'business', 'What should I improve next to make more sales?'],
-      ['Import advice', 'importer', 'How should I import and publish supplier products?']
+      ['Catalog advice', 'importer', 'How should I review and publish private MAT STORE catalog products?']
     ].forEach(([label, mode, prompt]) => {
       const chip = create('button', '', label);
       chip.type = 'button';

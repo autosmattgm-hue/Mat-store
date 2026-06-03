@@ -3,9 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#050505">
     <title>Shipping | MAT STORE</title>
-    <meta name="description" content="MAT STORE shipping policy, processing windows, tracking readiness, supplier-aware fulfillment, and global delivery structure.">
+    <meta name="description" content="MAT STORE shipping policy, processing windows, tracking readiness, private fulfillment, and global delivery structure.">
     <link rel="icon" href="/assets/icons/favicon.svg" type="image/svg+xml">
+    <meta name="application-name" content="MAT STORE">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MAT STORE">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.webmanifest">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,22 +29,22 @@
 
     <main class="page-main">
       <section class="page-hero">
-        <div><p class="eyebrow">Fulfillment system</p><h1>Shipping Policy</h1><p>MAT STORE is designed for supplier-aware fulfillment, low-friction customer updates, and future tracking integrations across local and international orders.</p></div>
+        <div><p class="eyebrow">Fulfillment system</p><h1>Shipping Policy</h1><p>MAT STORE is designed for private fulfillment, low-friction customer updates, and future tracking integrations across local and international orders.</p></div>
         <div class="page-hero-card"><strong>Smart cart shipping</strong><p>Shipping is calculated in cart and checkout, with free shipping automatically shown for qualifying orders.</p></div>
       </section>
 
       <section class="page-shell">
-        <div class="editorial-panel" style="--panel-image:url('https://ae-pic-a1.aliexpress-media.com/kf/S893dd8fb60674a73b45aad6d0cf1e3d6R.png')">
+        <div class="editorial-panel" style="--panel-image:url('/api/media/catalog/ca803477-202a-4fa3-96fb-47918f8246b4/fallback')">
           <p class="eyebrow">Premium movement</p>
           <h2>Built for global delivery without losing the boutique feeling.</h2>
-          <p>Country, currency, order totals, item details, and fulfillment status are stored cleanly so shipping workflows can grow from local JSON into warehouse, supplier, or courier integrations.</p>
+          <p>Country, currency, order totals, item details, and fulfillment status are stored cleanly so shipping workflows can grow from local JSON into warehouse, partner, or courier integrations.</p>
         </div>
       </section>
 
       <section class="page-shell policy-layout">
         <div class="policy-stack">
           <article class="policy-row"><span>01</span><div><h2>Processing</h2><p>Orders are created with a new fulfillment status after checkout. Inventory is reserved immediately so operators can review and process the order safely.</p></div></article>
-          <article class="policy-row"><span>02</span><div><h2>Delivery estimates</h2><p>Delivery windows depend on destination, supplier, and product type. Add courier APIs later without changing the customer-facing checkout path.</p></div></article>
+          <article class="policy-row"><span>02</span><div><h2>Delivery estimates</h2><p>Delivery windows depend on destination, service route, and product type. Add courier APIs later without changing the customer-facing checkout path.</p></div></article>
           <article class="policy-row"><span>03</span><div><h2>Tracking readiness</h2><p>The order audit trail is ready for tracking events, shipment notes, customer notifications, and support visibility.</p></div></article>
         </div>
         <aside class="support-stack">
@@ -51,5 +59,6 @@
     <div id="toastRegion" class="toast-region" aria-live="polite"></div>
     <script src="/js/api.js" defer></script><script src="/js/cart.js" defer></script><script src="/js/pages.js" defer></script>
     <script type="module" src="/js/firebase.js"></script>
+    <script src="/js/pwa.js" defer></script>
   </body>
 </html>

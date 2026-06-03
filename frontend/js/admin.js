@@ -74,7 +74,13 @@
   }
 
   function productFallback(product = {}) {
-    return product.fallbackImage || generatedFallback(product);
+    const primary = productImage(product);
+    const fallback = [
+      product.fallbackImage,
+      product.image,
+      ...(Array.isArray(product.images) ? product.images : [])
+    ].find((candidate) => candidate && candidate !== primary);
+    return fallback || generatedFallback(product);
   }
 
   function imageAttrs(src, fallback) {
@@ -237,7 +243,7 @@
     }
 
     renderGroupStats('adminCollectionStats', analytics.collectionStats || [], 'collection');
-    renderGroupStats('adminMarketplaceStats', analytics.marketplaceStats || [], 'source');
+    renderGroupStats('adminMarketplaceStats', analytics.marketplaceStats || [], 'catalog');
     renderHealthPanel(analytics);
   }
 
@@ -280,7 +286,7 @@
         <div><strong>${Number(analytics.duplicateCount || 0)}</strong><span>duplicates</span></div>
       </div>
       <div class="metric-row">
-        <div><strong>Media readiness</strong><span>${Number(imageHealth.withImages || 0)} supplier images · ${Number(imageHealth.fallbackOnly || 0)} generated</span></div>
+        <div><strong>Media readiness</strong><span>${Number(imageHealth.withImages || 0)} product images · ${Number(imageHealth.fallbackOnly || 0)} generated</span></div>
         <div><strong>${Number(imageHealth.missingImages || 0)}</strong><span>missing</span></div>
       </div>
       <div class="metric-row">
@@ -306,7 +312,7 @@
 
   function renderProductFilters() {
     fillSelect('adminCollectionFilter', uniqueProductValues('collection', 'MAT Signature'), state.productCollection, 'All collections');
-    fillSelect('adminSupplierFilter', uniqueProductValues('supplierName', 'MAT STORE'), state.productSupplier, 'All sources');
+    fillSelect('adminSupplierFilter', uniqueProductValues('supplierName', 'MAT STORE'), state.productSupplier, 'All catalogs');
     fillSelect('adminProductStatusFilter', uniqueProductValues('status', 'active'), state.productStatus, 'All statuses');
   }
 
@@ -363,10 +369,10 @@
                   <div>
                     <strong>${escapeHtml(product.title)}</strong>
                     <span>${escapeHtml(product.category)} · ${escapeHtml(product.collection || 'MAT Signature')} · ${escapeHtml(product.sku)}</span>
-                    <span>${escapeHtml(product.supplierName || 'MAT STORE')} · ${escapeHtml(product.supplierProductCode || 'manual')}</span>
+                    <span>${escapeHtml(product.supplierName || 'MAT STORE')} · private catalog item</span>
                   </div>
                 </div>
-                <span class="${pricingClass}"><strong>MAT ${money(product.price)}</strong><small>Supplier ${money(product.supplierPrice)}</small></span>
+                <span class="${pricingClass}"><strong>MAT ${money(product.price)}</strong><small>Catalog ${money(product.supplierPrice)}</small></span>
                 <span class="${pricingClass}"><strong>${money(pricing.grossProfit)}</strong><small>${Number(pricing.marginPercent || 0).toFixed(1)}% margin</small></span>
                 <span>Stock ${product.stock}</span>
                 <span>${Number(product.markupPercent || 0).toFixed(1)}%</span>
@@ -545,7 +551,7 @@
           const image = productImage(product);
           const fallback = productFallback(product);
           const imageLabel = product.imageStatus === 'supplier-image'
-            ? 'Supplier image ready'
+            ? 'Product image ready'
             : product.imageStatus === 'external-image'
               ? 'Override image ready'
               : 'Luxury fallback image';
@@ -565,15 +571,15 @@
             <h2>${escapeHtml(product.title)}</h2>
             <p>${escapeHtml(product.description)}</p>
             <div class="list-row">
-              <strong>Supplier ${money(product.supplierPrice)} · MAT ${money(product.price)}</strong>
-              <span>${money(pricing.grossProfit)} profit · ${Number(pricing.marginPercent || 0).toFixed(1)}% margin · ${escapeHtml(product.supplierProductCode || 'product link')}</span>
+              <strong>Catalog ${money(product.supplierPrice)} · MAT ${money(product.price)}</strong>
+              <span>${money(pricing.grossProfit)} profit · ${Number(pricing.marginPercent || 0).toFixed(1)}% margin · private catalog item</span>
             </div>
             <div class="pricing-intelligence">
               <strong>${escapeHtml(pricing.strategy)}</strong>
               <span>Standard products use 40% markup. Hard-to-find products use 50%, with fee and risk reserves tracked inside gross margin.</span>
             </div>
-            <span class="source-link">Image source: ${escapeHtml(product.imageSource || 'MAT STORE media system')}</span>
-            ${product.supplierImageUrl ? `<a class="source-link" href="${escapeHtml(product.supplierImageUrl)}" target="_blank" rel="noopener noreferrer">Supplier image URL</a>` : ''}
+            <span class="source-link">Image system: ${escapeHtml(product.imageSource || 'MAT STORE media system')}</span>
+            ${product.supplierImageUrl ? `<a class="source-link" href="${escapeHtml(product.supplierImageUrl)}" target="_blank" rel="noopener noreferrer">Product image URL</a>` : ''}
             <a class="source-link" href="${escapeHtml(product.originalUrl || product.sourceUrl)}" target="_blank" rel="noopener noreferrer">Pasted link ${index + 1}: ${escapeHtml(product.originalUrl || product.sourceUrl)}</a>
             ${product.resolvedUrl && product.resolvedUrl !== product.originalUrl ? `<a class="source-link" href="${escapeHtml(product.resolvedUrl)}" target="_blank" rel="noopener noreferrer">Resolved link: ${escapeHtml(product.resolvedUrl)}</a>` : ''}
             <a class="source-link" href="${escapeHtml(product.sourceUrl)}" target="_blank" rel="noopener noreferrer">Clean import link: ${escapeHtml(product.sourceUrl)}</a>
@@ -701,7 +707,7 @@
   }
 
   async function cleanupDuplicates() {
-    const confirmed = window.confirm('Clean duplicate product rows and keep one visible listing per supplier product?');
+    const confirmed = window.confirm('Clean duplicate product rows and keep one visible listing per catalog product?');
     if (!confirmed) return;
     const button = document.getElementById('cleanupDuplicatesButton');
     if (button) button.disabled = true;

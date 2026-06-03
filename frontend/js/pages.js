@@ -29,14 +29,15 @@
       marketplaceSummary: null,
       refreshAfterMarketplace: false,
       autoLoads: 0,
-      observer: null
+      observer: null,
+      error: ''
     }
   };
 
-  const SHOP_PAGE_SIZE = 50;
-  const SHOP_AUTO_LOADS = 2;
+  const SHOP_PAGE_SIZE = 24;
+  const SHOP_AUTO_LOADS = 100;
   const SEARCH_MARKETPLACE_STEP = 50;
-  const SEARCH_MARKETPLACE_MAX = 160;
+  const SEARCH_MARKETPLACE_MAX = 100;
   const RECENTLY_VIEWED_KEY = 'mat_recently_viewed_products';
   const CHECKOUT_SHIPPING_OPTIONS = {
     standard: { label: 'MAT Standard', fee: 0, window: '7-14 business days' },
@@ -79,10 +80,9 @@
   function rawProductImage(product = {}) {
     const candidates = [
       ...(Array.isArray(product.images) ? product.images : []),
-      product.image,
-      product.fallbackImage
+      product.image
     ].filter(Boolean);
-    return candidates.find((candidate) => !isBlockedStockImageUrl(candidate)) || generatedFallback(product);
+    return candidates.find((candidate) => !isBlockedStockImageUrl(candidate)) || '';
   }
 
   function productImage(product = {}) {
@@ -161,11 +161,24 @@
   }
 
   function clearViewImage(product = {}, src = '') {
+    const original = String(src || '');
+    if (/^\/api\/media\/(?:catalog|product)\//i.test(original) || /^\/api\/media\/image\?/i.test(original)) return original;
     const raw = unproxiedImageUrl(product.supplierImageUrl || src);
     if (isBlockedStockImageUrl(raw)) return '';
     if (!/^https?:\/\//i.test(raw)) return /^https?:\/\//i.test(src) ? src : '';
     const highRes = highQualityImageUrl(raw);
     return highRes;
+  }
+
+  function comparableImageUrl(src = '') {
+    const raw = highQualityImageUrl(unproxiedImageUrl(src));
+    try {
+      const parsed = new URL(raw, window.location.origin);
+      parsed.hash = '';
+      return parsed.toString();
+    } catch {
+      return String(raw || '').trim();
+    }
   }
 
   function fullDescription(product = {}) {
@@ -343,6 +356,92 @@
     `;
   }
 
+  function renderPreviewActionBar(product = {}, scopeId = 'productOptions') {
+    return `
+      <div class="preview-action-bar" aria-label="Product actions">
+        <a class="preview-store-button" href="/shop.html" aria-label="Continue shopping">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 10h16l-1 10H5L4 10Zm2-6h12l2 6H4l2-6Zm4 0v6m4-6v6"/></svg>
+        </a>
+        <button class="preview-cart-button" type="button" data-page-add="${product.id}" data-variant-scope="${scopeId}">Add to cart</button>
+        <button class="preview-buy-button" type="button" data-page-add="${product.id}" data-variant-scope="${scopeId}" data-buy-now="true">Buy now</button>
+      </div>
+    `;
+  }
+
+  function renderPreviewMedia(product = {}, images = [], fallback = '') {
+    const safeImages = images.length ? images : [productImage(product)];
+    return `
+      <section class="preview-media-panel" aria-label="Product media">
+        <div class="preview-media-main">
+          <img id="detailMainImage" ${imageAttrs(clearViewImage(product, safeImages[0]), fallback)} alt="${escapeHtml(product.title)}">
+          <button class="preview-play-button" type="button" aria-label="Preview product media">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 7.5v9l7-4.5-7-4.5Z"/></svg>
+          </button>
+          <span class="preview-media-count">1/${Math.max(1, safeImages.length)}</span>
+          <button class="preview-favorite-count" type="button" id="productWishlistButton" aria-label="Save to wishlist">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/></svg>
+            <span>${Math.max(12, Number(product.reviewsCount || 0) + 95).toLocaleString()}</span>
+          </button>
+        </div>
+        ${renderPreviewActionBar(product)}
+        <div class="modal-thumbs preview-thumbs" aria-label="Product thumbnails">
+          ${safeImages.map((image, index) => `
+            <button type="button" data-detail-thumb="${escapeHtml(clearViewImage(product, image))}" data-detail-thumb-index="${index + 1}" aria-label="View product image ${index + 1}">
+              <img ${imageAttrs(image, fallback)} alt="${escapeHtml(product.title)} thumbnail ${index + 1}">
+            </button>
+          `).join('')}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderPreviewDeal(product = {}, details = {}) {
+    const currency = product.displayCurrency || state.currency;
+    const displayPrice = product.formattedPrice || money(product.price, currency);
+    const listPrice = Number(details.listPrice || 0) > Number(product.displayPrice || product.price || 0)
+      ? details.listPrice
+      : Number(product.price || 0) * 1.42;
+    const savingsPercent = details.savingsPercent || Math.max(8, Math.min(68, Math.round(((listPrice - Number(product.price || 0)) / listPrice) * 100)));
+    const savingsValue = Math.max(0, listPrice - Number(product.price || 0));
+    return `
+      <section class="preview-deal-card" aria-label="Product price">
+        <div class="preview-sale-head">
+          <strong>MAT STORE Deal</strong>
+          <span>Limited stock</span>
+        </div>
+        <div class="preview-price-line">
+          <strong data-variant-price>${escapeHtml(displayPrice)}</strong>
+          <span class="preview-discount">-${Number(savingsPercent).toFixed(0)}% today</span>
+          <span class="preview-save">Save ${escapeHtml(money(savingsValue, currency))}</span>
+        </div>
+        <div class="preview-list-price">${escapeHtml(money(listPrice, currency))}</div>
+        <p>Tax and shipping are calculated securely at checkout.</p>
+        <span class="variant-price-note" id="variantPriceNote">Base price for selected configuration</span>
+      </section>
+    `;
+  }
+
+  function renderPreviewTrustRows(product = {}, details = {}) {
+    const delivery = details.delivery || 'Delivery calculated at checkout';
+    const returns = details.returns || 'Return and refund support available';
+    return `
+      <section class="preview-trust-list" aria-label="Purchase protections">
+        <div class="preview-trust-row">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 7h11v10H3V7Zm11 4h3l3 3v3h-6v-6ZM6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4Zm11 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/></svg>
+          <div><strong>Shipping</strong><span>${escapeHtml(delivery)}</span></div>
+        </div>
+        <div class="preview-trust-row">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16v12H4V7Zm3-3h10v3H7V4Zm2 9 2 2 4-5"/></svg>
+          <div><strong>Return & refund policy</strong><span>${escapeHtml(returns)}</span></div>
+        </div>
+        <div class="preview-trust-row">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6l-8-3Zm-3 9 2 2 4-5"/></svg>
+          <div><strong>Security & privacy</strong><span>Secure payments. MAT STORE protects customer details and checkout data.</span></div>
+        </div>
+      </section>
+    `;
+  }
+
   function selectedProductOptions(scopeId = 'productOptions') {
     const root = document.getElementById(scopeId);
     if (!root) return '';
@@ -512,13 +611,16 @@
   }
 
   function productFallback(product = {}) {
+    const primary = comparableImageUrl(rawProductImage(product));
     const candidates = [
-      product.fallbackImage,
       product.image,
       ...(Array.isArray(product.images) ? product.images : [])
     ].filter(Boolean);
-    const fallback = candidates.find((candidate) => /^https?:\/\//i.test(unproxiedImageUrl(candidate)) && !isBlockedStockImageUrl(candidate));
-    return fallback ? highQualityImageUrl(unproxiedImageUrl(fallback)) : '/assets/icons/favicon.svg';
+    const fallback = candidates.find((candidate) => {
+      const raw = unproxiedImageUrl(candidate);
+      return /^https?:\/\//i.test(raw) && !isBlockedStockImageUrl(candidate) && comparableImageUrl(candidate) !== primary;
+    });
+    return fallback ? highQualityImageUrl(unproxiedImageUrl(fallback)) : rawProductImage(product);
   }
 
   function productUrl(product = {}) {
@@ -595,9 +697,11 @@
   }
 
   function imageAttrs(src, fallback) {
-    const nextFallback = fallback && !isBlockedStockImageUrl(fallback) ? fallback : '/assets/icons/favicon.svg';
-    const nextSrc = src && !isBlockedStockImageUrl(src) ? src : nextFallback;
-    return `src="${escapeHtml(nextSrc || nextFallback)}" data-fallback-src="${escapeHtml(nextFallback)}"`;
+    const cleanSrc = src && !isBlockedStockImageUrl(src) ? src : '';
+    const cleanFallback = fallback && !isBlockedStockImageUrl(fallback) ? fallback : cleanSrc;
+    const nextSrc = cleanSrc || cleanFallback || '/assets/icons/favicon.svg';
+    const fallbackAttr = cleanFallback ? ` data-fallback-src="${escapeHtml(cleanFallback)}"` : '';
+    return `src="${escapeHtml(nextSrc)}"${fallbackAttr}`;
   }
 
   function searchUrl(query) {
@@ -670,7 +774,7 @@
           .map(
             (item) => `
               <button class="suggestion-item" type="button" data-suggestion-product="${escapeHtml(item.id)}">
-                <img ${imageAttrs(item.image || generatedFallback(item), generatedFallback(item))} alt="${escapeHtml(item.title)}">
+                <img ${imageAttrs(item.image, item.image)} alt="${escapeHtml(item.title)}">
                 <strong>${escapeHtml(item.title)}<span>${escapeHtml(item.category)}</span></strong>
               </button>
             `
@@ -688,8 +792,11 @@
       (event) => {
         const image = event.target;
         if (!(image instanceof HTMLImageElement)) return;
-        const fallback = image.dataset.fallbackSrc || generatedFallback({ title: image.alt || 'MAT STORE Product' });
+        const fallback = image.dataset.fallbackSrc || '';
         if (!fallback || image.dataset.fallbackApplied === 'true') return;
+        try {
+          if (new URL(fallback, window.location.origin).href === image.currentSrc) return;
+        } catch {}
         image.dataset.fallbackApplied = 'true';
         image.src = fallback;
       },
@@ -1068,7 +1175,9 @@
   function renderShopFeed() {
     const grid = document.getElementById('pageProductGrid');
     if (!grid) return;
-    grid.innerHTML = state.shop.items.length ? state.shop.items.map(card).join('') : '<div class="empty-state">No matching products yet.</div>';
+    grid.innerHTML = state.shop.items.length
+      ? state.shop.items.map(card).join('')
+      : `<div class="empty-state">${escapeHtml(state.shop.error || 'No matching products yet.')}</div>`;
     state.products = state.shop.items;
     window.MATCart?.setProducts(state.products);
 
@@ -1088,26 +1197,30 @@
       state.shop.marketplaceLoadedQuery === marketplaceQuery &&
       state.shop.marketplaceLimit < SEARCH_MARKETPLACE_MAX;
     const useButton = canLoadMore && state.shop.autoLoads >= SHOP_AUTO_LOADS;
-    if (sentinel) sentinel.hidden = !canLoadMore || useButton;
+    if (sentinel) sentinel.hidden = !(canLoadMore || canMarketplaceMore) || useButton;
     if (button) {
       button.hidden = !(useButton || canMarketplaceMore);
-      button.textContent = 'See More';
+      button.textContent = canMarketplaceMore ? 'Load More Results' : 'See More';
       button.disabled = state.shop.loading || state.shop.marketplaceLoading;
     }
     if (status) {
       const marketplaceSummary = state.shop.marketplaceSummary;
-      status.textContent = state.shop.marketplaceLoading
-        ? 'Searching the MAT STORE product network for exact matches...'
+      status.textContent = state.shop.error
+        ? state.shop.error
+        : state.shop.marketplaceLoading
+        ? canLoadMore
+          ? 'Loading available products while MAT STORE searches for more...'
+          : 'Searching the MAT STORE product network for exact matches...'
         : marketplaceSummary?.imported
           ? `${marketplaceSummary.imported} MAT STORE products added.`
           : state.shop.loading
         ? 'Loading more products...'
-        : canLoadMore
+          : canLoadMore
           ? useButton
             ? 'More products are ready.'
             : 'Scroll to load more.'
           : canMarketplaceMore
-            ? 'See more marketplace results.'
+            ? 'Scroll to search more MAT STORE results.'
           : 'All products loaded.';
     }
   }
@@ -1131,19 +1244,62 @@
     return String(state.shop.category || '').trim();
   }
 
+  function cleanNumericFilterValue(value = '') {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    const number = Number(raw);
+    if (!Number.isFinite(number) || number < 0) return '';
+    return String(Math.round(number * 100) / 100);
+  }
+
+  function controlValue(id, fallback = '') {
+    const element = document.getElementById(id);
+    if (!element) return fallback || '';
+    return String(element.value || '').trim();
+  }
+
+  function controlChecked(id, fallback = false) {
+    const element = document.getElementById(id);
+    if (!element) return Boolean(fallback);
+    return Boolean(element.checked);
+  }
+
   function currentShopFilterValues() {
+    let minPrice = cleanNumericFilterValue(controlValue('minPriceInput', state.shop.minPrice));
+    let maxPrice = cleanNumericFilterValue(controlValue('maxPriceInput', state.shop.maxPrice));
+    if (minPrice && maxPrice && Number(minPrice) > Number(maxPrice)) {
+      [minPrice, maxPrice] = [maxPrice, minPrice];
+    }
     return {
-      minPrice: document.getElementById('minPriceInput')?.value.trim() || state.shop.minPrice || '',
-      maxPrice: document.getElementById('maxPriceInput')?.value.trim() || state.shop.maxPrice || '',
-      minRating: document.getElementById('minRatingSelect')?.value || state.shop.minRating || '',
-      inStock: Boolean(document.getElementById('inStockOnly')?.checked || state.shop.inStock),
-      brand: document.getElementById('brandFilterInput')?.value.trim() || state.shop.brand || '',
-      sort: document.getElementById('sortSelect')?.value || state.shop.sort || 'featured'
+      minPrice,
+      maxPrice,
+      minRating: controlValue('minRatingSelect', state.shop.minRating),
+      inStock: controlChecked('inStockOnly', state.shop.inStock),
+      brand: controlValue('brandFilterInput', state.shop.brand),
+      sort: controlValue('sortSelect', state.shop.sort || 'featured') || 'featured'
     };
   }
 
+  function categoryDisplayLabel(value = '') {
+    const clean = String(value || '')
+      .replace(/[-_]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!clean) return 'All';
+    if (clean.toLowerCase() === 'all') return 'All';
+    if (clean.toLowerCase() === 'trending products') return 'Trending Products';
+    return clean.replace(/\b[a-z]/g, (letter) => letter.toUpperCase()).replace(/\bAi\b/g, 'AI').replace(/\bIos\b/g, 'iOS');
+  }
+
   function navigateShop(overrides = {}) {
-    const target = state.page === 'categories' ? '/categories.html' : state.page === 'search' ? '/search.html' : '/shop.html';
+    const currentPath = window.location.pathname || '';
+    const target = state.page === 'categories'
+      ? '/categories.html'
+      : state.page === 'search'
+        ? '/search.html'
+        : currentPath.endsWith('/deals.html')
+          ? '/deals.html'
+          : '/shop.html';
     const filters = { ...currentShopFilterValues(), ...overrides };
     const search = new URLSearchParams();
     const category = overrides.category !== undefined ? overrides.category : state.shop.category;
@@ -1242,6 +1398,7 @@
       state.shop.pages = 1;
       state.shop.total = 0;
       state.shop.autoLoads = 0;
+      state.shop.error = '';
       state.shop.marketplaceLimit = SEARCH_MARKETPLACE_STEP;
       state.shop.marketplaceLoadedQuery = '';
       grid.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
@@ -1279,7 +1436,11 @@
       state.shop.page = Number(data.page || state.shop.page + 1);
       state.shop.pages = Number(data.pages || 1);
       state.shop.total = Number(data.total || state.shop.items.length);
+      state.shop.error = '';
       if (manual) state.shop.autoLoads = SHOP_AUTO_LOADS;
+    } catch (error) {
+      state.shop.error = error.message || 'Products could not load right now. Please try again.';
+      toast(state.shop.error);
     } finally {
       state.shop.loading = false;
       renderShopFeed();
@@ -1298,9 +1459,24 @@
     state.shop.observer = new IntersectionObserver((entries) => {
       const entry = entries[0];
       if (!entry?.isIntersecting || state.shop.loading) return;
-      if (state.shop.autoLoads >= SHOP_AUTO_LOADS || state.shop.page >= state.shop.pages) return;
-      state.shop.autoLoads += 1;
-      loadShopPage();
+      if (state.shop.page < state.shop.pages && state.shop.autoLoads < SHOP_AUTO_LOADS) {
+        state.shop.autoLoads += 1;
+        loadShopPage();
+        return;
+      }
+      if (state.shop.marketplaceLoading) return;
+      const cleanQuery = marketplaceFeedQuery();
+      if (
+        canUseMarketplaceExpansion() &&
+        cleanQuery &&
+        state.shop.page >= state.shop.pages &&
+        state.shop.marketplaceLoadedQuery === cleanQuery &&
+        state.shop.marketplaceLimit < SEARCH_MARKETPLACE_MAX
+      ) {
+        state.shop.marketplaceLimit = Math.min(SEARCH_MARKETPLACE_MAX, state.shop.marketplaceLimit + SEARCH_MARKETPLACE_STEP);
+        state.shop.marketplaceLoadedQuery = '';
+        enrichMarketplaceSearch(cleanQuery, { force: true });
+      }
     }, { rootMargin: '520px 0px' });
     state.shop.observer.observe(sentinel);
   }
@@ -1367,10 +1543,11 @@
   async function initShopLike() {
     const urlParams = params();
     const selectedCategory = urlParams.get('category') || 'all';
+    const selectedCategoryKey = String(selectedCategory || '').toLowerCase();
     const query = urlParams.get('q') || '';
-    const wantsTrending = ['true', '1', 'yes'].includes(String(urlParams.get('trending') || '').toLowerCase()) || selectedCategory === 'trending products';
+    const wantsTrending = ['true', '1', 'yes'].includes(String(urlParams.get('trending') || '').toLowerCase()) || selectedCategoryKey === 'trending products';
     state.shop.trending = wantsTrending;
-    state.shop.category = selectedCategory === 'all' || wantsTrending ? '' : selectedCategory;
+    state.shop.category = selectedCategoryKey === 'all' || wantsTrending ? '' : selectedCategory;
     state.shop.query = query;
     state.shop.sort = urlParams.get('sort') || document.getElementById('sortSelect')?.value || 'featured';
     state.shop.minPrice = urlParams.get('minPrice') || '';
@@ -1393,7 +1570,7 @@
     if (brandFilterInput) brandFilterInput.value = state.shop.brand;
 
     const title = document.getElementById('resultTitle');
-    if (title) title.textContent = query ? `Search results for "${query}"` : wantsTrending ? 'Trending Products' : selectedCategory === 'all' ? 'All Products' : `${selectedCategory} Edit`;
+    if (title) title.textContent = query ? `Search results for "${query}"` : wantsTrending ? 'Trending Products' : selectedCategory === 'all' ? 'All Products' : `${categoryDisplayLabel(selectedCategory)} Edit`;
 
     const filters = document.getElementById('pageCategoryFilters');
     if (filters) {
@@ -1404,8 +1581,9 @@
       const categories = ['trending products', 'all', ...state.categories.filter((category) => category !== 'trending products')];
       filters.innerHTML = categories
         .map((category) => {
-          const active = category === 'trending products' ? wantsTrending : !wantsTrending && category === selectedCategory;
-          return `<button type="button" class="${active ? 'active' : ''}" data-page-category="${escapeHtml(category)}">${escapeHtml(category)}</button>`;
+          const categoryKey = String(category || '').toLowerCase();
+          const active = categoryKey === 'trending products' ? wantsTrending : !wantsTrending && categoryKey === selectedCategoryKey;
+          return `<button type="button" class="${active ? 'active' : ''}" aria-pressed="${active ? 'true' : 'false'}" data-page-category="${escapeHtml(category)}">${escapeHtml(categoryDisplayLabel(category))}</button>`;
         })
         .join('');
     }
@@ -1416,15 +1594,34 @@
       sortSelect.dataset.bound = 'true';
       sortSelect.addEventListener('change', () => navigateShop());
     }
-    document.getElementById('applyFiltersButton')?.addEventListener('click', () => navigateShop());
-    document.getElementById('clearFiltersButton')?.addEventListener('click', () => navigateShop({
-      minPrice: '',
-      maxPrice: '',
-      minRating: '',
-      inStock: false,
-      brand: '',
-      sort: 'featured'
-    }));
+    const applyFiltersButton = document.getElementById('applyFiltersButton');
+    if (applyFiltersButton && applyFiltersButton.dataset.bound !== 'true') {
+      applyFiltersButton.dataset.bound = 'true';
+      applyFiltersButton.addEventListener('click', () => navigateShop());
+    }
+    const clearFiltersButton = document.getElementById('clearFiltersButton');
+    if (clearFiltersButton && clearFiltersButton.dataset.bound !== 'true') {
+      clearFiltersButton.dataset.bound = 'true';
+      clearFiltersButton.addEventListener('click', () => navigateShop({
+        minPrice: '',
+        maxPrice: '',
+        minRating: '',
+        inStock: false,
+        brand: '',
+        sort: 'featured'
+      }));
+    }
+    ['minPriceInput', 'maxPriceInput', 'brandFilterInput'].forEach((id) => {
+      const input = document.getElementById(id);
+      if (!input || input.dataset.bound === 'true') return;
+      input.dataset.bound = 'true';
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          navigateShop();
+        }
+      });
+    });
     document.querySelectorAll('[data-page-category]').forEach((button) => {
       button.addEventListener('click', () => {
         const category = button.dataset.pageCategory;
@@ -1473,33 +1670,29 @@
     const images = product.images?.length ? product.images : [productImage(product)];
     const fallback = productFallback(product);
     const details = productDetails(product);
+    target.className = 'detail-layout marketplace-preview-detail';
     target.innerHTML = `
-      <div>
-        <div class="detail-gallery">
-          <div class="gallery-kicker"><span>Click thumbnails to see full view</span><span>${Number(details.videos.count || 0)} videos</span></div>
-          <div class="detail-gallery-main"><img id="detailMainImage" ${imageAttrs(clearViewImage(product, images[0]), fallback)} alt="${escapeHtml(product.title)}"></div>
-          <div class="modal-thumbs">
-            ${images.map((image) => `<button type="button" data-detail-thumb="${escapeHtml(clearViewImage(product, image))}"><img ${imageAttrs(image, fallback)} alt="${escapeHtml(product.title)} thumbnail"></button>`).join('')}
+      <div class="preview-detail-shell">
+        ${renderPreviewMedia(product, images, fallback)}
+        <section class="preview-info-panel">
+          <h1>${escapeHtml(product.title)}</h1>
+          <div class="preview-rating-row">
+            <span class="preview-brand-badge">MAT STORE+</span>
+            <span class="rating">${Number(product.rating || 4.8).toFixed(1)} | ${Number(product.reviewsCount || 0).toLocaleString()} sold</span>
           </div>
-        </div>
-        <div class="detail-copy">
-          <h2>MAT AI-polished product story</h2>
-          <p class="view-description product-full-description">${escapeHtml(fullDescription(product))}</p>
-          <ul class="feature-list">${(product.features || []).map((feature) => `<li>${escapeHtml(feature)}</li>`).join('')}</ul>
-          ${renderMarketplaceInsights(product)}
-        </div>
+          <div class="preview-price-note">Best price in similar MAT STORE deals</div>
+          ${renderPreviewDeal(product, details)}
+          <div class="preview-coupon-row"><strong>%</strong><span>Extra savings applied at checkout when available</span><svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></div>
+          ${renderProductOptions(product)}
+          <div class="detail-copy preview-story">
+            <h2>Product details</h2>
+            <p class="view-description product-full-description">${escapeHtml(fullDescription(product))}</p>
+            <ul class="feature-list">${(product.features || []).map((feature) => `<li>${escapeHtml(feature)}</li>`).join('')}</ul>
+            ${renderMarketplaceInsights(product)}
+          </div>
+          ${renderPreviewTrustRows(product, details)}
+        </section>
       </div>
-      <aside class="purchase-panel">
-        <p class="eyebrow">${escapeHtml(product.category)} · ${escapeHtml(product.collection)}</p>
-        <h1>${escapeHtml(product.title)}</h1>
-        <div class="price-row"><strong data-variant-price>${escapeHtml(product.formattedPrice)}</strong><span class="rating">${Number(product.rating || 4.8).toFixed(1)} · ${product.reviewsCount || 0} reviews</span></div>
-        <span class="variant-price-note" id="variantPriceNote">Base price for selected configuration</span>
-        <p class="view-description purchase-summary">${escapeHtml(shortDescription(product))}</p>
-        ${renderProductOptions(product)}
-        <button class="button primary full" type="button" data-page-add="${product.id}" data-variant-scope="productOptions">Add To Cart</button>
-        <button class="button ghost full" type="button" data-page-add="${product.id}" data-variant-scope="productOptions" data-buy-now="true">Buy Now</button>
-        <button class="button ghost full" type="button" id="productWishlistButton">Save To Wishlist</button>
-      </aside>
     `;
 
     const related = document.getElementById('relatedGrid');
@@ -1511,7 +1704,10 @@
 
     document.querySelectorAll('[data-detail-thumb]').forEach((button) => {
       button.addEventListener('click', () => {
-        document.getElementById('detailMainImage').src = button.dataset.detailThumb;
+        const mainImage = document.getElementById('detailMainImage');
+        if (mainImage) mainImage.src = button.dataset.detailThumb;
+        const count = document.querySelector('.preview-media-count');
+        if (count && button.dataset.detailThumbIndex) count.textContent = `${button.dataset.detailThumbIndex}/${Math.max(1, images.length)}`;
       });
     });
 
@@ -1542,7 +1738,7 @@
           const product = item.snapshot || {};
           return `
             <article class="line-item">
-              <img ${imageAttrs(product.image || product.fallbackImage || generatedFallback(product), product.fallbackImage || generatedFallback(product))} alt="${escapeHtml(product.title || 'Product')}">
+              <img ${imageAttrs(productImage(product), productFallback(product))} alt="${escapeHtml(product.title || 'Product')}">
               <div>
                 <h2>${escapeHtml(product.title || 'MAT STORE Product')}</h2>
                 <p>${money(product.displayPrice || 0)} · Qty ${item.quantity}${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</p>
@@ -2714,7 +2910,7 @@
       <div class="checkout-review-list">
         ${(tracking.items || []).map((item) => `
           <article class="checkout-review-item">
-            <img ${imageAttrs(item.image || generatedFallback(item), generatedFallback(item))} alt="${escapeHtml(item.title)}">
+            <img ${imageAttrs(item.image, item.image)} alt="${escapeHtml(item.title)}">
             <div><strong>${escapeHtml(item.title)}</strong><span>${item.quantity}x${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</span></div>
           </article>
         `).join('')}
