@@ -114,17 +114,17 @@
         "expiresAt": "2026-06-28T10:16:23.374Z"
       },
       {
-        "id": "79fef688-3a59-4ec0-b911-3d8569d29314",
-        "hash": "6f855174092c42b7a6a6a67dee89dee08b250961e6a34f0be12f20af746dba87",
+        "id": "5cc1a96f-2509-4ed9-a7ec-a049249c136e",
+        "hash": "e9b069f7339e1e2c21c0d69b2286e531b4f8e578c55a30eb672412d5f15840e5",
         "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
         "ip": "::1",
-        "createdAt": "2026-05-30T20:13:25.209Z",
-        "expiresAt": "2026-06-29T20:13:25.209Z"
+        "createdAt": "2026-06-01T21:20:49.498Z",
+        "expiresAt": "2026-07-01T21:20:49.498Z"
       }
     ],
     "resetTokens": [],
     "createdAt": "2026-05-26T16:31:54.112Z",
-    "updatedAt": "2026-05-30T20:13:25.212Z",
-    "lastLoginAt": "2026-05-30T20:13:25.212Z"
+    "updatedAt": "2026-06-01T21:20:49.503Z",
+    "lastLoginAt": "2026-06-01T21:20:49.503Z"
   }
 ]

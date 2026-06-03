@@ -197,7 +197,7 @@ function publicMarketplaceDetails(product = {}) {
 function publicRelatedProduct(product = {}) {
   const title = cleanProductTitle(cleanSourceText(product.title || 'MAT STORE Product'));
   const images = publicImages(product);
-  const fallbackImage = images[0] || undefined;
+  const fallbackImage = publicCatalogFallbackImageUrl(product) || images[0] || undefined;
   return {
     id: product.id,
     slug: product.id,
@@ -220,7 +220,7 @@ function publicProduct(product = {}) {
   const description = publicDescription({ ...product, title });
   const shortDescription = cleanSourceText(product.shortDescription || '');
   const images = publicImages(product);
-  const fallbackImage = images[0] || undefined;
+  const fallbackImage = publicCatalogFallbackImageUrl(product) || images[0] || undefined;
   return {
     ...product,
     slug: product.id || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),

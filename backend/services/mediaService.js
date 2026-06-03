@@ -6,7 +6,7 @@ const imageVerificationCache = new Map();
 const DISCOVERY_TTL_MS = 1000 * 60 * 60 * 24;
 const IMAGE_PROBE_TIMEOUT_MS = 16000;
 const IMAGE_DISCOVERY_TIMEOUT_MS = 20000;
-const IMAGE_PROBE_MAX_BYTES = 8_000_000;
+const IMAGE_PROBE_MAX_BYTES = 4_000_000;
 const IMAGE_VERIFY_OK_TTL_MS = 1000 * 60 * 30;
 const IMAGE_VERIFY_FAIL_TTL_MS = 1000 * 60 * 5;
 const IMAGE_VERIFY_CACHE_MAX = 600;
@@ -168,26 +168,26 @@ function highQualityImageUrl(value) {
 
   if (/(media-amazon|ssl-images-amazon|images-amazon)/i.test(host)) {
     path = path
-      .replace(/\._[^/.]+_\.(jpg|jpeg|png|webp)$/i, '._AC_SL1500_.$1')
-      .replace(/\._[^/.]+_\.(jpg|jpeg|png|webp)(?=$)/i, '._AC_SL1500_.$1');
+      .replace(/\._[^/.]+_\.(jpg|jpeg|png|webp)$/i, '._AC_SL1000_.$1')
+      .replace(/\._[^/.]+_\.(jpg|jpeg|png|webp)(?=$)/i, '._AC_SL1000_.$1');
     if (/\/images\/I\/[^/._]+\.(jpg|jpeg|png|webp)$/i.test(path)) {
-      path = path.replace(/\.(jpg|jpeg|png|webp)$/i, '._AC_SL1500_.$1');
+      path = path.replace(/\.(jpg|jpeg|png|webp)$/i, '._AC_SL1000_.$1');
     }
   }
 
   if (/ebayimg/i.test(host)) {
-    path = path.replace(/\/s-l\d+\.(jpg|jpeg|png|webp)$/i, '/s-l1600.$1');
+    path = path.replace(/\/s-l\d+\.(jpg|jpeg|png|webp)$/i, '/s-l1200.$1');
   }
 
   if (/walmartimages/i.test(host)) {
-    parsed.searchParams.set('odnHeight', '1600');
-    parsed.searchParams.set('odnWidth', '1600');
+    parsed.searchParams.set('odnHeight', '1000');
+    parsed.searchParams.set('odnWidth', '1000');
     parsed.searchParams.set('odnBg', 'FFFFFF');
   }
 
   if (/(alicdn|aliexpress-media|kwcdn)/i.test(host)) {
     path = path
-      .replace(/_(?:\d{2,4})x(?:\d{2,4})(?:q\d+)?(?=\.)/gi, '_1200x1200')
+      .replace(/_(?:\d{2,4})x(?:\d{2,4})(?:q\d+)?(?=\.)/gi, '_1000x1000')
       .replace(/\.(jpg|jpeg|png|webp)_(?:\d{2,4})x(?:\d{2,4})(?:q\d+)?\.\1_?/gi, '.$1')
       .replace(/\.(jpg|jpeg|png|webp)_(?:\d{2,4})x(?:\d{2,4})(?:q\d+)?\.(webp)_?/gi, '.$1');
   }

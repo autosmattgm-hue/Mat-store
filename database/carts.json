@@ -1,21 +1,117 @@
 [
   {
-    "id": "977f3ca3-33c7-4537-91a9-d34e190113f4",
-    "sessionId": "a9613af6-8027-4944-8061-2925435a9fa3",
+    "id": "329b25bf-e890-4806-b4c6-635c623e7c64",
+    "sessionId": "59fc4315-3981-4642-b72a-c52b8931329a",
     "currency": "GMD",
-    "items": [],
-    "status": "empty",
-    "updatedAt": "2026-05-30T20:13:21.097Z",
-    "createdAt": "2026-05-30T20:13:21.097Z"
+    "items": [
+      {
+        "productId": "e5f3279b-5d79-44a0-8d88-4abe47f63d05",
+        "quantity": 1,
+        "variant": ""
+      }
+    ],
+    "status": "active",
+    "updatedAt": "2026-06-03T22:28:07.155Z",
+    "createdAt": "2026-06-03T22:28:07.155Z"
   },
   {
-    "id": "9130d229-3ac0-4f2a-a326-005353794ebc",
-    "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",
-    "currency": "GMD",
+    "id": "414491fe-9a10-4382-be8e-6bd3236c393b",
+    "sessionId": "7b650d87-33d9-42ef-8795-920236028d0e",
+    "currency": "USD",
     "items": [],
     "status": "empty",
-    "updatedAt": "2026-05-30T19:56:40.322Z",
-    "createdAt": "2026-05-30T19:56:40.322Z"
+    "updatedAt": "2026-06-02T01:07:08.106Z",
+    "createdAt": "2026-06-02T01:07:08.106Z"
+  },
+  {
+    "id": "ccf0f6e3-bc46-42c5-8b23-958b52f837b7",
+    "sessionId": "71d4d3c6-dd2b-4293-b714-72ae5dc19c11",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T01:05:33.919Z",
+    "createdAt": "2026-06-02T01:05:33.919Z"
+  },
+  {
+    "id": "51e67ec7-450e-4654-a010-abf3e8e5f0be",
+    "sessionId": "34dee71f-9a95-451a-8912-291bbc39ec32",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:34:23.322Z",
+    "createdAt": "2026-06-02T00:34:23.322Z"
+  },
+  {
+    "id": "1ebb22c5-ccc0-4f4c-beac-cfb3828dedd0",
+    "sessionId": "415c95f8-4ff6-446b-9e9e-5fbc60f5ae41",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:33:24.938Z",
+    "createdAt": "2026-06-02T00:33:24.938Z"
+  },
+  {
+    "id": "aa6c7a3c-25de-4689-bf56-ade8c0fa5e1a",
+    "sessionId": "a566fc48-4074-45f5-b3df-921da80d4bee",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:30:47.804Z",
+    "createdAt": "2026-06-02T00:30:47.804Z"
+  },
+  {
+    "id": "ba826164-d5f9-4ab0-9857-a10eb40fe459",
+    "sessionId": "cfadaaac-04c2-450c-97d8-8e93e0f295f0",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:29:58.912Z",
+    "createdAt": "2026-06-02T00:29:58.912Z"
+  },
+  {
+    "id": "e258a656-fcd7-4df5-91b4-e37744fedf16",
+    "sessionId": "efca6635-c273-4843-b1ab-5869390a58b4",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:29:01.854Z",
+    "createdAt": "2026-06-02T00:29:01.854Z"
+  },
+  {
+    "id": "7bc9da0f-14a7-4fe7-bdb7-b902cee82ed8",
+    "sessionId": "d0ea8258-e5dc-46a5-aa03-178f9229e1d9",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:28:06.381Z",
+    "createdAt": "2026-06-02T00:28:06.381Z"
+  },
+  {
+    "id": "b9faeb16-e0a4-4708-9d09-1defa573c6ee",
+    "sessionId": "567a8da2-493e-4e0f-b1fa-87e75bcad525",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-02T00:26:16.877Z",
+    "createdAt": "2026-06-02T00:26:16.877Z"
+  },
+  {
+    "id": "296fcb17-e7b4-4ecb-a331-57d271721fd7",
+    "userId": "275d2822-6909-48e4-9124-1d4ed404c5d2",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-01T21:20:54.226Z",
+    "createdAt": "2026-06-01T21:20:54.226Z"
+  },
+  {
+    "id": "bf0462a2-f869-4580-875d-575271278668",
+    "sessionId": "a9613af6-8027-4944-8061-2925435a9fa3",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-06-01T21:20:49.100Z",
+    "createdAt": "2026-06-01T21:20:49.100Z"
   },
   {
     "id": "8588d037-5c90-443b-a9e0-420ee0a19707",

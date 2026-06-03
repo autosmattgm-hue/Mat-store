@@ -3,7 +3,7 @@ const HttpError = require('../utils/httpError');
 const mediaService = require('../services/mediaService');
 const store = require('../database/jsonStore');
 
-const MAX_IMAGE_BYTES = 8_000_000;
+const MAX_IMAGE_BYTES = 4_000_000;
 
 async function sendRemoteImage(requestedUrl, res, options = {}) {
   const url = mediaService.highQualityImageUrl(requestedUrl) || sanitizeUrl(requestedUrl);
@@ -95,7 +95,12 @@ async function productImage(req, res, next) {
       }
     }
 
-    throw lastError || new HttpError(404, 'Product image was not found.');
+    try {
+      await sendProductFallback(product, res);
+      return;
+    } catch (fallbackError) {
+      throw lastError || fallbackError || new HttpError(404, 'Product image was not found.');
+    }
   } catch (error) {
     next(error.status ? error : new HttpError(502, 'Product image could not be loaded.'));
   }
