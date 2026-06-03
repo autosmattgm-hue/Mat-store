@@ -6,6 +6,8 @@ const FIRESTORE_SCOPE = 'https://www.googleapis.com/auth/datastore';
 const FIRESTORE_ROOT = 'https://firestore.googleapis.com/v1';
 const ARRAY_COLLECTIONS = new Set(['users', 'products', 'orders', 'carts', 'abandonedCarts', 'reviews', 'notifications']);
 const locks = new Map();
+const readCache = new Map();
+const FIRESTORE_READ_CACHE_TTL_MS = Math.max(0, Number(process.env.FIRESTORE_READ_CACHE_TTL_MS || 15000));
 
 let tokenCache = {
   accessToken: '',
@@ -14,6 +16,32 @@ let tokenCache = {
 
 function enabled() {
   return Boolean(config.firebase?.projectId && config.firebase?.clientEmail && config.firebase?.privateKey);
+}
+
+function cloneData(data) {
+  return data === null ? null : JSON.parse(JSON.stringify(data));
+}
+
+function cachedRead(collection) {
+  if (FIRESTORE_READ_CACHE_TTL_MS <= 0) return { hit: false, data: null };
+  const cached = readCache.get(collection);
+  if (!cached) return { hit: false, data: null };
+  if (cached.expiresAt <= Date.now()) {
+    readCache.delete(collection);
+    return { hit: false, data: null };
+  }
+  return { hit: true, data: cloneData(cached.data) };
+}
+
+function setCachedRead(collection, data) {
+  if (FIRESTORE_READ_CACHE_TTL_MS <= 0) {
+    readCache.delete(collection);
+    return;
+  }
+  readCache.set(collection, {
+    data: cloneData(data),
+    expiresAt: Date.now() + FIRESTORE_READ_CACHE_TTL_MS
+  });
 }
 
 function collectionPrefix() {
@@ -171,20 +199,28 @@ async function commit(writes) {
 
 async function read(collection) {
   if (!enabled()) return null;
+  const cached = cachedRead(collection);
+  if (cached.hit) return cached.data;
+
   if (!ARRAY_COLLECTIONS.has(collection)) {
     const url = `${FIRESTORE_ROOT}/${metaDocumentName(collection)}`;
     try {
       const document = await firestoreRequest(url, { method: 'GET' });
-      return decodePayload(document);
+      const data = decodePayload(document);
+      setCachedRead(collection, data);
+      return cloneData(data);
     } catch (error) {
       const message = String(error.message || '').toLowerCase();
-      if (message.includes('not_found') || message.includes('not found')) return null;
+      if (message.includes('not_found') || message.includes('not found')) {
+        setCachedRead(collection, null);
+        return null;
+      }
       throw error;
     }
   }
 
   const documents = await listDocuments(collection);
-  return documents
+  const data = documents
     .map((document) => ({
       index: Number(document.fields?.index?.integerValue || 0),
       value: decodePayload(document)
@@ -192,6 +228,8 @@ async function read(collection) {
     .filter((entry) => entry.value !== null)
     .sort((a, b) => a.index - b.index)
     .map((entry) => entry.value);
+  setCachedRead(collection, data);
+  return cloneData(data);
 }
 
 async function write(collection, data) {
@@ -205,6 +243,7 @@ async function write(collection, data) {
         }
       }
     ]);
+    setCachedRead(collection, data);
     return data;
   }
 
@@ -231,6 +270,7 @@ async function write(collection, data) {
   });
 
   await commit(writes);
+  setCachedRead(collection, data);
   return data;
 }
 

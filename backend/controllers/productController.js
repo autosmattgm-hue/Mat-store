@@ -8,9 +8,19 @@ function isAdminRequest(req) {
   return req.user?.role === 'admin';
 }
 
+function setCatalogCache(req, res, maxAge = 30, stale = 300) {
+  if (isAdminRequest(req)) {
+    res.setHeader('Cache-Control', 'no-store');
+    return;
+  }
+  res.setHeader('Cache-Control', `public, max-age=${maxAge}, stale-while-revalidate=${stale}`);
+  res.setHeader('Vary', 'Authorization');
+}
+
 async function list(req, res, next) {
   try {
     const result = await productService.listProducts({ ...req.query, includeDrafts: isAdminRequest(req) });
+    setCatalogCache(req, res, 30, 300);
     res.json(isAdminRequest(req) ? result : publicCatalogResult(result));
   } catch (error) {
     next(error);
@@ -29,6 +39,7 @@ async function get(req, res, next) {
     )) {
       throw new HttpError(404, 'Product not found.');
     }
+    setCatalogCache(req, res, 60, 600);
     res.json({ product: isAdminRequest(req) ? product : publicProduct(product) });
   } catch (error) {
     next(error);
@@ -38,6 +49,7 @@ async function get(req, res, next) {
 async function suggestions(req, res, next) {
   try {
     const items = await productService.searchSuggestions(req.query.q);
+    setCatalogCache(req, res, 60, 300);
     res.json({ items: isAdminRequest(req) ? items : items.map(publicSuggestion) });
   } catch (error) {
     next(error);

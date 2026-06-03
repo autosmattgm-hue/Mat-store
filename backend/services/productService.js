@@ -18,6 +18,50 @@ const {
 } = require('../utils/catalogQuality');
 const HttpError = require('../utils/httpError');
 
+const PRODUCT_LIST_CACHE_TTL_MS = Math.max(0, Number(process.env.PRODUCT_LIST_CACHE_TTL_MS || 15000));
+const PRODUCT_LIST_CACHE_MAX = Math.max(20, Number(process.env.PRODUCT_LIST_CACHE_MAX || 80));
+const productListCache = new Map();
+
+function cloneData(data) {
+  return JSON.parse(JSON.stringify(data));
+}
+
+function productListCacheKey(params = {}) {
+  return JSON.stringify(
+    Object.keys(params)
+      .sort()
+      .map((key) => [key, params[key] === null || params[key] === undefined ? '' : String(params[key])])
+  );
+}
+
+function readProductListCache(params, includeDrafts) {
+  if (includeDrafts || PRODUCT_LIST_CACHE_TTL_MS <= 0) return null;
+  const key = productListCacheKey(params);
+  const cached = productListCache.get(key);
+  if (!cached) return null;
+  if (cached.expiresAt <= Date.now()) {
+    productListCache.delete(key);
+    return null;
+  }
+  return cloneData(cached.data);
+}
+
+function writeProductListCache(params, includeDrafts, data) {
+  if (includeDrafts || PRODUCT_LIST_CACHE_TTL_MS <= 0) return;
+  const key = productListCacheKey(params);
+  if (!productListCache.has(key) && productListCache.size >= PRODUCT_LIST_CACHE_MAX) {
+    productListCache.delete(productListCache.keys().next().value);
+  }
+  productListCache.set(key, {
+    data: cloneData(data),
+    expiresAt: Date.now() + PRODUCT_LIST_CACHE_TTL_MS
+  });
+}
+
+function clearProductCaches() {
+  productListCache.clear();
+}
+
 function sanitizeImageUrl(value) {
   const clean = sanitizeString(value, 2048);
   if (mediaService.isBlockedStockImageUrl(clean)) return '';
@@ -441,7 +485,6 @@ function productForCurrency(product, currency = 'USD') {
 }
 
 async function listProducts(query = {}) {
-  const products = await store.read('products');
   const page = positiveInteger(query.page || 1, 1, 100000);
   const limit = positiveInteger(query.limit || 24, 24, 1200);
   const currency = String(query.currency || 'USD').toUpperCase();
@@ -455,10 +498,29 @@ async function listProducts(query = {}) {
   const brand = sanitizeString(query.brand || '', 120).toLowerCase();
   const trending = isTrendingRequest(query);
   const includeDrafts = ['true', '1', 'yes', 'on'].includes(String(query.includeDrafts || '').toLowerCase());
+  const sort = sanitizeString(query.sort || 'featured', 40);
   if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
     [minPrice, maxPrice] = [maxPrice, minPrice];
   }
 
+  const cacheParams = {
+    brand,
+    category,
+    currency,
+    inStock,
+    limit,
+    maxPrice,
+    minPrice,
+    minRating,
+    page,
+    search,
+    sort,
+    trending
+  };
+  const cached = readProductListCache(cacheParams, includeDrafts);
+  if (cached) return cached;
+
+  const products = await store.read('products');
   const visibleCatalogProducts = products.filter((product) => (
     includeDrafts
       ? product.status !== 'archived'
@@ -484,7 +546,6 @@ async function listProducts(query = {}) {
   if (inStock) filtered = filtered.filter((product) => Number(product.stock || 0) > 0);
   if (brand) filtered = filtered.filter((product) => productSearchText(product).includes(brand));
 
-  const sort = query.sort || 'featured';
   const productPrice = (product) => Number(product.price || 0);
   const productRating = (product) => Number(product.rating || 0);
   const productReviews = (product) => Number(product.reviewsCount || 0);
@@ -517,7 +578,7 @@ async function listProducts(query = {}) {
     .filter(Boolean))]
     .sort((a, b) => a.localeCompare(b));
 
-  return {
+  const result = {
     items,
     total,
     page,
@@ -526,6 +587,8 @@ async function listProducts(query = {}) {
     categories,
     brands
   };
+  writeProductListCache(cacheParams, includeDrafts, result);
+  return result;
 }
 
 async function getProduct(idOrSlug, currency = 'USD') {
@@ -579,6 +642,7 @@ async function createProduct(payload) {
     saved = normalizeProduct(duplicatePayload, products[duplicateIndex]);
     return products.map((existing, index) => (index === duplicateIndex ? saved : existing));
   });
+  clearProductCaches();
   return saved;
 }
 
@@ -611,6 +675,7 @@ async function createProducts(payloads = []) {
     }
     return nextProducts;
   });
+  clearProductCaches();
   return saved;
 }
 
@@ -629,6 +694,7 @@ async function updateProduct(id, payload) {
       return updated;
     })
   );
+  clearProductCaches();
   if (!updated) throw new HttpError(404, 'Product not found.');
   return updated;
 }
@@ -640,6 +706,7 @@ async function deleteProduct(id) {
     removed = true;
     return false;
   }));
+  clearProductCaches();
   if (!removed) throw new HttpError(404, 'Product not found.');
   return { success: true, deleted: true };
 }
@@ -650,6 +717,7 @@ async function bulkMarkup(markupPercent) {
     updatedProducts = (await pricingService.bulkMarkup(products, markupPercent)).map((product) => normalizeProduct(product, product));
     return updatedProducts;
   });
+  clearProductCaches();
   return updatedProducts;
 }
 
@@ -706,6 +774,7 @@ async function repairPricing(options = {}) {
     return nextProducts;
   });
 
+  clearProductCaches();
   return result;
 }
 
@@ -839,6 +908,7 @@ async function repairImages(options = {}) {
     return nextProducts;
   });
 
+  clearProductCaches();
   return result;
 }
 
@@ -855,6 +925,7 @@ async function adjustInventory(productId, delta) {
       return updated;
     })
   );
+  clearProductCaches();
   if (!updated) throw new HttpError(404, 'Product not found.');
   return updated;
 }
@@ -1009,6 +1080,7 @@ async function cleanupDuplicates() {
     };
     return unique;
   });
+  clearProductCaches();
   return result;
 }
 

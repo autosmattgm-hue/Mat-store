@@ -8,6 +8,8 @@ const databaseDir =
   process.env.DATABASE_DIR ||
   (process.env.VERCEL ? path.join('/tmp', 'mat-store-database') : sourceDatabaseDir);
 const locks = new Map();
+const localReadCache = new Map();
+const LOCAL_READ_CACHE_TTL_MS = Math.max(0, Number(process.env.MAT_STORE_READ_CACHE_TTL_MS || 15000));
 
 const defaults = {
   users: [],
@@ -62,11 +64,35 @@ function cloneDefault(collection) {
   return JSON.parse(JSON.stringify(defaults[collection] ?? []));
 }
 
+function cloneData(data) {
+  return JSON.parse(JSON.stringify(data));
+}
+
 async function localRead(collection) {
   await ensureCollection(collection);
-  const raw = await fs.readFile(filePath(collection), 'utf8');
-  if (!raw.trim()) return cloneDefault(collection);
-  return JSON.parse(raw);
+  const target = filePath(collection);
+  const stat = await fs.stat(target).catch(() => null);
+  const now = Date.now();
+  const cached = localReadCache.get(collection);
+
+  if (
+    cached &&
+    cached.expiresAt > now &&
+    (!stat || cached.mtimeMs === stat.mtimeMs)
+  ) {
+    return cloneData(cached.data);
+  }
+
+  const raw = await fs.readFile(target, 'utf8');
+  const data = raw.trim() ? JSON.parse(raw) : cloneDefault(collection);
+  if (LOCAL_READ_CACHE_TTL_MS > 0) {
+    localReadCache.set(collection, {
+      data: cloneData(data),
+      mtimeMs: stat?.mtimeMs || 0,
+      expiresAt: now + LOCAL_READ_CACHE_TTL_MS
+    });
+  }
+  return cloneData(data);
 }
 
 async function localWrite(collection, data) {
@@ -74,6 +100,16 @@ async function localWrite(collection, data) {
   const tempFile = `${filePath(collection)}.tmp`;
   await fs.writeFile(tempFile, JSON.stringify(data, null, 2));
   await fs.rename(tempFile, filePath(collection));
+  const stat = await fs.stat(filePath(collection)).catch(() => null);
+  if (LOCAL_READ_CACHE_TTL_MS > 0) {
+    localReadCache.set(collection, {
+      data: cloneData(data),
+      mtimeMs: stat?.mtimeMs || 0,
+      expiresAt: Date.now() + LOCAL_READ_CACHE_TTL_MS
+    });
+  } else {
+    localReadCache.delete(collection);
+  }
   return data;
 }
 
