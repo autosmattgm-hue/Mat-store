@@ -1,14 +1,20 @@
 const { cleanProductTitle, formatBrandTitle } = require('./productTitle');
 const mediaService = require('../services/mediaService');
 
-const SOURCE_PATTERN = /\b(?:amazon(?:\.com)?|walmart|aliexpress|ali\s*express|alibaba|ebay|temu|supplier|marketplace|seller|shipper|fulfillment|source)\b/i;
+const SOURCE_PATTERN = /\b(?:amazon(?:\.[a-z]{2,}){0,4}|walmart(?:\.[a-z]{2,}){0,4}|aliexpress(?:\.[a-z]{2,}){0,4}|ali\s*express|alibaba(?:\.[a-z]{2,}){0,4}|ebay(?:\.[a-z]{2,}){0,4}|temu(?:\.[a-z]{2,}){0,4}|best\s*buy|etsy|ldlc|supplier|marketplace|seller|shipper|fulfillment|source)\b/i;
 const SOURCE_LABEL_PATTERN = /^(?:marketplace|supplier(?:\s+(?:code|list\s+price|search\s+url|price|cost))?|source|seller|shipper|fulfillment|image\s+override)$/i;
 
 function cleanSourceText(value = '') {
   return String(value || '')
     .replace(/\bAmazon\.com\s*:\s*/gi, '')
+    .replace(/\b(?:Best\s*Buy|Etsy|LDLC|Game\s*Hub|ARTLEMI(?:\s+Store)?|LAZA\s+GOODS|Killscreen|Sonix\s+Wireless(?:\s+INC)?|Mundo\s+Gamer)\s*:\s*/gi, '')
+    .replace(/\s*(?:\u2022|\||-)\s*compare prices?.*$/gi, '')
+    .replace(/\s*[:|,-]\s*(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)(?:\.[a-z]{2,}){0,4}(?:\s*[:|,-]\s*[^|,:-]+)?\s*$/gi, '')
+    .replace(/\s*(?:\||\s-\s)\s*(?:Best\s*Buy|Etsy|LDLC|Game\s*Hub|ARTLEMI(?:\s+Store)?|LAZA\s+GOODS|Killscreen|Sonix\s+Wireless(?:\s+INC)?|Mundo\s+Gamer)\s*$/gi, '')
+    .replace(/\s+\|\s+[A-Z][A-Za-z0-9 &.'-]{1,40}$/g, '')
+    .replace(/\b(?:MAT\s*)?STORE\.com\s*:\s*/gi, '')
     .replace(/\b(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)\s+(?:Search|Goldbox|Front Page|Global Deals|Marketplace|Deals|Picks?)\s*:?\s*/gi, '')
-    .replace(/\b(?:from|via|on|at)\s+(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)(?:\.com)?\b/gi, '')
+    .replace(/\b(?:from|via|on|at)\s+(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)(?:\.[a-z]{2,}){0,4}\b/gi, '')
     .replace(/\b(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)\s+(?:product|deal|search pick|search match)\b/gi, 'Product')
     .replace(/\b(?:supplier|marketplace)\s+(?:seller|fulfillment|source|page|url|code|cost|price)\b/gi, '')
     .replace(/\b(?:seller|shipper)\s*:\s*[^.]+/gi, '')
@@ -111,12 +117,27 @@ function publicRemoteImageUrl(value = '') {
   return mediaService.highQualityImageUrl(raw) || raw;
 }
 
-function publicImages(product = {}) {
+function publicMediaKey(product = {}) {
+  return encodeURIComponent(product.id || product.slug || '');
+}
+
+function publicCatalogImageUrl(product = {}, index = 0) {
+  const key = publicMediaKey(product);
+  if (!key) return '';
+  return `/api/media/catalog/${key}/${index}`;
+}
+
+function publicCatalogFallbackImageUrl(product = {}) {
+  const key = publicMediaKey(product);
+  if (!key) return '';
+  return `/api/media/catalog/${key}/fallback`;
+}
+
+function publicImageCount(product = {}) {
   const candidates = [
     ...(Array.isArray(product.images) ? product.images : []),
     product.image,
-    product.supplierImageUrl,
-    product.fallbackImage
+    product.supplierImageUrl
   ];
   const seen = new Set();
   const images = [];
@@ -130,7 +151,12 @@ function publicImages(product = {}) {
     if (images.length >= 8) break;
   }
 
-  return images;
+  return images.length;
+}
+
+function publicImages(product = {}) {
+  const count = publicImageCount(product);
+  return Array.from({ length: count }, (_, index) => publicCatalogImageUrl(product, index)).filter(Boolean);
 }
 
 function publicMarketplaceDetails(product = {}) {
@@ -171,9 +197,10 @@ function publicMarketplaceDetails(product = {}) {
 function publicRelatedProduct(product = {}) {
   const title = cleanProductTitle(cleanSourceText(product.title || 'MAT STORE Product'));
   const images = publicImages(product);
+  const fallbackImage = images[0] || undefined;
   return {
     id: product.id,
-    slug: product.slug || product.id,
+    slug: product.id,
     title,
     category: publicCategoryLabel(product.category),
     collection: publicCollection(product),
@@ -184,7 +211,7 @@ function publicRelatedProduct(product = {}) {
     reviewsCount: product.reviewsCount,
     images,
     image: images[0] || undefined,
-    fallbackImage: images[0] || undefined
+    fallbackImage
   };
 }
 
@@ -193,6 +220,7 @@ function publicProduct(product = {}) {
   const description = publicDescription({ ...product, title });
   const shortDescription = cleanSourceText(product.shortDescription || '');
   const images = publicImages(product);
+  const fallbackImage = images[0] || undefined;
   return {
     ...product,
     slug: product.id || title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
@@ -204,7 +232,7 @@ function publicProduct(product = {}) {
     collection: publicCollection(product),
     images,
     image: images[0] || undefined,
-    fallbackImage: images[0] || undefined,
+    fallbackImage,
     supplierUrl: undefined,
     supplierName: undefined,
     supplierProductCode: undefined,
@@ -230,10 +258,11 @@ function publicProduct(product = {}) {
     features: safeList(product.features, 8, ['Premium product presentation', 'Secure checkout', 'Customer-first support']),
     marketplaceDetails: publicMarketplaceDetails(product),
     seo: {
-      ...(product.seo || {}),
       title: cleanSourceText(product.seo?.title || `${title} | MAT STORE`),
       description: cleanSourceText(product.seo?.description || description),
-      keywords: safeList(product.seo?.keywords, 10)
+      keywords: safeList(product.seo?.keywords, 10),
+      images,
+      image: images[0] || fallbackImage
     },
     ai: product.ai ? {
       provider: 'MAT STORE intelligence',
@@ -255,7 +284,7 @@ function publicCatalogResult(result = {}) {
 }
 
 function publicSuggestion(item = {}) {
-  const realImage = publicImages(item)[0] || publicRemoteImageUrl(item.image);
+  const realImage = publicImages(item)[0] || '';
   return {
     ...item,
     slug: item.id || item.slug,

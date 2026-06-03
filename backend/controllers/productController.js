@@ -1,7 +1,7 @@
 const productService = require('../services/productService');
 const reviewService = require('../services/reviewService');
 const { publicCatalogResult, publicProduct, publicSuggestion } = require('../utils/publicCatalog');
-const { hasRealProductMedia, isQuestionableProduct } = require('../utils/catalogQuality');
+const { hasRealProductMedia, isGeneratedSearchProduct, isQuestionableProduct, isUntrustedDiscoveredImageProduct } = require('../utils/catalogQuality');
 const HttpError = require('../utils/httpError');
 
 function isAdminRequest(req) {
@@ -20,7 +20,13 @@ async function list(req, res, next) {
 async function get(req, res, next) {
   try {
     const product = await productService.getProduct(req.params.idOrSlug, req.query.currency);
-    if (!isAdminRequest(req) && (product.status !== 'active' || !hasRealProductMedia(product) || isQuestionableProduct(product))) {
+    if (!isAdminRequest(req) && (
+      product.status !== 'active'
+      || !hasRealProductMedia(product)
+      || isQuestionableProduct(product)
+      || isGeneratedSearchProduct(product)
+      || isUntrustedDiscoveredImageProduct(product)
+    )) {
       throw new HttpError(404, 'Product not found.');
     }
     res.json({ product: isAdminRequest(req) ? product : publicProduct(product) });

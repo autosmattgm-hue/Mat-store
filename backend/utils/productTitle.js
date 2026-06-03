@@ -43,9 +43,10 @@ function collapseSpaces(value = '') {
 function stripSourceScaffolding(value = '') {
   return collapseSpaces(value)
     .replace(/\bAmazon\.com\s*:\s*/gi, '')
+    .replace(/\s*[:|,-]\s*(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)(?:\.[a-z]{2,}){0,4}(?:\s*[:|,-]\s*[^|,:-]+)?\s*$/gi, '')
     .replace(/^\s*(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)\s+(?:Search|Goldbox|Front Page|Global Deals|Marketplace|Deals|Picks?)\s*:?\s*/gi, '')
     .replace(/^\s*(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)\s+(?:Product|Deal|Search Pick|Search Match)\s+[A-Z0-9-]{6,}\s*$/gi, '')
-    .replace(/\s*(?:[-|:]\s*)?(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)(?:\.com)?\s*$/gi, '')
+    .replace(/\s*(?:[-|:]\s*)?(?:Amazon|Walmart|AliExpress|Alibaba|eBay|Temu)(?:\.[a-z.]+)?(?:\s+.*)?$/gi, '')
     .replace(/\s*[-:]\s*(?:timeless luxury(?:\s+smartphone|\s+in\b.*)?|luxury smartphone|premium MAT STORE.*)\s*$/i, '')
     .replace(/\s+\|\s*MAT STORE$/i, '')
     .replace(/\s+-\s*MAT STORE$/i, '')
@@ -72,6 +73,7 @@ function titleCase(value = '') {
 function cleanProductTitle(value = '', fallback = 'Marketplace Product') {
   const stripped = stripSourceScaffolding(stripMatPrefix(value));
   const clean = collapseSpaces(stripped || fallback)
+    .replace(/^\s*buy\s+/i, '')
     .replace(/\b(?:best match|premium pick|deal option|customer favorite|high value find|fast shipping option)\b$/i, '')
     .replace(/\b(?:search pick|search match)\b$/i, '')
     .replace(/\s+/g, ' ')

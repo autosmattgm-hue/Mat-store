@@ -13,7 +13,7 @@ async function sendRemoteImage(requestedUrl, res, options = {}) {
   }
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 9000);
+  const timer = setTimeout(() => controller.abort(), 20000);
   const response = await fetch(url, {
     signal: controller.signal,
     headers: {
@@ -35,11 +35,16 @@ async function sendRemoteImage(requestedUrl, res, options = {}) {
 
   res.setHeader('Content-Type', contentType);
   res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
+  if (options.imageRole) res.setHeader('X-MAT-Image-Role', options.imageRole);
   res.send(buffer);
 }
 
 function productFallbackPath(product = {}) {
   return mediaService.representativeProductImageUrl(product);
+}
+
+async function sendProductFallback(product, res) {
+  await sendRemoteImage(productFallbackPath(product), res, { trustedSavedImage: true, imageRole: 'fallback' });
 }
 
 async function proxyImage(req, res, next) {
@@ -53,18 +58,24 @@ async function proxyImage(req, res, next) {
 async function productImage(req, res, next) {
   try {
     const idOrSlug = sanitizeString(req.params.idOrSlug || '', 160);
-    const index = Math.max(0, Math.floor(Number(req.params.index || 0)));
+    const indexParam = sanitizeString(req.params.index || '0', 20);
+    const fallbackOnly = indexParam === 'fallback';
+    const index = fallbackOnly ? 0 : Math.max(0, Math.floor(Number(indexParam || 0)));
     const products = await store.read('products');
     const product = products.find((item) => item.id === idOrSlug || item.slug === idOrSlug);
     if (!product) throw new HttpError(404, 'Product image was not found.');
+
+    if (fallbackOnly) {
+      await sendProductFallback(product, res);
+      return;
+    }
 
     const images = Array.isArray(product.images) ? product.images.filter(Boolean) : [];
     const candidates = [
       images[index],
       product.supplierImageUrl,
       product.image,
-      ...images,
-      product.fallbackImage
+      ...images
     ].filter(Boolean);
     const seen = new Set();
     let lastError = null;
@@ -73,22 +84,25 @@ async function productImage(req, res, next) {
       if (seen.has(candidate)) continue;
       seen.add(candidate);
       if (mediaService.isBlockedStockImageUrl(candidate)) continue;
-      if (mediaService.isGeneratedFallbackUrl(candidate)) return res.redirect(productFallbackPath(product));
+      if (mediaService.isGeneratedFallbackUrl(candidate)) continue;
       const remoteUrl = mediaService.highQualityImageUrl(candidate) || sanitizeUrl(candidate);
       if (!remoteUrl) continue;
       try {
-        await sendRemoteImage(remoteUrl, res, { trustedSavedImage: true });
+        await sendRemoteImage(remoteUrl, res, { trustedSavedImage: true, imageRole: 'product' });
         return;
       } catch (error) {
         lastError = error;
       }
     }
 
-    if (lastError) return res.redirect(productFallbackPath(product));
-    return res.redirect(productFallbackPath(product));
+    throw lastError || new HttpError(404, 'Product image was not found.');
   } catch (error) {
     next(error.status ? error : new HttpError(502, 'Product image could not be loaded.'));
   }
+}
+
+async function catalogImage(req, res, next) {
+  return productImage(req, res, next);
 }
 
 function fallbackImage(req, res) {
@@ -99,6 +113,7 @@ function fallbackImage(req, res) {
 }
 
 module.exports = {
+  catalogImage,
   fallbackImage,
   productImage,
   proxyImage

@@ -129,11 +129,11 @@ async function resolveShortMarketplaceUrl(value) {
 
 function marketplaceFromUrl(value) {
   const cleanUrl = cleanMarketplaceUrl(value);
-  if (!cleanUrl) throw new HttpError(400, 'Enter a valid marketplace URL.');
+  if (!cleanUrl) throw new HttpError(400, 'Enter a valid product URL.');
   const parsed = new URL(cleanUrl);
   const host = parsed.hostname.toLowerCase();
   const marketplace = allowedMarketplaces.find((item) => item.hosts.some((allowedHost) => host === allowedHost || host.endsWith(`.${allowedHost}`)));
-  if (!marketplace) throw new HttpError(400, 'Only Amazon, Amazon short links, Walmart, Temu, Alibaba, AliExpress, and eBay links are allowed.');
+  if (!marketplace) throw new HttpError(400, 'Only supported product and collection links are allowed.');
   return { cleanUrl, marketplace: marketplace.name, host };
 }
 
@@ -366,19 +366,19 @@ function extractMarketplaceDetails(html, metadata = {}, ai = {}) {
     /(Amazon's Choice)/i,
     /(Best Seller)/i,
     /(Limited time deal)/i
-  ]);
+  ]).replace(/Amazon's\s+Choice/i, 'MAT STORE Choice');
   const videoCount = Number(firstPattern(html, [
     /([0-9]+)\s+VIDEOS/i,
     /Videos for this product[\s\S]{0,800}?([0-9]+):[0-9]{2}/i
   ]).replace(/[^0-9]/g, '')) || 0;
 
   return {
-    brand: sanitizeString(brand || metadata.supplierName || '', 120),
+    brand: sanitizeString(brand || 'MAT STORE', 120),
     availability: sanitizeString(availability || 'In stock', 120),
-    seller: sanitizeString(firstPattern(html, [/Sold by[\s\S]{0,500}?<span[^>]*>([\s\S]*?)<\/span>/i]) || metadata.supplierName || 'MAT STORE', 120),
-    shipper: sanitizeString(firstPattern(html, [/Ships from[\s\S]{0,500}?<span[^>]*>([\s\S]*?)<\/span>/i]) || metadata.supplierName || 'MAT STORE', 120),
-    returns: sanitizeString(firstPattern(html, [/(30-day refund \/ replacement|30-day refund|Returnable until[^<]+)/i]) || '30-day refund / replacement review', 180),
-    payment: 'Secure transaction',
+    seller: 'MAT STORE',
+    shipper: 'MAT STORE',
+    returns: sanitizeString(firstPattern(html, [/(30-day refund \/ replacement|30-day refund|Returnable until[^<]+)/i]) || 'MAT STORE support review', 180),
+    payment: 'Secure MAT STORE transaction',
     delivery: sanitizeString(firstPattern(html, [/delivery\s+([A-Za-z]+,\s+[A-Za-z]+\s+\d+)/i, /(delivery\s+[^<]{8,90})/i]) || 'Delivery calculated at checkout', 180),
     shipping: sanitizeString(firstPattern(html, [/(\$[\d,.]+\s+Shipping\s*&\s*Import Charges[^<]*)/i, /(Shipping\s*&\s*Import Charges[^<]*)/i]) || 'Shipping and import charges calculated at checkout', 180),
     boughtInPastMonth,
@@ -388,20 +388,20 @@ function extractMarketplaceDetails(html, metadata = {}, ai = {}) {
     about: about.length ? about : fallbackFeatures(metadata, 'supplier-image').slice(0, 5),
     specs: specs.length ? specs : (metadata.variants || []).map((variant) => ({ name: variant.name, value: variant.value })),
     buyingOptions: uniqueCleanList([
-      metadata.supplierName ? `Seller: ${metadata.supplierName}` : '',
+      'MAT STORE',
       availability || 'In stock',
       'Add to cart',
       'Buy now',
-      'Secure transaction'
+      'Secure MAT STORE transaction'
     ], 8, 160),
     videos: {
       count: videoCount,
-      label: videoCount ? `${videoCount}+ product videos detected` : 'Product videos appear when supplier media is available'
+      label: videoCount ? `${videoCount}+ product videos detected` : 'Product videos appear when product media is available'
     },
     reviews: {
       rating: rating || 4.8,
       count: reviewCount || 0,
-      summary: ai.shortDescription || 'Customer review summary appears as marketplace and MAT STORE reviews are collected.'
+      summary: ai.shortDescription || 'Customer review summary appears as MAT STORE reviews are collected.'
     },
     sourceSections: uniqueCleanList(['Buying options', 'About this item', 'Product information', 'Videos', 'Reviews'], 8, 80)
   };
@@ -534,12 +534,12 @@ function fallbackFeatures(metadata, imageStatus) {
   const base = [
     'MAT AI-polished product presentation',
     'Secure MAT STORE checkout',
-    'Curated marketplace sourcing',
+    'Curated MAT STORE catalog review',
     'Premium customer support workflow'
   ];
-  if (imageStatus === 'supplier-image') base.unshift('Supplier image secured through MAT media proxy');
+  if (imageStatus === 'supplier-image') base.unshift('Product image secured through MAT media proxy');
   if (imageStatus === 'generated-fallback') base.unshift('Generated luxury image fallback ready for launch');
-  if (metadata.supplierProductCode) base.push(`Supplier code tracked: ${metadata.supplierProductCode}`);
+  if (metadata.supplierProductCode) base.push(`Catalog code tracked: ${metadata.supplierProductCode}`);
   return base.slice(0, 8);
 }
 
@@ -882,7 +882,7 @@ function extractEbayCollectionCards(html, sourceUrl, limit = MAX_COLLECTION_PROD
       price,
       listPrice,
       savingsPercent,
-      badge: savingsPercent ? `${savingsPercent}% off` : 'eBay deal'
+      badge: savingsPercent ? `${savingsPercent}% off` : 'MAT STORE deal'
     }));
     if (byCode.size >= limit) break;
   }
@@ -910,7 +910,7 @@ function extractAliExpressCollectionCards(html, sourceUrl, limit = MAX_COLLECTIO
       price,
       listPrice,
       savingsPercent,
-      badge: savingsPercent ? `${savingsPercent}% off` : 'AliExpress deal'
+      badge: savingsPercent ? `${savingsPercent}% off` : 'MAT STORE deal'
     });
     if (byCode.size >= limit) break;
   }
@@ -932,7 +932,7 @@ function extractAliExpressCollectionCards(html, sourceUrl, limit = MAX_COLLECTIO
         price: normalizePrice(firstJsonString(block, ['minPrice', 'localizedMinPriceString'])),
         listPrice: normalizePrice(firstJsonString(block, ['oriMinPrice', 'localizedOriMinPriceString'])),
         savingsPercent: Number(firstJsonString(block, ['discount']).replace(/[^0-9]/g, '')) || null,
-        badge: 'AliExpress pick'
+        badge: 'MAT STORE pick'
       });
       if (byCode.size >= limit) break;
     }
@@ -957,7 +957,7 @@ function extractAliExpressCollectionCards(html, sourceUrl, limit = MAX_COLLECTIO
         price: normalizePrice(currencyCode && minPrice ? `${currencyCode} ${minPrice}` : minPrice),
         listPrice: null,
         savingsPercent: discount,
-        badge: discount ? `${discount}% off` : 'AliExpress pick'
+        badge: discount ? `${discount}% off` : 'MAT STORE pick'
       });
       if (byCode.size >= limit) break;
     }
@@ -972,7 +972,7 @@ function extractAlibabaCollectionCards(html, sourceUrl, limit = MAX_COLLECTION_P
     const image = normalizeImageUrl(match[1], sourceUrl);
     const alt = sanitizeString(decodeHtml(match[2]).replace(/\s+hot product$/i, ''), 120);
     if (!image || !alt || /decorative|banner|logo/i.test(alt)) continue;
-    const code = slugForCollectionCode(`alibaba-${alt}`);
+    const code = slugForCollectionCode(`mat-store-${alt}`);
     byCode.set(code, {
       code,
       title: `${alt} wholesale selection`,
@@ -981,7 +981,7 @@ function extractAlibabaCollectionCards(html, sourceUrl, limit = MAX_COLLECTION_P
       price: deterministicFallbackPrice(alt, 'Alibaba', code),
       listPrice: null,
       savingsPercent: null,
-      badge: 'Alibaba source pick'
+      badge: 'MAT STORE pick'
     });
     if (byCode.size >= limit) break;
   }
@@ -998,11 +998,11 @@ function walmartQueryFromUrl(sourceUrl) {
     .filter(Boolean)
     .filter((segment) => !/^(search|browse|cp|shop|deals|collections)$/i.test(segment) && !/^\d+$/.test(segment))
     .at(-1);
-  return sanitizeString((pathHint || 'Walmart deals').replace(/[-_]+/g, ' '), 90);
+  return sanitizeString((pathHint || 'MAT STORE deals').replace(/[-_]+/g, ' '), 90);
 }
 
 function walmartFallbackTitles(query, limit = 12) {
-  const base = formatBrandTitle(query || 'Walmart deals');
+  const base = formatBrandTitle(query || 'MAT STORE deals');
   if (/^(?:trending products?|popular products?|deals?)$/i.test(query)) {
     return [
       'Apple AirPods Pro Wireless Earbuds',
@@ -1119,14 +1119,14 @@ function walmartFallbackTitles(query, limit = 12) {
   }
   const titles = /\bdeal|walmart\b/i.test(base) && base.split(/\s+/).length <= 2
     ? [
-        'Walmart electronics deal',
-        'Walmart home essentials deal',
-        'Walmart fashion deal',
-        'Walmart beauty deal',
-        'Walmart kitchen deal',
-        'Walmart tech accessory deal',
-        'Walmart gaming deal',
-        'Walmart toy deal'
+        'MAT STORE electronics deal',
+        'MAT STORE home essentials deal',
+        'MAT STORE fashion deal',
+        'MAT STORE beauty deal',
+        'MAT STORE kitchen deal',
+        'MAT STORE tech accessory deal',
+        'MAT STORE gaming deal',
+        'MAT STORE toy deal'
       ]
     : [
         base,
@@ -1194,7 +1194,7 @@ function extractWalmartCollectionCards(html, sourceUrl, limit = MAX_COLLECTION_P
       price,
       listPrice,
       savingsPercent,
-      badge: savingsPercent ? `${savingsPercent}% off` : 'Walmart pick'
+      badge: savingsPercent ? `${savingsPercent}% off` : 'MAT STORE pick'
     }));
   }
 
@@ -1204,16 +1204,16 @@ function extractWalmartCollectionCards(html, sourceUrl, limit = MAX_COLLECTION_P
 function walmartFallbackCollectionCards(sourceUrl, limit = 12) {
   const query = walmartQueryFromUrl(sourceUrl);
   return walmartFallbackTitles(query, Math.min(limit, 18)).map((title, index) => {
-    const code = `walmart-${slugForCollectionCode(`${query}-${index + 1}`)}`;
+    const code = `mat-store-${slugForCollectionCode(`${query}-${index + 1}`)}`;
     return {
       code,
       title,
-      sourceUrl: `${sourceUrl}${sourceUrl.includes('#') ? '&' : '#'}mat-walmart-${index + 1}`,
+      sourceUrl: `${sourceUrl}${sourceUrl.includes('#') ? '&' : '#'}mat-store-${index + 1}`,
       image: '',
       price: deterministicFallbackPrice(title, 'Walmart', code),
       listPrice: null,
       savingsPercent: null,
-      badge: 'Walmart search pick'
+      badge: 'MAT STORE search pick'
     };
   });
 }
@@ -1228,12 +1228,9 @@ function slugForCollectionCode(value) {
 
 function collectionNameFor(marketplace, cleanUrl) {
   const path = new URL(cleanUrl).pathname;
-  if (marketplace === 'Amazon') return /goldbox/i.test(path) ? 'Amazon Goldbox Deals' : 'Amazon Deals';
-  if (marketplace === 'eBay') return /brand-outlet/i.test(path) ? 'eBay Brand Outlet' : 'eBay Global Deals';
-  if (marketplace === 'Walmart') return /search/i.test(path) ? 'Walmart Search Picks' : 'Walmart Marketplace Deals';
-  if (marketplace === 'Alibaba') return 'Alibaba Marketplace Picks';
-  if (marketplace === 'AliExpress') return 'AliExpress Front Page Deals';
-  return `${marketplace} Collection`;
+  if (/search|s\b|sch|wholesale|trade\/search/i.test(path)) return 'MAT STORE Search Picks';
+  if (/goldbox|deals|globaldeals|brand-outlet|sale/i.test(path)) return 'MAT STORE Premium Deals';
+  return 'MAT STORE Collection';
 }
 
 function collectionCardsForMarketplace(html, cleanUrl, marketplace, limit) {
@@ -1248,68 +1245,66 @@ function collectionCardsForMarketplace(html, cleanUrl, marketplace, limit) {
 function collectionLuxuryCopy(metadata, collectionName) {
   const category = nvidiaAiService.inferCategory(`${metadata.title} ${metadata.description}`);
   const title = sanitizeString(cleanProductTitle(metadata.title), 140);
-  const marketplaceTag = String(metadata.supplierName || 'marketplace').toLowerCase().replace(/\s+/g, '-');
   return {
     provider: 'collection-fast-import',
     title,
     description: sanitizeString(
-      metadata.description || `${metadata.title} curated from ${collectionName} for MAT STORE customers with premium presentation, tracked supplier sourcing, secure checkout, and smart pricing.`,
+      metadata.description || `${metadata.title} curated for MAT STORE customers with premium presentation, catalog review, secure checkout, and smart pricing.`,
       1200
     ),
-    shortDescription: `Curated ${category} deal from ${collectionName} with MAT STORE checkout and premium product presentation.`,
+    shortDescription: `Curated ${category} selection from MAT STORE with secure checkout and premium product presentation.`,
     category,
-    tags: [...new Set([`${marketplaceTag}-deal`, 'collection-import', 'ai-curated', 'premium', category])].slice(0, 8),
+    tags: [...new Set(['mat-store-deal', 'catalog-import', 'ai-curated', 'premium', category])].slice(0, 8),
     seoTitle: `${title} | MAT STORE`,
-    seoDescription: `Shop ${title} at MAT STORE, imported from ${collectionName} with smart pricing, secure checkout, and premium merchandising.`,
-    luxuryAngle: 'Fast collection import with AI category intelligence, clean deal framing, supplier tracking, and conversion-ready MAT STORE copy.'
+    seoDescription: `Shop ${title} at MAT STORE with smart pricing, secure checkout, and premium merchandising.`,
+    luxuryAngle: 'Fast collection import with AI category intelligence, clean deal framing, catalog review, and conversion-ready MAT STORE copy.'
   };
 }
 
 function collectionMarketplaceDetails(card, metadata, ai, collectionName) {
   const savingsPercent = card.savingsPercent || (card.price && card.listPrice ? Math.max(1, Math.round(((card.listPrice - card.price) / card.listPrice) * 100)) : null);
   const supplierCode = card.code || card.asin || metadata.supplierProductCode;
-  const marketplace = metadata.supplierName || 'Marketplace';
   return {
-    brand: marketplace,
-    availability: 'Deal availability may change on supplier site',
-    seller: `${marketplace} marketplace seller`,
-    shipper: `${marketplace} / marketplace fulfillment`,
-    returns: 'MAT STORE support review with supplier return policy',
+    brand: 'MAT STORE',
+    availability: 'Deal availability may change during catalog review',
+    seller: 'MAT STORE',
+    shipper: 'MAT STORE',
+    returns: 'MAT STORE support review',
     payment: 'Secure MAT STORE transaction',
     delivery: 'Delivery calculated at checkout',
     shipping: 'Shipping and import charges calculated at checkout',
     boughtInPastMonth: '',
-    badge: card.badge || (savingsPercent ? `${savingsPercent}% off` : `${marketplace} deal`),
+    badge: card.badge || (savingsPercent ? `${savingsPercent}% off` : 'MAT STORE deal'),
     listPrice: card.listPrice,
     savingsPercent,
     about: uniqueCleanList([
-      card.badge ? `${card.badge} highlighted from ${collectionName}` : `Imported from ${collectionName}`,
-      supplierCode ? `Supplier code tracked: ${supplierCode}` : '',
+      card.badge ? `${card.badge} highlighted by MAT STORE` : `Featured in ${collectionName}`,
+      supplierCode ? `Catalog code tracked: ${supplierCode}` : '',
       'Curated into MAT STORE with premium presentation and secure checkout',
       'Price is automatically marked up using the active MAT STORE pricing rule',
       ai.shortDescription
     ], 8, 220),
     specs: [
-      { name: 'Marketplace', value: marketplace },
+      { name: 'Store', value: 'MAT STORE' },
       { name: 'Collection', value: collectionName },
-      ...(supplierCode ? [{ name: 'Supplier code', value: supplierCode }] : []),
-      ...(card.listPrice ? [{ name: 'Supplier list price', value: `$${Number(card.listPrice).toFixed(2)}` }] : []),
+      ...(supplierCode ? [{ name: 'Catalog code', value: supplierCode }] : []),
+      ...(card.listPrice ? [{ name: 'List price', value: `$${Number(card.listPrice).toFixed(2)}` }] : []),
       ...(savingsPercent ? [{ name: 'Detected deal', value: `${savingsPercent}% off` }] : [])
     ],
     buyingOptions: uniqueCleanList([
       'Add to cart',
       'Buy now',
       'Secure MAT STORE checkout',
-      'Supplier availability synced from collection import'
+      'Catalog availability reviewed during import'
     ], 8, 160),
     videos: {
       count: 0,
-      label: 'Supplier product videos appear when the product page provides media'
+      label: 'Product videos appear when the product page provides media'
     },
     reviews: {
       rating: 4.8,
       count: 0,
-      summary: 'Review intelligence is enriched when supplier product pages expose customer ratings.'
+      summary: 'Review intelligence is enriched when product pages expose customer ratings.'
     },
     sourceSections: uniqueCleanList(['Buying options', 'About this item', 'Product information', 'Videos', 'Reviews'], 8, 80)
   };
@@ -1322,7 +1317,7 @@ async function previewCollectionImport(url, options = {}) {
 
   let effectiveUrl = cleanUrl;
   let html = await fetchMarketplacePage(effectiveUrl);
-  if (!html) throw new HttpError(400, `The ${marketplace} collection page could not be read. Try again or paste individual product links.`);
+  if (!html) throw new HttpError(400, 'The collection page could not be read. Try again or paste individual product links.');
 
   let collectionName = collectionNameFor(marketplace, cleanUrl);
   const collectionLimit = collectionLimitFromOptions(options);
@@ -1331,35 +1326,35 @@ async function previewCollectionImport(url, options = {}) {
     effectiveUrl = 'https://www.ebay.com/globaldeals/fashion';
     html = await fetchMarketplacePage(effectiveUrl);
     cards = html ? collectionCardsForMarketplace(html, effectiveUrl, marketplace, collectionLimit) : [];
-    collectionName = 'eBay Brand Outlet';
+    collectionName = 'MAT STORE Premium Deals';
   }
   if (!cards.length && marketplace === 'Walmart') {
     cards = walmartFallbackCollectionCards(cleanUrl, collectionLimit);
   }
-  if (!cards.length) throw new HttpError(400, `No products were found on that ${marketplace} collection page.`);
+  if (!cards.length) throw new HttpError(400, 'No products were found on that collection page.');
 
   const manualImageUrl = manualImageFromOptions(options);
   const settings = await pricingService.getPricingSettings();
   const appliedMarkup = markupFromOptions(options) || settings.defaultMarkupPercent || 40;
   const products = await Promise.all(cards.map(async (card) => {
-    const supplierCode = card.code || card.asin || slugForCollectionCode(`${marketplace}-${card.title}`);
+    const supplierCode = card.code || card.asin || slugForCollectionCode(`mat-store-${card.title}`);
     const supplierPrice = card.price || deterministicFallbackPrice(card.title, marketplace, supplierCode);
     const metadata = {
       id: randomUUID(),
       sourceUrl: card.sourceUrl,
       originalUrl: sanitizeUrl(url),
       resolvedUrl: sanitizeUrl(resolvedUrl),
-      supplierName: marketplace,
+      supplierName: 'MAT STORE',
       supplierHost: host,
       supplierProductCode: supplierCode,
       title: cleanProductTitle(card.title),
-      description: sanitizeString(`${card.title}. ${card.badge ? `${card.badge}. ` : ''}Curated from ${collectionName} and prepared for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.`, 1000),
+      description: sanitizeString(`${card.title}. ${card.badge ? `${card.badge}. ` : ''}Curated for MAT STORE with luxury merchandising, SEO, smart pricing, and local checkout.`, 1000),
       image: manualImageUrl || usableSupplierImageUrl(card.image),
       supplierPrice,
       variants: [
         { name: 'Collection', value: collectionName },
-        { name: 'Fulfillment', value: marketplace },
-        { name: 'Supplier code', value: supplierCode },
+        { name: 'Fulfillment', value: 'MAT STORE' },
+        { name: 'Catalog code', value: supplierCode },
         ...(card.badge ? [{ name: 'Deal badge', value: card.badge }] : []),
         ...(manualImageUrl ? [{ name: 'Image override', value: 'Admin supplied' }] : [])
       ]
@@ -1396,7 +1391,7 @@ async function previewCollectionImport(url, options = {}) {
       seo: {
         title: ai.seoTitle,
         description: ai.seoDescription,
-        keywords: [...new Set([ai.category, marketplace, 'MAT STORE', collectionName, ...(ai.tags || [])])].slice(0, 10)
+        keywords: [...new Set([ai.category, 'MAT STORE', collectionName, ...(ai.tags || [])])].slice(0, 10)
       },
       ai: {
         provider: ai.provider,
@@ -1463,7 +1458,7 @@ function titleFromUrl(url, marketplace) {
     .replace(/\s+/g, ' ')
     .trim();
 
-  return raw || `${marketplace} Product`;
+  return raw || 'MAT STORE Product';
 }
 
 function deterministicFallbackPrice(title, marketplace, productCode = '') {
@@ -1520,7 +1515,7 @@ async function previewImport(url, options = {}) {
   const productCode = productCodeFromUrl(cleanUrl, marketplace);
   const fallbackName = titleFromUrl(cleanUrl, marketplace);
   const extractedTitle = isBlockedMarketplaceHtml(html) ? '' : extractTitle(html);
-  const cleanTitle = sanitizeString(cleanProductTitle(extractedTitle || fallbackName || `${marketplace} Product`), 160);
+  const cleanTitle = sanitizeString(cleanProductTitle(extractedTitle || fallbackName || 'MAT STORE Product'), 160);
   const imageCandidates = extractImageCandidates(html, cleanUrl, marketplace);
   const manualImageUrl = manualImageFromOptions(options);
   const supplierImage = manualImageUrl || usableSupplierImageUrl(extractImage(html, cleanUrl, marketplace));
@@ -1532,17 +1527,17 @@ async function previewImport(url, options = {}) {
     sourceUrl: cleanUrl,
     originalUrl: sanitizeUrl(url),
     resolvedUrl: sanitizeUrl(resolvedUrl),
-    supplierName: marketplace,
+    supplierName: 'MAT STORE',
     supplierHost: host,
     supplierProductCode: productCode,
     title: cleanTitle,
-    description: sanitizeString(getMeta(html, ['og:description', 'description', 'twitter:description']) || `Imported from ${marketplace}. MAT STORE will enrich this product with luxury copy, SEO metadata, category intelligence, and premium pricing.`, 1000),
+    description: sanitizeString(getMeta(html, ['og:description', 'description', 'twitter:description']) || 'MAT STORE will enrich this product with luxury copy, SEO metadata, category intelligence, and premium pricing.', 1000),
     image: supplierImage,
     supplierPrice,
     variants: [
       { name: 'Signature', value: 'Standard' },
-      { name: 'Fulfillment', value: marketplace },
-      ...(productCode ? [{ name: 'Supplier code', value: productCode }] : []),
+      { name: 'Fulfillment', value: 'MAT STORE' },
+      ...(productCode ? [{ name: 'Catalog code', value: productCode }] : []),
       ...(manualImageUrl ? [{ name: 'Image override', value: 'Admin supplied' }] : [])
     ]
   };
@@ -1574,7 +1569,7 @@ async function previewImport(url, options = {}) {
     seo: {
       title: ai.seoTitle,
       description: ai.seoDescription,
-      keywords: [...new Set([ai.category, marketplace, 'MAT STORE', ...(ai.tags || [])])].slice(0, 10)
+      keywords: [...new Set([ai.category, 'MAT STORE', ...(ai.tags || [])])].slice(0, 10)
     },
     ai: {
       provider: ai.provider,
@@ -1597,7 +1592,7 @@ async function previewImport(url, options = {}) {
 
 async function previewImports(input, options = {}) {
   const urls = Array.isArray(input) ? input : extractUrls(input);
-  if (!urls.length) throw new HttpError(400, 'Paste at least one Amazon, Walmart, Temu, Alibaba, AliExpress, eBay product link, or supported marketplace collection page.');
+  if (!urls.length) throw new HttpError(400, 'Paste at least one supported product link or collection page.');
   const products = [];
   const errors = [];
   for (const url of urls.slice(0, 20)) {

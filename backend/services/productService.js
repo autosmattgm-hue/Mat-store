@@ -8,7 +8,14 @@ const reviewService = require('./reviewService');
 const searchMatch = require('../utils/searchMatch');
 const { sanitizeString } = require('../utils/sanitize');
 const { cleanProductTitle } = require('../utils/productTitle');
-const { hasRealProductMedia, isQuestionableProduct, primaryRealProductMedia } = require('../utils/catalogQuality');
+const {
+  hasRealProductMedia,
+  isGeneratedSearchProduct,
+  isQuestionableProduct,
+  isUntrustedDiscoveredImageProduct,
+  isUnverifiedSearchImageProduct,
+  primaryRealProductMedia
+} = require('../utils/catalogQuality');
 const HttpError = require('../utils/httpError');
 
 function sanitizeImageUrl(value) {
@@ -149,6 +156,18 @@ function isTrendingRequest(query = {}) {
   return ['true', '1', 'yes', 'trending'].includes(String(query.trending || query.feed || '').toLowerCase());
 }
 
+function positiveInteger(value, fallback, max = 1200) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return fallback;
+  return Math.min(max, Math.max(1, Math.floor(number)));
+}
+
+function numericFilter(value) {
+  if (value === undefined || value === null || String(value).trim() === '') return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
 function normalizedCategory(value = '') {
   return sanitizeString(value, 80)
     .toLowerCase()
@@ -204,10 +223,32 @@ function isSmartphoneProduct(product = {}) {
   return /\b(?:iphone|galaxy|pixel|smartphones?|smart\s*phones?|android\s*(?:smart\s*)?phones?|mobile\s*phones?|cell\s*phones?|unlocked\s*phones?|rugged\s*phones?|oneplus|xiaomi|redmi|vivo|oppo|honor|realme|motorola|moto\s*(?:g|razr)|nothing\s*phone|nokia\s*phone|mini\s*phone)\b/i.test(fullText);
 }
 
+function isGadgetCategory(category = '') {
+  return ['gadget', 'gadgets', 'tech gadgets', 'smart gadgets'].includes(normalizedCategory(category));
+}
+
+function isGadgetProduct(product = {}) {
+  const titleText = [
+    product.title,
+    product.shortDescription,
+    product.category,
+    product.collection,
+    ...(product.tags || [])
+  ].filter(Boolean).join(' ').toLowerCase();
+  const fullText = productSearchText(product);
+  const nonGadgetPattern = /\b(?:nail|manicure|acrylic|monomer|minoxidil|rogaine|hair\s*regrowth|wig|lashes?|mascara|makeup|cosmetic|serum|cleanser|moisturi[sz]er|toner|lotion|soap|shampoo|conditioner|fragrance|perfume|skincare|skin\s*care|supplement|vitamin|bra|underwire|dress|shirt|pants|jacket|hoodie|sweater|leggings|skirt|blouse|shoes?|sneakers?|sandals?|boots?|handbag|wallet|belt|jewelry|earrings?|necklace|bracelet)\b/i;
+  const strongGadgetPattern = /\b(?:airtag|bluetooth|wireless|smart\s*(?:watch|tracker|tag|device|home|plug|light|scale|ring)|tracker|power\s*bank|magsafe|usb\s*c?\s*(?:hub|dock|adapter|charger|cable)|charging\s*(?:station|pad|dock)|portable\s*(?:speaker|ssd|monitor|charger|projector|power)|speaker|earbuds?|headphones?|headset|mouse|keyboard|router|wi-?fi|streaming\s*stick|roku|chromecast|fire\s*stick|ssd|hard\s*drive|webcam|camera|drone|projector|tablet|fitness\s*(?:watch|tracker|band)|controller|gamepad|dash\s*cam|action\s*cam|gimbal|microphone|tripod|phone\s*(?:stand|holder|mount|charger))\b/i;
+  const categoryHint = /\b(?:gadgets?|electronics?|tech|smart\s*devices?)\b/i.test(titleText);
+  if (!strongGadgetPattern.test(fullText)) return false;
+  if (nonGadgetPattern.test(titleText) && !categoryHint) return false;
+  return true;
+}
+
 function categoryMatchesProduct(category = '', product = {}) {
   const selected = normalizedCategory(category);
   if (!selected || selected === 'all') return true;
   if (isSmartphoneCategory(selected)) return isSmartphoneProduct(product);
+  if (isGadgetCategory(selected)) return isGadgetProduct(product);
   if (normalizedCategory(product.category) === selected) return true;
   return false;
 }
@@ -345,6 +386,8 @@ function normalizeProduct(payload, existing = {}) {
     fallbackImage: sanitizeImageUrl(payload.fallbackImage || existing.fallbackImage || ''),
     imageStatus: sanitizeString(payload.imageStatus || existing.imageStatus || '', 60),
     imageSource: sanitizeString(payload.imageSource || existing.imageSource || '', 160),
+    imageVerifiedAt: sanitizeString(payload.imageVerifiedAt || existing.imageVerifiedAt || '', 40),
+    imageVerification: sanitizeString(payload.imageVerification || existing.imageVerification || '', 80),
     mediaConfidence: sanitizeString(payload.mediaConfidence || existing.mediaConfidence || '', 40),
     imageCandidateCount: Math.max(0, Math.floor(Number(payload.imageCandidateCount ?? existing.imageCandidateCount ?? 0))),
     variants: Array.isArray(payload.variants) ? payload.variants.slice(0, 20) : existing.variants || [],
@@ -399,24 +442,34 @@ function productForCurrency(product, currency = 'USD') {
 
 async function listProducts(query = {}) {
   const products = await store.read('products');
-  const page = Math.max(1, Number(query.page || 1));
-  const limit = Math.min(1200, Math.max(1, Number(query.limit || 24)));
+  const page = positiveInteger(query.page || 1, 1, 100000);
+  const limit = positiveInteger(query.limit || 24, 24, 1200);
   const currency = String(query.currency || 'USD').toUpperCase();
   const search = sanitizeString(query.q || '', 120).toLowerCase();
   const category = sanitizeString(query.category || '', 80).toLowerCase();
-  const minPrice = query.minPrice ? Number(query.minPrice) : null;
-  const maxPrice = query.maxPrice ? Number(query.maxPrice) : null;
-  const minRating = query.minRating ? Number(query.minRating) : null;
+  let minPrice = numericFilter(query.minPrice);
+  let maxPrice = numericFilter(query.maxPrice);
+  const parsedMinRating = numericFilter(query.minRating);
+  const minRating = parsedMinRating === null ? null : Math.min(5, parsedMinRating);
   const inStock = ['true', '1', 'yes', 'on'].includes(String(query.inStock || '').toLowerCase());
   const brand = sanitizeString(query.brand || '', 120).toLowerCase();
   const trending = isTrendingRequest(query);
   const includeDrafts = ['true', '1', 'yes', 'on'].includes(String(query.includeDrafts || '').toLowerCase());
+  if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+    [minPrice, maxPrice] = [maxPrice, minPrice];
+  }
 
-  let filtered = products.filter((product) => (
+  const visibleCatalogProducts = products.filter((product) => (
     includeDrafts
       ? product.status !== 'archived'
-      : product.status === 'active' && hasRealProductMedia(product) && !isQuestionableProduct(product)
+      : product.status === 'active'
+        && hasRealProductMedia(product)
+        && !isQuestionableProduct(product)
+        && !isGeneratedSearchProduct(product)
+        && !isUntrustedDiscoveredImageProduct(product)
+        && !isUnverifiedSearchImageProduct(product)
   ));
+  let filtered = [...visibleCatalogProducts];
   let scoredSearchProducts = null;
   if (search) {
     scoredSearchProducts = filtered
@@ -425,19 +478,23 @@ async function listProducts(query = {}) {
     filtered = scoredSearchProducts.map((entry) => entry.product);
   }
   if (category && category !== 'all' && !(trending && category === 'trending products')) filtered = filtered.filter((product) => categoryMatchesProduct(category, product));
-  if (minPrice !== null) filtered = filtered.filter((product) => product.price >= minPrice);
-  if (maxPrice !== null) filtered = filtered.filter((product) => product.price <= maxPrice);
+  if (minPrice !== null) filtered = filtered.filter((product) => Number(product.price || 0) >= minPrice);
+  if (maxPrice !== null) filtered = filtered.filter((product) => Number(product.price || 0) <= maxPrice);
   if (minRating !== null) filtered = filtered.filter((product) => Number(product.rating || 0) >= minRating);
   if (inStock) filtered = filtered.filter((product) => Number(product.stock || 0) > 0);
   if (brand) filtered = filtered.filter((product) => productSearchText(product).includes(brand));
 
   const sort = query.sort || 'featured';
+  const productPrice = (product) => Number(product.price || 0);
+  const productRating = (product) => Number(product.rating || 0);
+  const productReviews = (product) => Number(product.reviewsCount || 0);
+  const productDate = (product) => new Date(product.updatedAt || product.createdAt || 0).getTime() || 0;
   const compareProducts = (a, b) => {
-    if (sort === 'price-asc') return a.price - b.price;
-    if (sort === 'price-desc') return b.price - a.price;
-    if (sort === 'newest') return new Date(b.createdAt) - new Date(a.createdAt);
-    if (sort === 'rating') return b.rating - a.rating;
-    return (b.reviewsCount + b.rating) - (a.reviewsCount + a.rating);
+    if (sort === 'price-asc') return productPrice(a) - productPrice(b);
+    if (sort === 'price-desc') return productPrice(b) - productPrice(a);
+    if (sort === 'newest') return productDate(b) - productDate(a);
+    if (sort === 'rating') return productRating(b) - productRating(a);
+    return (productReviews(b) + productRating(b)) - (productReviews(a) + productRating(a));
   };
 
   if (trending && sort === 'featured') {
@@ -453,8 +510,8 @@ async function listProducts(query = {}) {
 
   const total = filtered.length;
   const items = filtered.slice((page - 1) * limit, page * limit).map((product) => productForCurrency(product, currency));
-  const categories = [...new Set(products.map((product) => product.category))].sort();
-  const brands = [...new Set(products
+  const categories = [...new Set(visibleCatalogProducts.map((product) => product.category).filter(Boolean))].sort();
+  const brands = [...new Set(visibleCatalogProducts
     .map((product) => product.marketplaceDetails?.brand || product.supplierName || '')
     .map((value) => sanitizeString(value, 120))
     .filter(Boolean))]
@@ -477,7 +534,13 @@ async function getProduct(idOrSlug, currency = 'USD') {
   if (!product) throw new HttpError(404, 'Product not found.');
 
   const related = products
-    .filter((item) => item.status === 'active' && hasRealProductMedia(item) && item.id !== product.id && (item.category === product.category || item.collection === product.collection))
+    .filter((item) => item.status === 'active'
+      && hasRealProductMedia(item)
+      && !isGeneratedSearchProduct(item)
+      && !isUntrustedDiscoveredImageProduct(item)
+      && !isUnverifiedSearchImageProduct(item)
+      && item.id !== product.id
+      && (item.category === product.category || item.collection === product.collection))
     .slice(0, 6)
     .map((item) => productForCurrency(item, currency));
 
@@ -648,14 +711,17 @@ async function repairPricing(options = {}) {
 
 async function repairImages(options = {}) {
   const limit = Math.min(250, Math.max(1, Math.floor(Number(options.limit || 80))));
+  const verifyLive = options.verifyLive !== false;
   let result = {
     total: 0,
     checked: 0,
     repaired: 0,
+    drafted: 0,
     removed: 0,
     unresolved: 0,
     repairedProducts: [],
-    removedProducts: []
+    removedProducts: [],
+    draftedProducts: []
   };
 
   await store.update('products', async (products) => {
@@ -675,12 +741,24 @@ async function repairImages(options = {}) {
         continue;
       }
 
-      if (!isWeakProductImage(product) || result.checked >= limit) {
+      const primaryImage = primaryRealProductMedia(product);
+      const shouldVerify = verifyLive && product.status === 'active' && primaryImage && result.checked < limit;
+      const weakImage = isWeakProductImage(product) || isUntrustedDiscoveredImageProduct(product);
+
+      if (!weakImage && !shouldVerify || result.checked >= limit) {
         nextProducts.push(product);
         continue;
       }
 
       result.checked += 1;
+      if (!weakImage) {
+        const liveImage = await mediaService.verifyProductImageUrl(primaryImage, { trustedSavedImage: true });
+        if (liveImage.ok) {
+          nextProducts.push(product);
+          continue;
+        }
+      }
+
       const media = await mediaService.resolveBestProductImage('', {
         ...product,
         title: cleanProductTitle(product.title),
@@ -691,13 +769,41 @@ async function repairImages(options = {}) {
       });
 
       if (media.image && media.imageStatus !== 'curated-photo-fallback') {
-        const updated = normalizeProduct({
+        const candidate = normalizeProduct({
           ...product,
           ...media,
           images: [media.image],
           fallbackImage: media.fallbackImage,
           supplierImageUrl: media.supplierImageUrl || product.supplierImageUrl || ''
         }, product);
+        const liveCandidate = await mediaService.verifyProductImageUrl(primaryRealProductMedia(candidate), {
+          trustedSavedImage: true
+        });
+        if (!liveCandidate.ok || isUntrustedDiscoveredImageProduct(candidate)) {
+          result.unresolved += 1;
+          const drafted = product.status === 'active'
+            ? {
+                ...product,
+                status: 'draft',
+                adminNote: `${product.adminNote ? `${product.adminNote} ` : ''}Moved to draft because MAT STORE could not verify a real product image.`,
+                updatedAt: new Date().toISOString()
+              }
+            : product;
+          if (drafted.status === 'draft' && product.status === 'active') {
+            result.drafted += 1;
+            if (result.draftedProducts.length < 50) {
+              result.draftedProducts.push({
+                id: drafted.id,
+                title: cleanProductTitle(drafted.title),
+                imageStatus: drafted.imageStatus
+              });
+            }
+          }
+          nextProducts.push(drafted);
+          continue;
+        }
+
+        const updated = candidate;
         result.repaired += 1;
         if (result.repairedProducts.length < 50) {
           result.repairedProducts.push({
@@ -709,7 +815,25 @@ async function repairImages(options = {}) {
         nextProducts.push(updated);
       } else {
         result.unresolved += 1;
-        nextProducts.push(product);
+        const drafted = product.status === 'active'
+          ? {
+              ...product,
+              status: 'draft',
+              adminNote: `${product.adminNote ? `${product.adminNote} ` : ''}Moved to draft because MAT STORE could not verify a real product image.`,
+              updatedAt: new Date().toISOString()
+            }
+          : product;
+        if (drafted.status === 'draft' && product.status === 'active') {
+          result.drafted += 1;
+          if (result.draftedProducts.length < 50) {
+            result.draftedProducts.push({
+              id: drafted.id,
+              title: cleanProductTitle(drafted.title),
+              imageStatus: drafted.imageStatus
+            });
+          }
+        }
+        nextProducts.push(drafted);
       }
     }
     return nextProducts;
@@ -894,7 +1018,7 @@ async function searchSuggestions(q) {
   if (!search) return [];
   return products
     .map((product) => ({ product, search: searchMatch.scoreProduct(search, product) }))
-    .filter((entry) => entry.product.status === 'active' && hasRealProductMedia(entry.product) && !isQuestionableProduct(entry.product) && entry.search.relevant)
+    .filter((entry) => entry.product.status === 'active' && hasRealProductMedia(entry.product) && !isQuestionableProduct(entry.product) && !isGeneratedSearchProduct(entry.product) && !isUntrustedDiscoveredImageProduct(entry.product) && entry.search.relevant)
     .sort((a, b) => b.search.score - a.search.score)
     .filter((entry, index, entries) => entries.findIndex((candidate) => visibleProductKey(candidate.product) === visibleProductKey(entry.product)) === index)
     .slice(0, 8)

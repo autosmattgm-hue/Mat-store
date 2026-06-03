@@ -2,19 +2,19 @@ const config = require('../config');
 const { cleanProductTitle } = require('../utils/productTitle');
 
 function fallbackLuxuryCopy(product) {
-  const title = cleanProductTitle(product.title || 'Curated Marketplace Find');
+  const title = cleanProductTitle(product.title || 'Curated MAT STORE Find');
   const category = product.category || 'luxury';
 
   return {
     title: title.slice(0, 140),
     description:
       product.description ||
-      `A carefully sourced ${category} piece refined for MAT STORE customers, selected for elevated everyday style, clean presentation, and dependable marketplace value.`,
+      `A carefully sourced ${category} piece refined for MAT STORE customers, selected for elevated everyday style, clean presentation, and dependable store value.`,
     shortDescription: `Luxury-curated ${category} selection with premium MAT STORE presentation.`,
     category: inferCategory(`${title} ${product.description || ''}`),
-    tags: ['mat-ai-curated', 'premium', 'marketplace', category].filter(Boolean),
+    tags: ['mat-ai-curated', 'premium', 'mat-store', category].filter(Boolean),
     seoTitle: `${title} | MAT STORE`,
-    seoDescription: `Shop ${title} at MAT STORE with secure checkout, curated styling, and premium marketplace fulfillment.`,
+    seoDescription: `Shop ${title} at MAT STORE with secure checkout, curated styling, and premium customer support.`,
     luxuryAngle: 'MAT AI-polished merchandising, elevated imagery, premium pricing, and trust-focused conversion copy.'
   };
 }
@@ -127,6 +127,7 @@ async function enhanceProduct(product) {
 Return strict JSON only with keys: title, description, shortDescription, category, tags, seoTitle, seoDescription, luxuryAngle.
 Create elegant, conversion-focused, truthful ecommerce copy without unsupported claims.
 Keep the title as the real supplier product name. Do not prefix the product title with MAT or MAT STORE.
+Do not mention external marketplaces, source websites, supplier names, seller platforms, or vendor origin in customer-facing copy. Use MAT STORE as the visible store identity.
 Product source data: ${JSON.stringify(product).slice(0, 5000)}`;
 
   const response = await chatCompletion({

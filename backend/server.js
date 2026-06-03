@@ -97,6 +97,10 @@ app.use(
     maxAge: config.env === 'production' ? '1d' : 0,
     etag: true,
     setHeaders(res, filePath) {
+      if (/service-worker\.js$/i.test(filePath) || /manifest\.webmanifest$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'no-cache');
+        return;
+      }
       if (/\.(?:css|js|svg|png|jpe?g|webp|gif|ico|woff2?)$/i.test(filePath)) {
         res.setHeader('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
         return;
