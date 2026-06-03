@@ -298,7 +298,7 @@
     skeletonGrid('trendingGrid', 8);
     skeletonGrid('flashGrid', 4);
     const data = await api.get('/products', {
-      limit: 1200,
+      limit: 160,
       currency: state.currency,
       q: state.query,
       category: state.category === 'all' ? '' : state.category

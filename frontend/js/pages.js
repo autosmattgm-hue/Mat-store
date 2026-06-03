@@ -1023,7 +1023,7 @@
 
   async function loadProducts(options = {}) {
     const data = await api.get('/products', {
-      limit: 1200,
+      limit: 160,
       currency: state.currency,
       ...options
     });
@@ -1632,7 +1632,7 @@
   }
 
   async function initCategories() {
-    await loadProducts();
+    await loadProducts({ limit: 240 });
     const target = document.getElementById('categoryTiles');
     const images = {
       electronics: generatedFallback({ title: 'MAT AI electronics', category: 'electronics' }),
@@ -1832,7 +1832,7 @@
   }
 
   async function initCartPage() {
-    await loadProducts();
+    await loadProducts({ limit: 300 });
     renderCartPage();
     document.addEventListener('click', (event) => {
       const remove = event.target.closest('[data-page-remove]');
@@ -2239,7 +2239,7 @@
 
   async function initCheckout() {
     if (!requireCheckoutAccount('Login or register before checkout.')) return;
-    await loadProducts();
+    await loadProducts({ limit: 300 });
     renderSummary();
     const form = document.getElementById('checkoutPageForm');
     bindCheckoutEnhancements(form);
@@ -2499,7 +2499,7 @@
 
   async function initPayment() {
     if (!requireCheckoutAccount('Login or register before payment.')) return;
-    await loadProducts();
+    await loadProducts({ limit: 300 });
     const payload = storedCheckoutPayload();
     renderPaymentSummary(payload);
     if (!payload || !payload.items?.length) {
@@ -2854,7 +2854,7 @@
   }
 
   async function initWishlist() {
-    await loadProducts();
+    await loadProducts({ limit: 300 });
     const target = document.getElementById('wishlistGrid');
     if (!state.user) {
       target.innerHTML = '<div class="empty-state">Login to view wishlist products.</div>';
@@ -2976,7 +2976,7 @@
   async function initStaticEnhancements() {
     const featured = document.getElementById('featuredSupportProducts');
     if (!featured) return;
-    await loadProducts();
+    await loadProducts({ limit: 12 });
     featured.innerHTML = state.products.slice(0, 3).map(card).join('');
   }
 

@@ -1,6 +1,41 @@
 (function () {
   const storage = window.localStorage;
   const apiBase = '/api';
+  const getCache = new Map();
+  const PUBLIC_GET_CACHE_TTL_MS = 15000;
+  const PUBLIC_GET_CACHE_MAX = 80;
+
+  function cloneData(data) {
+    return data === undefined ? data : JSON.parse(JSON.stringify(data));
+  }
+
+  function isPublicGetCacheable(path) {
+    return /^\/(?:products(?:[/?#]|$)|currencies(?:[/?#]|$)|settings\/public(?:[/?#]|$)|auth\/currencies(?:[/?#]|$))/.test(path);
+  }
+
+  function cachedGet(key) {
+    const cached = getCache.get(key);
+    if (!cached) return null;
+    if (cached.expiresAt <= Date.now()) {
+      getCache.delete(key);
+      return null;
+    }
+    return cloneData(cached.data);
+  }
+
+  function setCachedGet(key, data) {
+    if (!getCache.has(key) && getCache.size >= PUBLIC_GET_CACHE_MAX) {
+      getCache.delete(getCache.keys().next().value);
+    }
+    getCache.set(key, {
+      data: cloneData(data),
+      expiresAt: Date.now() + PUBLIC_GET_CACHE_TTL_MS
+    });
+  }
+
+  function clearGetCache() {
+    getCache.clear();
+  }
 
   function getSessionId() {
     let sessionId = storage.getItem('mat_session_id');
@@ -80,6 +115,13 @@
     const headers = new Headers(options.headers || {});
     const token = getAccessToken();
     if (token) headers.set('Authorization', `Bearer ${token}`);
+    const method = String(options.method || 'GET').toUpperCase();
+    const cacheKey = `${method}:${path}`;
+    const canUseCache = method === 'GET' && !token && isPublicGetCacheable(path);
+    if (canUseCache) {
+      const cached = cachedGet(cacheKey);
+      if (cached) return cached;
+    }
 
     let body = options.body;
     if (body && !(body instanceof FormData) && typeof body !== 'string') {
@@ -97,7 +139,10 @@
       return request(path, options, false);
     }
 
-    return parseResponse(response);
+    const data = await parseResponse(response);
+    if (canUseCache) setCachedGet(cacheKey, data);
+    if (method !== 'GET') clearGetCache();
+    return data;
   }
 
   function query(params = {}) {
