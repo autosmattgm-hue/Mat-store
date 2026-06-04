@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'mat-store-v1.0.5';
+const CACHE_VERSION = 'mat-store-v1.0.7';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -7,7 +7,7 @@ const APP_SHELL = [
   '/offline.html',
   '/manifest.webmanifest',
   '/mat-store.png',
-  '/css/styles.css',
+  '/css/styles.css?v=20260604-logo2',
   '/js/api.js',
   '/js/cart.js',
   '/js/app.js',

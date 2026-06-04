@@ -120,10 +120,12 @@ a {
   place-items: center;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  font-family: "Cormorant Garamond", serif;
-  font-size: 2.4rem;
-  font-weight: 700;
-  color: var(--gold);
+  overflow: hidden;
+  font-size: 0;
+  color: transparent;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.08)),
+    url('/mat-store.png') center / cover no-repeat;
   box-shadow: 0 0 60px rgba(244, 213, 158, 0.22);
   animation: logoReveal 1400ms var(--ease) infinite alternate;
 }
@@ -179,17 +181,29 @@ a {
   place-items: center;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius);
-  color: var(--gold);
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.15rem;
-  font-weight: 700;
-  background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  flex: 0 0 auto;
+  font-size: 0;
+  color: transparent;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.08)),
+    url('/mat-store.png') center / cover no-repeat;
+  box-shadow: 0 10px 24px rgba(5, 5, 5, 0.18);
 }
 
 .brand-name {
   font-size: 0.78rem;
   font-weight: 800;
   color: var(--paper);
+}
+
+.brand-logo,
+.loader-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
 }
 
 .desktop-nav {
@@ -4001,9 +4015,11 @@ body::before {
 }
 
 .loader-mark {
-  color: #16130f;
+  color: transparent;
   border-color: rgba(22, 19, 15, 0.28);
-  background: rgba(255, 255, 255, 0.46);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.08)),
+    url('/mat-store.png') center / cover no-repeat;
   box-shadow: 0 18px 70px rgba(74, 51, 23, 0.18);
 }
 
@@ -4061,10 +4077,12 @@ li,
 }
 
 .brand-mark {
-  color: #fffaf1;
+  color: transparent;
   border-color: rgba(22, 19, 15, 0.8);
-  background: #16130f;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(0, 0, 0, 0.08)),
+    url('/mat-store.png') center / cover no-repeat;
+  box-shadow: 0 10px 24px rgba(54, 42, 27, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
 .desktop-nav a:hover,
