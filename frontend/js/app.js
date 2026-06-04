@@ -251,7 +251,7 @@
   function imageAttrs(src, fallback) {
     const cleanSrc = src && !isBlockedStockImageUrl(src) ? src : '';
     const cleanFallback = fallback && !isBlockedStockImageUrl(fallback) ? fallback : cleanSrc;
-    const nextSrc = cleanSrc || cleanFallback || '/assets/icons/favicon.svg';
+    const nextSrc = cleanSrc || cleanFallback || '/mat-store.png';
     const fallbackAttr = cleanFallback ? ` data-fallback-src="${escapeHtml(cleanFallback)}"` : '';
     return `src="${escapeHtml(nextSrc)}"${fallbackAttr}`;
   }

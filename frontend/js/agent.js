@@ -101,7 +101,7 @@
 
     const imageWrap = create('span', 'ai-agent-product-image');
     const image = create('img');
-    image.src = item.image || '/assets/icons/favicon.svg';
+    image.src = item.image || '/mat-store.png';
     image.alt = item.title || 'MAT STORE product';
     image.loading = 'lazy';
     imageWrap.appendChild(image);

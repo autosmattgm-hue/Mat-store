@@ -132,7 +132,7 @@
             const product = item.snapshot || {};
             return `
               <article class="cart-item">
-                <img src="${product.image || '/assets/icons/favicon.svg'}" alt="${escapeHtml(product.title || 'Product')}">
+                <img src="${product.image || '/mat-store.png'}" alt="${escapeHtml(product.title || 'Product')}">
                 <div>
                   <h3>${escapeHtml(product.title || 'MAT STORE Product')}</h3>
                   <p>${formatMoney(product.displayPrice || 0)} ${item.variant ? `· ${escapeHtml(item.variant)}` : ''}</p>

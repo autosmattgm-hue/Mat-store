@@ -46,6 +46,33 @@
           "value": "public, max-age=86400, stale-while-revalidate=604800"
         }
       ]
+    },
+    {
+      "source": "/mat-store.png",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, stale-while-revalidate=86400"
+        }
+      ]
+    },
+    {
+      "source": "/manifest.webmanifest",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
+    },
+    {
+      "source": "/service-worker.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }
+      ]
     }
   ],
   "routes": [
@@ -72,6 +99,18 @@
     {
       "src": "/sitemap.xml",
       "dest": "frontend/sitemap.xml"
+    },
+    {
+      "src": "/manifest.webmanifest",
+      "dest": "frontend/manifest.webmanifest"
+    },
+    {
+      "src": "/service-worker.js",
+      "dest": "frontend/service-worker.js"
+    },
+    {
+      "src": "/mat-store.png",
+      "dest": "frontend/mat-store.png"
     },
     {
       "src": "/(.*\\.html)",

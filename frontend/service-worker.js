@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'mat-store-v1.0.4';
+const CACHE_VERSION = 'mat-store-v1.0.5';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -6,6 +6,7 @@ const APP_SHELL = [
   '/',
   '/offline.html',
   '/manifest.webmanifest',
+  '/mat-store.png',
   '/css/styles.css',
   '/js/api.js',
   '/js/cart.js',
@@ -13,7 +14,7 @@ const APP_SHELL = [
   '/js/pages.js',
   '/js/auth.js',
   '/js/agent.js',
-  '/assets/icons/favicon.svg',
+  '/assets/icons/apple-touch-icon.png',
   '/assets/icons/icon-192.png',
   '/assets/icons/icon-512.png',
   '/assets/icons/maskable-512.png'

@@ -84,7 +84,7 @@
   }
 
   function imageAttrs(src, fallback) {
-    const nextFallback = fallback || '/assets/icons/favicon.svg';
+    const nextFallback = fallback || '/mat-store.png';
     return `src="${escapeHtml(src || nextFallback)}" data-fallback-src="${escapeHtml(nextFallback)}"`;
   }
 

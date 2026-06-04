@@ -699,7 +699,7 @@
   function imageAttrs(src, fallback) {
     const cleanSrc = src && !isBlockedStockImageUrl(src) ? src : '';
     const cleanFallback = fallback && !isBlockedStockImageUrl(fallback) ? fallback : cleanSrc;
-    const nextSrc = cleanSrc || cleanFallback || '/assets/icons/favicon.svg';
+    const nextSrc = cleanSrc || cleanFallback || '/mat-store.png';
     const fallbackAttr = cleanFallback ? ` data-fallback-src="${escapeHtml(cleanFallback)}"` : '';
     return `src="${escapeHtml(nextSrc)}"${fallbackAttr}`;
   }
@@ -1802,7 +1802,7 @@
                       const product = item.snapshot || {};
                       return `
                         <article class="checkout-review-item">
-                          <img src="${product.image || '/assets/icons/favicon.svg'}" alt="${escapeHtml(product.title || 'Product')}">
+                          <img src="${product.image || '/mat-store.png'}" alt="${escapeHtml(product.title || 'Product')}">
                           <div>
                             <strong>${escapeHtml(product.title || 'MAT STORE Product')}</strong>
                             <span>${item.quantity} x ${money(product.displayPrice || 0)}${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</span>
@@ -2316,7 +2316,7 @@
                   const product = item.snapshot || {};
                   return `
                     <article class="checkout-review-item">
-                      <img src="${product.image || '/assets/icons/favicon.svg'}" alt="${escapeHtml(product.title || 'Product')}">
+                      <img src="${product.image || '/mat-store.png'}" alt="${escapeHtml(product.title || 'Product')}">
                       <div>
                         <strong>${escapeHtml(product.title || 'MAT STORE Product')}</strong>
                         <span>${item.quantity} x ${money(product.displayPrice || 0, payload.currency)}${item.variant ? ` · ${escapeHtml(item.variant)}` : ''}</span>
