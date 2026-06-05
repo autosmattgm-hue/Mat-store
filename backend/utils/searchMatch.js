@@ -74,7 +74,7 @@ function hasOrderedTermsNear(text, terms, maxGap = 3) {
 
 function queryNeedsTitleMatch(normalizedQuery = '', terms = []) {
   if (terms.length > 1) return true;
-  return /\b(iphone|ipad|macbook|galaxy|pixel|phone|smartphone|laptop|notebook|computer|pc|tv|television|monitor|tablet|camera|airpods?|earbuds?|earphones?|headphones?|headsets?|speaker|soundbar|watch|smartwatch|controller|console|ps5|xbox|drone|fryer|air\s*fryer|lamp|light|resin|shoe|shoes|sneaker|sneakers|boot|boots|bag|wallet|dress|jacket|shirt|hoodie|ring|necklace|bracelet|perfume|fragrance|cream|serum|makeup|toy|charger|cable|case|cover)\b/i.test(normalizedQuery);
+  return /\b(iphone|ipad|macbook|galaxy|pixel|phone|smartphone|laptop|notebook|computer|pc|tv|television|monitor|tablet|camera|airpods?|earbuds?|earphones?|headphones?|headsets?|speaker|soundbar|watch|smartwatch|controller|console|ps5|xbox|drone|fryer|air\s*fryer|lamp|light|resin|shoe|shoes|sneaker|sneakers|boot|boots|bag|wallet|dress|jacket|shirt|hoodie|ring|necklace|bracelet|perfume|fragrance|cream|serum|makeup|toy|charger|cable|case|cover|power\s*bank|powerbank|magsafe|magnetic\s*(?:charger|battery|power)|wireless\s*charger|portable\s*charger)\b/i.test(normalizedQuery);
 }
 
 function productCoreText(product = {}) {
@@ -92,6 +92,8 @@ function productCoreText(product = {}) {
     product.supplierProductCode,
     product.seo?.title,
     product.seo?.description,
+    ...(Array.isArray(product.tags) ? product.tags : []),
+    ...(Array.isArray(product.features) ? product.features : []),
     details.brand,
     details.badge,
     ...about,
@@ -121,11 +123,11 @@ function scoreProduct(query, product = {}) {
 
   const normalizedQuery = normalizeText(query);
   const queryIsPhoneModel = /\b(iphone|galaxy|pixel)\s+[0-9a-z]+\b/i.test(normalizedQuery);
-  const accessoryPattern = /\b(case|cover|protector|glass|charger|cable|screen|lens|battery|adapter|remote|control|connector|replacement|keyboard|caps|stand|mount|bag|sleeve|interface|tips?|ear\s*tips?|earbuds?\s*tips?|earplugs?|skin|shell|strap|band|dock|holder|cleaner|cleaning|tool|kit|pouch|parts?|usb|flash|thumb|drive)\b/i;
+  const accessoryPattern = /\b(case|cover|protector|glass|charger|cable|screen|lens|battery|adapter|remote|control|connector|replacement|keyboard|caps|stand|mount|bag|sleeve|interface|tips?|ear\s*tips?|earbuds?\s*tips?|earplugs?|skin|shell|strap|band|dock|holder|cleaner|cleaning|tool|kit|pouch|parts?|usb|flash|thumb|drive|power\s*bank|powerbank|magsafe|magnetic\s*(?:charger|battery|power|wallet|stand|mount)|wireless\s*charger|portable\s*charger|charging\s*bank)\b/i;
   const queryWantsAccessory = accessoryPattern.test(normalizedQuery);
   const queryWantsCoreDevice = /\b(iphone|galaxy|pixel|phone|smartphone|laptop|notebook|computer|tv|television|monitor|tablet|camera|airpods?|earbuds?|earphones?|headphones?|headsets?|speaker|soundbar|watch|smartwatch|console|drone)\b/i.test(normalizedQuery);
   const queryWantsAudioDevice = /\b(airpods?|earbuds?|earphones?|headphones?|headsets?)\b/i.test(normalizedQuery);
-  const accessoryTitle = /\b(case|cover|protector|glass|charger|cable|screen|lens|film|tempered|hydrogel|remote|control|connector|adapter|replacement|keyboard|caps|stand|mount|bag|sleeve|interface|tips?|ear\s*tips?|earbuds?\s*tips?|earplugs?|skin|shell|strap|band|dock|holder|cleaner|cleaning|tool|kit|pouch|parts?|usb|flash|thumb|drive)\b/i.test(title);
+  const accessoryTitle = /\b(case|cover|protector|glass|charger|cable|screen|lens|film|tempered|hydrogel|remote|control|connector|adapter|replacement|keyboard|caps|stand|mount|bag|sleeve|interface|tips?|ear\s*tips?|earbuds?\s*tips?|earplugs?|skin|shell|strap|band|dock|holder|cleaner|cleaning|tool|kit|pouch|parts?|usb|flash|thumb|drive|power\s*bank|powerbank|magsafe|magnetic\s*(?:charger|battery|power|wallet|stand|mount)|wireless\s*charger|portable\s*charger|charging\s*bank)\b/i.test(title);
   const editorialTitle = /\b(review|guide|news|announces?|announced|introduces?|launched?|launch|sale|ahead\s+of\s+launch|comprehensive|experience|rumors?|leaks?|premiere|premiera|oglasza|ogłasza|stellt|neues|vor)\b/i.test(title);
   const blockedAccessory = queryWantsCoreDevice && !queryWantsAccessory && accessoryTitle;
   const blockedEditorial = queryWantsCoreDevice && !queryWantsAccessory && editorialTitle;
@@ -150,7 +152,7 @@ function scoreProduct(query, product = {}) {
   const relevant = matchedTerms.length >= requiredMatches
     && score >= (terms.length <= 2 ? 16 : 22)
     && titleMatchOk
-    && (!queryIsPhoneModel || phoneModelMatched)
+    && (!queryIsPhoneModel || queryWantsAccessory || phoneModelMatched)
     && !blockedAccessory
     && !blockedEditorial;
   return { score, matchedTerms, terms, ratio, relevant };

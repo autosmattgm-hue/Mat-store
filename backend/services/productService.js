@@ -11,6 +11,7 @@ const { cleanProductTitle } = require('../utils/productTitle');
 const {
   hasRealProductMedia,
   isGeneratedSearchProduct,
+  isSearchProduct,
   isQuestionableProduct,
   isUntrustedDiscoveredImageProduct,
   isUnverifiedSearchImageProduct,
@@ -112,8 +113,24 @@ function visibleProductKey(product = {}) {
     .replace(/\s+/g, ' ')
     .trim()
     .slice(0, 110);
+  const imageKey = searchResultImageIdentity(product);
+  if (titleKey && imageKey) return `${titleKey}:image:${imageKey}`;
   if (titleKey) return titleKey;
   return `${supplier}:${product.supplierProductCode || product.supplierUrl || product.slug || product.id || titleKey}`;
+}
+
+function searchResultImageIdentity(product = {}) {
+  if (!isSearchProduct(product)) return '';
+  const image = primaryRealProductMedia(product);
+  if (!image) return '';
+  const normalized = mediaService.highQualityImageUrl(image) || image;
+  try {
+    const parsed = new URL(normalized, 'https://matstore.local');
+    if (!/^https?:$/i.test(parsed.protocol)) return '';
+    return `${parsed.hostname}${parsed.pathname}`.toLowerCase().slice(0, 220);
+  } catch {
+    return sanitizeString(normalized, 260).toLowerCase();
+  }
 }
 
 function duplicateKeysFor(product = {}) {
@@ -123,6 +140,7 @@ function duplicateKeysFor(product = {}) {
   return [
     supplierUrl && `url:${supplierUrl}`,
     supplier && supplierCode && `code:${supplier}:${supplierCode}`,
+    searchResultImageIdentity(product) && `image:${searchResultImageIdentity(product)}`,
     visibleProductKey(product) && `visible:${visibleProductKey(product)}`
   ].filter(Boolean);
 }
