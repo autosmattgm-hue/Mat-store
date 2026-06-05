@@ -1,18 +1,18 @@
 [
   {
-    "id": "329b25bf-e890-4806-b4c6-635c623e7c64",
+    "id": "1f00adfe-28bb-406e-823b-a4b2bc7659c8",
     "sessionId": "59fc4315-3981-4642-b72a-c52b8931329a",
     "currency": "GMD",
     "items": [
       {
-        "productId": "e5f3279b-5d79-44a0-8d88-4abe47f63d05",
+        "productId": "2ad953bf-9693-4b5d-a6dc-cd0c63d75cbc",
         "quantity": 1,
         "variant": ""
       }
     ],
     "status": "active",
-    "updatedAt": "2026-06-03T22:28:07.155Z",
-    "createdAt": "2026-06-03T22:28:07.155Z"
+    "updatedAt": "2026-06-05T09:23:57.490Z",
+    "createdAt": "2026-06-05T09:23:57.490Z"
   },
   {
     "id": "414491fe-9a10-4382-be8e-6bd3236c393b",

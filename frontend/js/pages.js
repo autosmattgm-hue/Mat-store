@@ -1321,6 +1321,7 @@
   async function enrichMarketplaceSearch(query, options = {}) {
     const cleanQuery = String(query || '').trim();
     if (!cleanQuery || (!options.force && state.shop.marketplaceLoadedQuery === cleanQuery) || state.shop.marketplaceLoading) return;
+    const shouldReload = options.reload !== false;
     state.shop.marketplaceLoading = true;
     state.shop.marketplaceSummary = null;
     renderShopFeed();
@@ -1349,6 +1350,7 @@
     } finally {
       state.shop.marketplaceLoading = false;
       renderShopFeed();
+      if (!shouldReload) return;
       if (state.shop.loading) {
         state.shop.refreshAfterMarketplace = true;
         return;
@@ -1406,7 +1408,7 @@
 
     if (reset) {
       const feedQuery = marketplaceFeedQuery();
-      if (feedQuery) enrichMarketplaceSearch(feedQuery);
+      if (feedQuery) await enrichMarketplaceSearch(feedQuery, { reload: false });
     }
 
     if (!reset && state.shop.page >= state.shop.pages) {

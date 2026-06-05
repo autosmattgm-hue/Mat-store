@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'mat-store-v1.0.7';
+const CACHE_VERSION = 'mat-store-v1.0.8';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -11,7 +11,7 @@ const APP_SHELL = [
   '/js/api.js',
   '/js/cart.js',
   '/js/app.js',
-  '/js/pages.js',
+  '/js/pages.js?v=20260605-search1',
   '/js/auth.js',
   '/js/agent.js',
   '/assets/icons/apple-touch-icon.png',
