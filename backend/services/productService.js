@@ -63,6 +63,19 @@ function clearProductCaches() {
   productListCache.clear();
 }
 
+async function mapWithConcurrency(items = [], limit = 4, mapper) {
+  const queue = [...items];
+  const output = [];
+  async function worker() {
+    while (queue.length) {
+      const item = queue.shift();
+      output.push(await mapper(item));
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(limit, Math.max(1, items.length)) }, worker));
+  return output;
+}
+
 function sanitizeImageUrl(value) {
   const clean = sanitizeString(value, 2048);
   if (mediaService.isBlockedStockImageUrl(clean)) return '';
@@ -829,7 +842,12 @@ async function repairImages(options = {}) {
       }
 
       const primaryImage = primaryRealProductMedia(product);
-      const shouldVerify = verifyLive && product.status === 'active' && primaryImage && result.checked < limit;
+      const alreadyVerified = product.imageVerification === 'live-product-download' && product.imageVerifiedAt;
+      const shouldVerify = verifyLive
+        && product.status === 'active'
+        && primaryImage
+        && (!alreadyVerified || options.force === true)
+        && result.checked < limit;
       const weakImage = isWeakProductImage(product) || isUntrustedDiscoveredImageProduct(product);
 
       if (!weakImage && !shouldVerify || result.checked >= limit) {
@@ -841,7 +859,23 @@ async function repairImages(options = {}) {
       if (!weakImage) {
         const liveImage = await mediaService.verifyProductImageUrl(primaryImage, { trustedSavedImage: true });
         if (liveImage.ok) {
-          nextProducts.push(product);
+          const verified = normalizeProduct({
+            ...product,
+            imageStatus: product.imageStatus || 'verified-product-image',
+            imageSource: product.imageSource || 'Verified live product image',
+            imageVerifiedAt: new Date().toISOString(),
+            imageVerification: 'live-product-download',
+            mediaConfidence: 'high'
+          }, product);
+          result.repaired += 1;
+          if (result.repairedProducts.length < 50) {
+            result.repairedProducts.push({
+              id: verified.id,
+              title: cleanProductTitle(verified.title),
+              imageStatus: verified.imageStatus
+            });
+          }
+          nextProducts.push(verified);
           continue;
         }
       }
@@ -928,6 +962,111 @@ async function repairImages(options = {}) {
 
   clearProductCaches();
   return result;
+}
+
+function searchRepairStatus(product = {}) {
+  if (product.status === 'active') return 'active';
+  const repairDraft = /could not verify a real product image/i.test(product.adminNote || product.statusReason || '');
+  if (isSearchProduct(product) || repairDraft) return 'active';
+  return product.status || 'draft';
+}
+
+function productNeedsSearchMediaRepair(product = {}) {
+  if (product.status === 'archived') return false;
+  return !hasRealProductMedia(product)
+    || isWeakProductImage(product)
+    || isUntrustedDiscoveredImageProduct(product)
+    || isUnverifiedSearchImageProduct(product)
+    || (product.status === 'draft' && isSearchProduct(product));
+}
+
+async function repairSingleSearchMatch(product = {}, query = '') {
+  const now = new Date().toISOString();
+  const primaryImage = primaryRealProductMedia(product);
+  const nextStatus = searchRepairStatus(product);
+
+  if (primaryImage && !mediaService.isGeneratedFallbackUrl(primaryImage) && !mediaService.isBlockedStockImageUrl(primaryImage)) {
+    const liveImage = await mediaService.verifyProductImageUrl(primaryImage, { trustedSavedImage: true });
+    if (liveImage.ok) {
+      return normalizeProduct({
+        ...product,
+        status: nextStatus,
+        imageStatus: product.imageStatus || 'verified-product-image',
+        imageSource: product.imageSource || 'Verified live product image',
+        imageVerifiedAt: now,
+        imageVerification: 'live-product-download',
+        mediaConfidence: 'high'
+      }, product);
+    }
+  }
+
+  const media = await mediaService.resolveBestProductImage('', {
+    ...product,
+    title: cleanProductTitle(product.title || query),
+    category: product.category,
+    collection: product.collection,
+    tags: [...new Set([...(product.tags || []), ...searchMatch.uniqueTerms(query)])],
+    features: product.features || []
+  });
+
+  if (!media.image || media.imageStatus === 'curated-photo-fallback') return null;
+
+  const candidate = normalizeProduct({
+    ...product,
+    ...media,
+    status: nextStatus,
+    images: [media.image],
+    fallbackImage: media.fallbackImage,
+    supplierImageUrl: media.supplierImageUrl || product.supplierImageUrl || '',
+    imageVerifiedAt: now,
+    imageVerification: 'live-product-download',
+    mediaConfidence: 'high'
+  }, product);
+
+  const liveCandidate = await mediaService.verifyProductImageUrl(primaryRealProductMedia(candidate), {
+    trustedSavedImage: true
+  });
+  if (!liveCandidate.ok || isUntrustedDiscoveredImageProduct(candidate) || isQuestionableProduct(candidate)) return null;
+  return candidate;
+}
+
+async function repairSearchMatches(query = '', options = {}) {
+  const search = sanitizeString(query, 140).trim();
+  if (search.length < 2) return { checked: 0, repaired: 0, unresolved: 0 };
+
+  const limit = Math.min(100, Math.max(1, Math.floor(Number(options.limit || 50))));
+  const products = await store.read('products');
+  const candidates = products
+    .map((product) => ({ product, score: searchMatch.scoreProduct(search, product) }))
+    .filter((entry) => entry.score.relevant && productNeedsSearchMediaRepair(entry.product))
+    .sort((a, b) => b.score.score - a.score.score)
+    .slice(0, limit)
+    .map((entry) => entry.product);
+
+  if (!candidates.length) return { checked: 0, repaired: 0, unresolved: 0 };
+
+  const repaired = await mapWithConcurrency(candidates, Math.min(5, Math.max(1, Number(options.concurrency || 4))), async (product) => {
+    try {
+      const updated = await repairSingleSearchMatch(product, search);
+      return { id: product.id, before: product, updated };
+    } catch {
+      return { id: product.id, before: product, updated: null };
+    }
+  });
+
+  const updates = new Map(repaired.filter((item) => item.updated).map((item) => [item.id, item.updated]));
+  if (updates.size) {
+    await store.update('products', (currentProducts) =>
+      currentProducts.map((product) => updates.get(product.id) || product)
+    );
+    clearProductCaches();
+  }
+
+  return {
+    checked: candidates.length,
+    repaired: updates.size,
+    unresolved: candidates.length - updates.size
+  };
 }
 
 async function adjustInventory(productId, delta) {
@@ -1131,6 +1270,7 @@ module.exports = {
   bulkMarkup,
   repairPricing,
   repairImages,
+  repairSearchMatches,
   adjustInventory,
   lowStockProducts,
   catalogHealth,

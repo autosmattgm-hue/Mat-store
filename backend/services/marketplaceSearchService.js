@@ -143,7 +143,7 @@ function categoryOverride(value) {
 }
 
 function cacheKey(query, sources, limit, category = '') {
-  return `${query.toLowerCase()}::${sources.map((source) => source.name).join(',')}::${limit}::${category}::v8`;
+  return `${query.toLowerCase()}::${sources.map((source) => source.name).join(',')}::${limit}::${category}::v9`;
 }
 
 function searchTags(query) {
@@ -796,9 +796,15 @@ async function searchMarketplaces(params = {}) {
   const now = Date.now();
 
   if (cached && cached.expiresAt > now) {
+    const repairSummary = await productService.repairSearchMatches(query, {
+      limit: Math.min(40, limit),
+      concurrency: 4
+    });
     const catalog = await productService.listProducts({ q: query, limit, currency, sort: 'newest' });
     return {
       ...cached.summary,
+      repaired: repairSummary.repaired,
+      repairChecked: repairSummary.checked,
       cached: true,
       products: catalog.items,
       total: catalog.total,
@@ -849,6 +855,10 @@ async function searchMarketplaces(params = {}) {
   if (discovered.length) {
     saved = await productService.createProducts(discovered);
   }
+  const repairSummary = await productService.repairSearchMatches(query, {
+    limit: Math.min(60, limit),
+    concurrency: 4
+  });
 
   const catalog = await productService.listProducts({ q: query, limit, currency, sort: 'newest' });
   const summary = {
@@ -861,6 +871,8 @@ async function searchMarketplaces(params = {}) {
       fallback: Boolean(result.fallback)
     })),
     imported: saved.length,
+    repaired: repairSummary.repaired,
+    repairChecked: repairSummary.checked,
     errors
   };
 
