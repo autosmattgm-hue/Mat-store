@@ -1,34 +1,17 @@
 {
-  "name": "mat-store",
+  "name": "mat-leads-ai-pro-x",
   "version": "1.0.0",
-  "description": "MAT STORE ultra-premium AI-powered luxury ecommerce marketplace.",
-  "main": "backend/server.js",
-  "scripts": {
-    "start": "node backend/server.js",
-    "dev": "node backend/server.js",
-    "firebase:migrate": "node backend/scripts/migrateToFirebase.js",
-    "catalog:harden": "node backend/scripts/hardenCatalog.js"
-  },
-  "keywords": [
-    "ecommerce",
-    "marketplace",
-    "ai",
-    "luxury",
-    "node",
-    "express"
-  ],
-  "author": "MAT STORE",
-  "license": "UNLICENSED",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2"
-  },
+  "description": "Enterprise Google Maps lead generation SaaS with NVIDIA-powered AI analysis.",
+  "type": "module",
+  "private": true,
   "engines": {
-    "node": ">=18.18.0"
-  }
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "node api/server.js",
+    "start": "node api/server.js",
+    "check": "node --check api/index.js && node --check api/server.js && node --check api/nativeApp.js && node --check api/services/websiteService.js && node --check api/services/nvidiaService.js && node --check api/services/earnService.js && node --check api/services/gigService.js && node --check js/app.js && node --check js/api.js && node --check js/leads.js && node --check js/crm.js && node --check js/dashboard.js && node --check js/pricing.js && node --check js/profile.js && node --check js/billing-success.js && node --check js/admin.js && node --check js/settings.js && node --check js/ai-console.js && node --check js/client-report.js && node --check js/website-studio.js && node --check js/business-ai.js && node --check js/earn.js && node --check js/outreach.js && node --check js/proposals.js && node --check js/gigs.js && node --check js/tools.js && node --check js/work-planner.js",
+    "smoke": "node utils/smoke-test.js"
+  },
+  "dependencies": {}
 }
