@@ -4,83 +4,86 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Website Studio | MAT LEADS AI PRO X</title>
-    <meta name="description" content="Generate a professional client website with AI, edit it with chat, download it, and share a live link.">
+    <meta name="description" content="Chat with MAT Studio AI to generate a professional client website, refine it in plain words, then fine-tune every detail in the visual builder.">
+    <link rel="canonical" href="https://www.mat-leads.world/website-studio.html">
     <link rel="icon" href="/assets/logo-mark.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/style.css">
   </head>
   <body data-page="website-studio">
     <div class="app-layout" data-app-shell>
       <main class="workspace">
-        <section class="workspace-header">
-          <div>
-            <h1>AI Website Studio</h1>
-            <p>Professional one-click website builds for any lead. Chat to refine, download, and share.</p>
+        <div class="wsx-shell">
+          <div class="wsx-top">
+            <div>
+              <h1>Website Studio</h1>
+              <p class="sub">Chat to design a professional site — then fine-tune it in the visual builder.</p>
+            </div>
+            <div class="wsx-top-actions">
+              <span class="plan-pill" id="studioPlan">Pro / Admin</span>
+              <button class="btn-edit" id="wsxNewChat" type="button" title="Start a fresh conversation">New chat</button>
+            </div>
           </div>
-          <div class="toolbar">
-            <span class="plan-pill" id="studioPlan">Pro / Admin</span>
-            <a class="btn btn-secondary" href="/dashboard.html">Back to Leads</a>
-          </div>
-        </section>
-        <section class="detail-layout">
-          <article class="panel">
-            <h2>Build a Website</h2>
-            <form id="studioBuildForm" class="form-grid compact">
-              <div class="field" style="grid-column:1 / -1;"><label for="studioBusiness">Business name</label><input id="studioBusiness" name="businessName" placeholder="e.g. Lakeside Dental Studio"></div>
-              <div class="field"><label for="studioStyle">Style</label><select id="studioStyle" name="style"><option value="modern">Modern premium</option><option value="luxury">Luxury dark</option><option value="medical">Clean medical</option><option value="restaurant">Warm restaurant</option><option value="bold">Bold agency</option></select></div>
-              <div class="field"><label for="studioPalette">Color theme</label><select id="studioPalette" name="palette"><option value="emerald">Emerald</option><option value="blue">Royal blue</option><option value="gold">Gold + black</option><option value="rose">Rose</option><option value="teal">Teal</option><option value="purple">Purple</option><option value="orange">Orange</option></select></div>
-              <div class="field"><label for="studioPages">Number of pages</label><select id="studioPages" name="pages"><option value="1">1 page — Landing</option><option value="2">2 pages — Home + About</option><option value="3">3 pages — Home, About, Services</option><option value="4">4 pages — Home, About, Services, Contact</option></select></div>
-              <div class="field" style="grid-column:1 / -1;"><label for="studioLeadId">Lead ID (optional - auto-filled from leads)</label><input id="studioLeadId" name="leadId" placeholder="Paste lead id or open Studio from a lead"></div>
-              <div class="field" style="grid-column:1 / -1;"><label for="studioHeroImg">Hero image — paste a URL or upload a file</label>
-                <div class="toolbar" style="flex-wrap:wrap;margin-bottom:6px;">
-                  <input id="studioHeroImg" placeholder="https://.../hero.jpg" style="flex:1;min-width:220px;">
-                  <label class="btn btn-secondary" for="studioHeroFile" style="cursor:pointer;">Upload hero</label>
-                  <input id="studioHeroFile" type="file" accept="image/*" hidden>
+
+          <div class="wsx-grid">
+            <section class="wsx-chat" aria-label="AI website assistant">
+              <div class="wsx-chathead">
+                <div class="wsx-avatar">M</div>
+                <div class="wsx-chathead-txt">
+                  <b>MAT Studio AI</b>
+                  <small id="studioStatusLine">Online — ready to build</small>
+                </div>
+                <span class="wsx-model" id="studioMeta">AI</span>
+              </div>
+
+              <div class="wsx-leads">
+                <label for="wsxLeadSelect">Build for (saved lead)</label>
+                <select id="wsxLeadSelect">
+                  <option value="">— Type a business name in the chat —</option>
+                </select>
+                <div class="wsx-leadcard" id="wsxLeadCard" hidden>
+                  <b id="wsxLeadName">—</b>
+                  <span class="wsx-leadid" id="wsxLeadId">—</span>
+                  <small id="wsxLeadMeta"></small>
                 </div>
               </div>
-              <div class="field" style="grid-column:1 / -1;"><label for="studioGallery">Gallery images — paste URLs (one per line) or upload files (up to 6)</label>
-                <textarea id="studioGallery" rows="3" placeholder="https://.../photo1.jpg&#10;https://.../photo2.jpg&#10;https://.../photo3.jpg"></textarea>
-                <label class="btn btn-secondary" for="studioGalleryFiles" style="cursor:pointer;margin-top:6px;">Upload gallery images</label>
-                <input id="studioGalleryFiles" type="file" accept="image/*" multiple hidden>
-                <div id="studioUploadMsg" class="notice" style="margin-top:6px;"></div>
+
+              <div class="wsx-log" id="chatLog" aria-live="polite"></div>
+              <div class="wsx-chips" id="wsxChips" aria-label="Quick replies"></div>
+
+              <details class="wsx-history" id="wsxHistoryBox">
+                <summary>Your websites</summary>
+                <div id="wsxHistory" class="wsx-history-list"><p class="wsx-history-empty">Loading your sites…</p></div>
+              </details>
+
+              <form class="wsx-composer" id="wsxComposer">
+                <textarea id="wsxInput" rows="1" placeholder="Message MAT Studio AI… (Enter to send, Shift+Enter for a new line)"></textarea>
+                <button type="submit" id="wsxSend" aria-label="Send message">➤</button>
+              </form>
+            </section>
+
+            <section class="wsx-preview" aria-label="Website preview">
+              <div class="wsx-previewbar">
+                <div class="wsx-device">
+                  <button type="button" id="viewDesktop" class="on">Desktop</button>
+                  <button type="button" id="viewMobile">Mobile</button>
+                </div>
+                <div class="wsx-preview-actions">
+                  <button class="chip-btn" type="button" id="studioOpenPreview" disabled>Open</button>
+                  <button class="chip-btn" type="button" id="studioDownload" disabled>Download</button>
+                  <button class="chip-btn" type="button" id="studioCopyLink" disabled>Copy link</button>
+                  <button class="chip-btn primary" type="button" id="studioEditManual" disabled>✎ Edit in builder</button>
+                </div>
               </div>
-              <button class="btn btn-primary" type="submit" id="studioBuildBtn">Generate Website</button>
-            </form>
-            <div id="studioStatus" class="notice" style="margin-top:12px;">Paste a lead or type a business name to start.</div>
-            <h2 style="margin-top:18px;">Refine with AI chat</h2>
-            <form id="studioRefineForm" class="form-grid compact">
-              <div class="field" style="grid-column:1 / -1;"><label for="studioInstruction">Tell the AI what to change</label><textarea id="studioInstruction" rows="3" placeholder="e.g. Make the hero dark blue, add a pricing section with 3 plans, and bigger call button"></textarea></div>
-              <button class="btn btn-secondary" type="submit">Apply Change</button>
-            </form>
-            <div class="toolbar" style="margin-top:14px;flex-wrap:wrap;">
-              <button class="btn btn-secondary" type="button" id="studioOpenPreview">Open Preview</button>
-              <button class="btn btn-secondary" type="button" id="studioDownload">Download HTML</button>
-              <button class="btn btn-secondary" type="button" id="studioCopyLink">Copy Share Link</button>
-              <a class="btn btn-secondary" id="studioOpenLive" href="#" target="_blank" rel="noopener">Open Live Link</a>
-            </div>
-            <h2 style="margin-top:18px;">Visual Editor — no code needed</h2>
-            <div class="form-grid compact">
-              <div class="field"><label for="editBiz">Business name</label><input id="editBiz" placeholder="e.g. Maria's Bakery"></div>
-              <div class="field"><label for="editHead">Headline</label><input id="editHead" placeholder="e.g. Fresh bread daily"></div>
-              <div class="field"><label for="editPhone">Phone</label><input id="editPhone" placeholder="+1 555 123 4567"></div>
-              <div class="field"><label for="editEmail">Email</label><input id="editEmail" type="email" placeholder="hello@biz.com"></div>
-              <div class="field"><label for="editCta">Button text</label><input id="editCta" placeholder="Get a Free Quote"></div>
-              <div class="field"><label for="editAccent">Button color</label><input id="editAccent" type="color" value="#22c55e"></div>
-              <div class="field" style="grid-column:1 / -1;"><label for="editImageUrl">Add an image to the page (URL)</label><input id="editImageUrl" placeholder="https://.../photo.jpg"></div>
-            </div>
-            <div class="toolbar" style="margin-top:10px;flex-wrap:wrap;">
-              <button class="btn btn-primary" type="button" id="editApply">Apply Changes</button>
-              <button class="btn btn-secondary" type="button" id="editAddImage">Add Image</button>
-              <button class="btn btn-secondary" type="button" id="editMode">Edit Text On Page</button>
-              <button class="btn btn-secondary" type="button" id="editSave">Save to Server</button>
-            </div>
-            <div class="notice" id="editMsg" style="margin-top:10px;">1) Fill the fields above and click Apply, or 2) click Edit Text On Page and type directly on the preview. Then Save to Server so your share link shows the edits.</div>
-          </article>
-          <article class="panel">
-            <h2>Live Preview</h2>
-            <div class="notice" id="studioMeta">No website yet.</div>
-            <iframe id="studioPreview" title="Generated website preview" style="width:100%;min-height:560px;border:1px solid var(--border);border-radius:12px;background:#fff;margin-top:12px;"></iframe>
-          </article>
-        </section>
+              <div class="wsx-status" id="studioStatus">The AI will ask how many pages you need first.</div>
+              <div class="gen-overlay" id="genOverlay">
+                <b>Designing your website…</b>
+                <div class="typing"><span></span><span></span><span></span></div>
+                <div class="wsx-gensub">Senior-grade hero, sections, gallery, FAQ &amp; contact — about 30–50 seconds</div>
+              </div>
+              <iframe id="studioPreview" title="Generated website preview"></iframe>
+            </section>
+          </div>
+        </div>
       </main>
     </div>
     <script type="module" src="/components/layout.js"></script>
