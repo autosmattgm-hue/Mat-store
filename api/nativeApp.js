@@ -67,10 +67,58 @@ const mimeTypes = new Map([
 ]);
 
 const rateBuckets = new Map();
+const signupBuckets = new Map();
+const SIGNUP_ABUSE_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+const SIGNUP_ABUSE_MAX = 5;
+
+function signupFingerprint(req, body = {}) {
+  const ip = clientIp(req);
+  const ua = String(getHeader(req, "user-agent") || "").slice(0, 160);
+  const lang = String(getHeader(req, "accept-language") || "").slice(0, 80);
+  const email = String(body?.email || "").trim().toLowerCase();
+  const domain = email.includes("@") ? email.split("@")[1] : "";
+  return { ip, deviceKey: `${ua}::${lang}`, domain };
+}
+
+async function checkSignupAbuse(req, body = {}) {
+  const { ip, deviceKey, domain } = signupFingerprint(req, body);
+  const now = Date.now();
+  const key = `signup:${ip}:${deviceKey}`;
+  let bucket = signupBuckets.get(key);
+  if (!bucket || bucket.resetAt <= now) {
+    bucket = { count: 0, emails: [], resetAt: now + SIGNUP_ABUSE_WINDOW_MS };
+  }
+  bucket.count += 1;
+  const email = String(body?.email || "").trim().toLowerCase();
+  if (email && !bucket.emails.includes(email)) bucket.emails.push(email);
+  signupBuckets.set(key, bucket);
+  if (bucket.count > SIGNUP_ABUSE_MAX && bucket.emails.length > SIGNUP_ABUSE_MAX) {
+    try {
+      const { FirestoreRepository } = await import("./repositories/firestoreRepository.js");
+      const repo = new FirestoreRepository("signupAbuse");
+      if (repo) {
+        await repo.upsert(`ip:${ip}`, {
+          id: `ip:${ip}`,
+          ip,
+          deviceKey,
+          emails: bucket.emails,
+          attempts: bucket.count,
+          suspendedAt: new Date().toISOString(),
+          reason: "signup_abuse_multi_email"
+        }).catch(() => {});
+      }
+    } catch {}
+    const err = new AppError("Too many different signup emails from this device. New signups are suspended here — please sign in with one of your existing accounts.", 403, "SIGNUP_SUSPENDED");
+    err.details = { suspension: "signup_only", signinAllowed: true };
+    throw err;
+  }
+  return { ip, deviceKey, domain };
+}
 const publicFiles = new Set([
   "/",
   "/index.html",
   "/login.html",
+  "/about.html",
   "/signup.html",
   "/dashboard.html",
   "/crm.html",
@@ -84,6 +132,7 @@ const publicFiles = new Set([
   "/reports.html",
   "/analytics.html",
   "/website-studio.html",
+  "/website-editor.html",
   "/business-ai.html",
   "/tools.html",
   "/work-planner.html",
@@ -108,25 +157,31 @@ const publicFiles = new Set([
   "/sw.js",
   "/robots.txt",
   "/sitemap.xml",
+  "/faq.html",
+  "/forgot-password.html",
+  "/verify-email.html",
   "/favicon.ico"
 ]);
-const publicFolders = ["/css/", "/js/", "/assets/", "/components/"];
+const publicFolders = ["/css/", "/js/", "/assets/", "/components/", "/features/"];
 
 function securityHeaders(extra = {}) {
   return {
     "Content-Security-Policy": [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      // Firebase SDK ships from gstatic; browser auth also talks to googleapis.
+      "script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
-      "connect-src 'self'",
-      "frame-src 'self' https://www.google.com https://maps.google.com",
+      "connect-src 'self' https://www.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://firebaseinstallations.googleapis.com",
+      "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://*.firebaseapp.com",
       "font-src 'self' data:",
       "object-src 'none'",
       "base-uri 'self'",
       "frame-ancestors 'self'"
     ].join("; "),
-    "Cross-Origin-Opener-Policy": "same-origin",
+    // "same-origin" severs window.opener for the Google sign-in popup, which
+    // breaks Firebase signInWithPopup — it requires same-origin-allow-popups.
+    "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "X-Content-Type-Options": "nosniff",
     "X-Permitted-Cross-Domain-Policies": "none",
@@ -170,9 +225,18 @@ function applyCors(req, res) {
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, OPTIONS");
 }
 
+function clientIp(req) {
+  const forwarded = getHeader(req, "x-forwarded-for");
+  if (forwarded) {
+    const first = String(forwarded).split(",")[0].trim();
+    if (first) return first;
+  }
+  return req.socket.remoteAddress || "unknown";
+}
+
 function rateLimit(req) {
   const now = Date.now();
-  const ip = req.socket.remoteAddress || "unknown";
+  const ip = clientIp(req);
   const bucket = rateBuckets.get(ip) || { count: 0, resetAt: now + env.rateLimit.windowMs };
   if (bucket.resetAt <= now) {
     bucket.count = 0;
@@ -237,12 +301,34 @@ function matchRoute(method, pathname, pattern) {
 const routes = [
   {
     method: "GET",
+    regex: /^\/api\/config$/,
+    keys: [],
+    handler: async () => ({
+      firebase: {
+        apiKey: env.firebase.apiKey || env.firebase.webApiKey || "",
+        authDomain: env.firebase.authDomain || "",
+        databaseURL: env.firebase.databaseUrl || "",
+        projectId: env.firebase.projectId || "",
+        storageBucket: env.firebase.storageBucket || "",
+        messagingSenderId: env.firebase.messagingSenderId || "",
+        appId: env.firebase.appId || "",
+        configured: Boolean((env.firebase.apiKey || env.firebase.webApiKey) && env.firebase.projectId)
+      }
+    })
+  },
+  {
+    method: "GET",
     regex: /^\/api\/health$/,
     keys: [],
     handler: async () => ({
       status: "ok",
       service: "mat-leads-ai-pro-x",
       environment: env.nodeEnv,
+      auth: {
+        ownerLoginConfigured: Boolean(env.owner.email && env.owner.password),
+        userStore: isFirebaseConfigured() ? "firestore" : (process.env.VERCEL ? "ephemeral-memory (register on every cold start; set Firebase vars for persistent users)" : "local-json"),
+        jwtConfigured: !String(env.jwtSecret || "").startsWith("development-")
+      },
       integrations: {
         firebase: isFirebaseConfigured(),
         googlePlaces: Boolean(env.google.placesApiKey),
@@ -256,7 +342,7 @@ const routes = [
       realMode: true,
       aiModels: {
         chat: [env.nvidia.model, ...(env.nvidia.modelFallbacks || [])].filter(Boolean),
-        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "z-ai/glm-5.3", "moonshotai/kimi-k3"].filter(Boolean),
+        website: [env.nvidia.websiteModel, ...(env.nvidia.websiteFallbacks || []), "z-ai/glm-5.3-flash", "z-ai/glm-5.3"].filter(Boolean),
         tycoon: [env.nvidia.tycoonModel, "z-ai/glm-5.3-flash", "z-ai/glm-5.3"].filter(Boolean)
       },
       missingRequiredForLiveOperation: [
@@ -268,10 +354,64 @@ const routes = [
     })
   },
   {
+    method: "GET",
+    regex: /^\/api\/auth\/debug$/,
+    keys: [],
+    handler: async () => ({
+      ownerEmailSet: Boolean(env.owner.email),
+      ownerEmailValue: env.owner.email ? `${String(env.owner.email).slice(0, 3)}***` : "(missing)",
+      ownerPasswordSet: Boolean(env.owner.password),
+      ownerPasswordLength: String(env.owner.password || "").length,
+      jwtConfigured: !String(env.jwtSecret || "").startsWith("development-"),
+      userStore: isFirebaseConfigured() ? "firestore" : (process.env.VERCEL ? "ephemeral-memory" : "local-json"),
+      hint: "Set OWNER_EMAIL + OWNER_PASSWORD in Vercel env vars (Production + Preview + Development), then redeploy. Values are case-sensitive for the password; email is lowercased."
+    })
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/auth\/diag$/,
+    keys: [],
+    handler: async ({ body }) => {
+      const steps = {};
+      const email = String(body?.email || "").trim().toLowerCase();
+      steps.emailReceived = Boolean(email);
+      steps.ownerEmailSet = Boolean(env.owner.email);
+      steps.ownerEmailMatch = email ? email === env.owner.email : false;
+      try {
+        steps.ownerCheck = authService.isOwnerLogin(email, String(body?.password || ""));
+      } catch (error) {
+        steps.ownerCheck = `THREW: ${error.message}`;
+      }
+      try {
+        const found = await authService.users.list({
+          where: [{ field: "email", op: "==", value: email || "__none__" }],
+          limit: 1
+        });
+        steps.storeList = `ok, found=${found.length}`;
+      } catch (error) {
+        steps.storeList = `THREW: ${error.message}`;
+      }
+      try {
+        const { signAccessToken: sign } = await import("./middleware/auth.js");
+        sign({ uid: "diag", email: email || "diag@test.local", role: "user" });
+        steps.jwtSign = "ok";
+      } catch (error) {
+        steps.jwtSign = `THREW: ${error.message}`;
+      }
+      steps.firebaseClient = Boolean(authService.users.client());
+      steps.firebaseWebApiKeySet = Boolean(env.firebase?.webApiKey);
+      return steps;
+    }
+  },
+  {
     method: "POST",
     regex: /^\/api\/auth\/register$/,
     keys: [],
-    handler: async ({ body }) => authService.register(validate(authSchemas.register, body)),
+    handler: async ({ req, body }) => {
+      const parsed = validate(authSchemas.register, body);
+      await checkSignupAbuse(req, parsed);
+      return authService.register(parsed);
+    },
     status: 201
   },
   {
@@ -279,6 +419,33 @@ const routes = [
     regex: /^\/api\/auth\/login$/,
     keys: [],
     handler: async ({ body }) => authService.login(validate(authSchemas.login, body))
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/auth\/verify-email$/,
+    keys: [],
+    handler: async ({ body }) => authService.verifyEmail(validate(authSchemas.verifyEmail, body).token)
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/auth\/resend-verification$/,
+    keys: [],
+    handler: async ({ body }) => authService.resendVerification(validate(authSchemas.resendVerification, body).email)
+  },
+  {
+    method: "POST",
+    regex: /^\/api\/auth\/firebase$/,
+    keys: [],
+    handler: async ({ req, body }) => {
+      const { idToken, name, password } = validate(authSchemas.firebaseSession, body);
+      const { verifyFirebaseIdToken } = await import("./config/firebase.js");
+      const identity = await verifyFirebaseIdToken(idToken);
+      return authService.loginWithFirebase(idToken, {
+        preVerifiedIdentity: identity,
+        profile: { name, password },
+        beforeCreate: (emailOrPhone) => checkSignupAbuse(req, { email: emailOrPhone })
+      });
+    }
   },
   {
     method: "POST",
@@ -456,7 +623,7 @@ const routes = [
       let lead = payload.lead && Object.keys(payload.lead).length ? payload.lead : null;
       if (!lead && payload.leadId) lead = await leadService.getById(payload.leadId);
       if (!lead) lead = { id: payload.leadId || "lead", name: payload.businessName || "Business" };
-      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {} }, user });
+      const result = await websiteService.build({ lead, options: { businessName: payload.businessName, style: payload.style, palette: payload.palette, pages: payload.pages || 1, images: payload.images || {}, design: payload.design, tone: payload.tone, services: payload.services, cta: payload.cta, about: payload.about, language: payload.language, followBrief: payload.followBrief }, user });
       return { websiteId: result.website.id, shareToken: result.website.shareToken, shareUrl: `/s/${result.website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(result.website.id)}`, website: result.website };
     }
   },
@@ -485,12 +652,26 @@ const routes = [
   },
   {
     method: "GET",
+    regex: /^\/api\/ai\/websites$/,
+    keys: [],
+    handler: async ({ req }) => {
+      const user = await getUser(req);
+      requireProAi(user);
+      const websites = await websiteService.listForUser(user);
+      return { websites };
+    }
+  },
+  {
+    method: "GET",
     regex: /^\/api\/ai\/websites\/([^/]+)$/,
     keys: ["id"],
     handler: async ({ req, params }) => {
-      await getUser(req);
+      const user = await getUser(req);
       const website = await websiteService.getById(params.id);
       if (!website) throw new AppError("Website not found.", 404, "WEBSITE_NOT_FOUND");
+      if (String(website.ownerId || "") !== String(user?.uid || "") && String(user?.role || "").toLowerCase() !== "admin") {
+        throw new AppError("You can only open your own websites.", 403, "FORBIDDEN");
+      }
       return { website, shareUrl: `/s/${website.shareToken}`, studioUrl: `/website-studio.html?id=${encodeURIComponent(website.id)}` };
     }
   },
@@ -733,7 +914,7 @@ export async function handleRequest(req, res) {
   } catch (error) {
     const status = error.status || 500;
     const errorCode = String(error.code || "");
-    const showMessage = status < 500 || errorCode.endsWith("_NOT_CONFIGURED") || errorCode.startsWith("NVIDIA_");
+    const showMessage = status < 500 || errorCode.endsWith("_NOT_CONFIGURED") || errorCode.startsWith("NVIDIA_") || errorCode === "AUTH_STORE_UNAVAILABLE" || errorCode === "AUTH_UPSTREAM_UNAVAILABLE";
     if (status >= 500) {
       try {
         const { logger } = await import("./utils/logger.js");

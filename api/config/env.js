@@ -53,27 +53,49 @@ export const env = {
     ])
   },
   firebase: {
+    // Client SDK values (safe to expose to the browser - restricted in Firebase Console).
+    apiKey: process.env.FIREBASE_API_KEY || "",
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN || "",
     projectId: process.env.FIREBASE_PROJECT_ID || "",
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET || "",
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID || "",
+    appId: process.env.FIREBASE_APP_ID || "",
+    databaseUrl: process.env.FIREBASE_DATABASE_URL || "",
+    // Admin SDK values (SECRET - server only).
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL || "",
     privateKey: (process.env.FIREBASE_PRIVATE_KEY || "").replace(/\\n/g, "\n"),
-    webApiKey: process.env.FIREBASE_WEB_API_KEY || ""
+    webApiKey: process.env.FIREBASE_WEB_API_KEY || process.env.FIREBASE_API_KEY || ""
   },
   nvidia: {
     apiKey: process.env.NVIDIA_API_KEY || "",
     baseUrl: process.env.NVIDIA_BASE_URL || "https://integrate.api.nvidia.com/v1",
-    model: process.env.NVIDIA_MODEL || "moonshotai/kimi-k3",
-    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["openai/gpt-oss-20b", "z-ai/glm-5.3-flash"]),
+    // Live probe (Oct 2026): openai/gpt-oss-20b answered in ~2.6s and is healthy.
+    // kimi-k3 is 410 Gone (EOL 2026-10-15); the z-ai glm models ran ~44s under
+    // load, so they are fallbacks only. gpt-oss-20b is the fast, reliable primary.
+    model: process.env.NVIDIA_MODEL || "openai/gpt-oss-20b",
+    modelFallbacks: list(process.env.NVIDIA_MODEL_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
     websiteModel: process.env.NVIDIA_WEBSITE_MODEL || "openai/gpt-oss-20b",
-    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["moonshotai/kimi-k3", "z-ai/glm-5.3-flash"]),
-    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "moonshotai/kimi-k3",
-    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 12000),
+    websiteFallbacks: list(process.env.NVIDIA_WEBSITE_FALLBACKS, ["z-ai/glm-5.3-flash", "z-ai/glm-5.3"]),
+    tycoonModel: process.env.NVIDIA_TYCOON_MODEL || "openai/gpt-oss-20b",
+    // Interactive budget: gpt-oss-20b normally answers in 5-11s, but under load a
+    // single attempt can spike past the 17s per-attempt cap. 30s lets attempt 1
+    // run its full cap and still gives a primary retry real room before giving up.
+    timeoutMs: number(process.env.NVIDIA_TIMEOUT_MS, 30000),
     websiteTimeoutMs: number(process.env.NVIDIA_WEBSITE_TIMEOUT_MS, 50000),
     cacheTtlMs: number(process.env.NVIDIA_CACHE_TTL_MS, 600000),
     maxTokens: number(process.env.NVIDIA_MAX_TOKENS, 420)
   },
   pollinations: {
     apiKey: process.env.POLLINATIONS_API_KEY || "",
-    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://chatpollo.ai"
+    baseUrl: process.env.POLLINATIONS_BASE_URL || "https://gen.pollinations.ai",
+    // Classic text endpoint (text.pollinations.ai/openai). The Gen endpoint is
+    // allow-list gated: a key whose permissions.models is empty is refused for
+    // EVERY model, so Classic is the only path that can actually answer.
+    classicBaseUrl: process.env.POLLINATIONS_CLASSIC_BASE_URL || "https://text.pollinations.ai",
+    classicModel: process.env.POLLINATIONS_CLASSIC_MODEL || "openai-fast",
+    // Classic free tier: 1 reply per 30s per IP (HTTP 402 FREE_LIMIT).
+    classicMinIntervalMs: number(process.env.POLLINATIONS_CLASSIC_MIN_INTERVAL_MS, 31000),
+    classicTimeoutMs: number(process.env.POLLINATIONS_CLASSIC_TIMEOUT_MS, 150000)
   },
   stripe: {
     secretKey: process.env.STRIPE_SECRET_KEY || "",
@@ -90,13 +112,23 @@ export const env = {
       agency: process.env.PAYPAL_AGENCY_PAYMENT_LINK || "https://www.paypal.com/ncp/payment/SY3RYMGDZ9A7E"
     }
   },
+  email: {
+    // Verification mail is delivered through the Resend or SendGrid HTTPS APIs
+    // (no npm packages). Without a key the flow still runs: the verification
+    // link is returned to the client instead of being mailed.
+    resendApiKey: process.env.RESEND_API_KEY || "",
+    sendgridApiKey: process.env.SENDGRID_API_KEY || "",
+    from: process.env.EMAIL_FROM || "",
+    // EMAIL_VERIFICATION=off lets signups skip the verify step (tests/dev).
+    verificationRequired: String(process.env.EMAIL_VERIFICATION || "required").toLowerCase() !== "off"
+  },
   rateLimit: {
     windowMs: number(process.env.RATE_LIMIT_WINDOW_MS, 60000),
     max: number(process.env.RATE_LIMIT_MAX, 120)
   },
   owner: {
-    email: (process.env.OWNER_EMAIL || "owner@matleads.local").toLowerCase(),
-    password: process.env.OWNER_PASSWORD || "admin2026",
+    email: String(process.env.OWNER_EMAIL || "owner@matleads.local").trim().toLowerCase(),
+    password: String(process.env.OWNER_PASSWORD || "admin2026").trim(),
     passwordFallbacks: ["admin2026", "freeusers2026"]
   }
 };

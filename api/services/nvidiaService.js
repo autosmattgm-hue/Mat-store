@@ -1,22 +1,30 @@
 import crypto from "node:crypto";
 import { env } from "../config/env.js";
 import { AppError } from "../utils/errors.js";
+import { isCreatorQuestion, creatorAnswer, identityLine } from "../utils/brand.js";
+import { hasRealContent, visibleWordCount } from "../utils/siteContent.js";
 
 const aiCache = new Map();
 const modelCooldowns = new Map();
 const MAX_CACHE_ENTRIES = 200;
 const MODEL_COOLDOWN_MS = 5 * 60 * 1000;
+// A timeout is usually transient load, not a dead model. Cooling the only fast
+// model for 5 minutes after one slow response cascades into every later call
+// (they get pushed onto the ~44s fallbacks and time out too), so transient
+// failures get a short cooldown instead.
+const TRANSIENT_COOLDOWN_MS = 30 * 1000;
 
 // Live-per-probe (Oct 2026): these exist; your key returns 403 until activated on
 // https://build.nvidia.com/<model> ("Get API Key"). Dead IDs never get called.
 const DEFAULT_MODELS = [
-  "moonshotai/kimi-k3",
   "openai/gpt-oss-20b",
   "z-ai/glm-5.3-flash",
   "z-ai/glm-5.3",
   "nvidia/nemotron-3.5-lightning-30b-a3b"
 ];
 const DEAD_MODELS = new Set([
+  // 410 Gone — reached end of life 2026-10-15; confirmed via live probe.
+  "moonshotai/kimi-k3",
   "deepseek-ai/deepseek-v4-flash",
   "deepseek-ai/deepseek-v4-flash-0731",
   "deepseek-ai/deepseek-v4-pro",
@@ -293,8 +301,8 @@ function markProviderFailure(error) {
   };
 }
 
-function coolDownModel(model) {
-  modelCooldowns.set(model, Date.now() + MODEL_COOLDOWN_MS);
+function coolDownModel(model, ms = MODEL_COOLDOWN_MS) {
+  modelCooldowns.set(model, Date.now() + ms);
 }
 
 export class NvidiaService {
@@ -360,10 +368,12 @@ export class NvidiaService {
       .filter((m) => !isRetiredModel(m))
       .slice(0, Math.max(1, Math.min(Number(maxAttempts) || 2, 2)));
     if (!queue.length) throw new AppError("No usable NVIDIA model is configured. Set NVIDIA_MODEL=z-ai/glm-5.3-flash and activate it at https://build.nvidia.com, then restart or redeploy.", 503, "NVIDIA_NO_LIVE_MODEL");
-    const deadlineAt = Date.now() + requestBudget(timeoutMs, 24000);
+    const deadlineAt = Date.now() + requestBudget(timeoutMs, 32000);
     for (let index = 0; index < queue.length; index += 1) {
       const model = queue[index];
-      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, queue.length - index, 12000);
+      // 17s per-attempt cap: gpt-oss-20b runs 9-11s on real business prompts, so
+      // the old 12s cap cut it off mid-answer and forced a needless fallback.
+      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, queue.length - index, 17000);
       if (!attemptTimeoutMs) break;
       const requestPayload = { ...basePayload, ...modelRequestOptions(model), model, top_p: modelTopP(model, topP) };
       const cacheKey = !stream && cacheTtlMs > 0 ? cacheKeyFor(requestPayload) : "";
@@ -390,7 +400,17 @@ export class NvidiaService {
           : error;
         clearTimeout(timeout);
         if (isRetryableNvidiaFailure(lastError)) {
-          coolDownModel(model);
+          // A transient timeout cools the model briefly; a dead/retired ID gets
+          // the full 5-minute ban so we don't lock out the only fast model.
+          coolDownModel(model, lastError?.code === "NVIDIA_TIMEOUT" ? TRANSIENT_COOLDOWN_MS : MODEL_COOLDOWN_MS);
+          // Timeouts are usually jitter on the fast primary (5-10s normally,
+          // occasional 17s+ spikes). The slow fallbacks run ~44-100s live and can
+          // never answer inside an interactive budget, so a timed-out first
+          // attempt swaps the next slot to a retry of the SAME fast model — two
+          // real chances instead of one real chance plus a doomed slow attempt.
+          if (lastError?.code === "NVIDIA_TIMEOUT" && index === 0 && queue.length > 1 && queue[1] !== model) {
+            queue[1] = model;
+          }
           continue;
         }
         throw lastError;
@@ -413,7 +433,9 @@ export class NvidiaService {
           continue;
         }
         if (isRetryableNvidiaFailure(lastError)) {
-          coolDownModel(model);
+          // 429/5xx are transient — short cool so a rate-limit blip doesn't
+          // sideline the fast primary for 5 minutes and starve later calls.
+          coolDownModel(model, TRANSIENT_COOLDOWN_MS);
           continue;
         }
         throw lastError;
@@ -447,6 +469,14 @@ export class NvidiaService {
           clearTimeout(retryTimeout);
         }
       }
+      // Some models return HTTP 200 with empty content (observed live on glm and
+      // nemotron). Retry instead of handing the user a "No content" placeholder.
+      if (!String(content || "").trim()) {
+        lastError = new AppError(`NVIDIA model ${model} returned an empty response.`, 502, "NVIDIA_EMPTY");
+        coolDownModel(model, TRANSIENT_COOLDOWN_MS);
+        if (index === 0 && queue.length > 1 && queue[1] !== model) queue[1] = model;
+        continue;
+      }
       const result = {
         configured: true,
         provider: "nvidia",
@@ -478,10 +508,16 @@ export class NvidiaService {
   }
 
   chat(prompt) {
+    // Creator-identity questions are answered locally: guaranteed correct,
+    // zero token cost, works even when the upstream key has no model access.
+    if (isCreatorQuestion(prompt)) {
+      const a = creatorAnswer();
+      return Promise.resolve({ configured: true, provider: "brand-identity", model: "brand-identity", content: a.content, usage: null, cached: false, intent: a.intent });
+    }
     return this.completeSafe([
       {
         role: "system",
-        content: "You are MAT LEADS AI PRO X, a practical agency growth assistant. Give concise, useful, revenue-focused answers in plain text."
+        content: "You are MAT LEADS AI PRO X, a practical agency growth assistant. Give concise, useful, revenue-focused answers in plain text. " + identityLine()
       },
       {
         role: "user",
@@ -541,10 +577,14 @@ export class NvidiaService {
   tycoonChat(prompt, context = {}) {
     const ctx = JSON.stringify(context).slice(0, 2000);
     const fallback = `What to say: Hi, I can rebuild your online presence with WhatsApp bookings. Price to quote: $799 setup + $99/mo care. Why it wins: direct bookings. Next move: send audit + pay link.`;
+    if (isCreatorQuestion(prompt)) {
+      const a = creatorAnswer();
+      return Promise.resolve({ configured: true, provider: "brand-identity", model: "brand-identity", content: a.content, usage: null, cached: false, intent: a.intent });
+    }
     return this.completeSafe([
       {
         role: "system",
-        content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols."
+        content: "You are BUSINESS AI TYCOON, a ruthless professional business tycoon mentor. You think like a billionaire closer: pricing psychology, negotiation, objection handling, WhatsApp scripts, follow-up cadence, upsells, retainers. Always give: 1) What to say (copy-paste script), 2) Price to quote, 3) Why it wins, 4) Next move. Keep it practical, confident, street-smart. Plain text only, no markdown symbols. " + identityLine()
       },
       {
         role: "user",
@@ -567,7 +607,10 @@ export class NvidiaService {
     let lastError = null;
     for (let index = 0; index < websiteModels.length; index += 1) {
       const model = websiteModels[index];
-      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, websiteModels.length - index, 46000);
+      // Website builds emit ALL pages in one response, so the primary model needs
+      // almost the entire budget (~43s observed, with variance). The old 46s cap
+      // was too tight and a single slow build timed out and killed the site.
+      const attemptTimeoutMs = nextAttemptTimeout(deadlineAt, websiteModels.length - index, 51000);
       if (!attemptTimeoutMs) break;
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), attemptTimeoutMs);
@@ -620,7 +663,7 @@ export class NvidiaService {
         clearTimeout(timeout);
         lastError = error?.name === "AbortError" ? new AppError(`NVIDIA model ${model} timed out.`, 504, "NVIDIA_TIMEOUT") : error;
         if (isRetryableNvidiaFailure(lastError)) {
-          coolDownModel(model);
+          coolDownModel(model, lastError?.code === "NVIDIA_TIMEOUT" ? TRANSIENT_COOLDOWN_MS : MODEL_COOLDOWN_MS);
           continue;
         }
         throw lastError;
@@ -652,7 +695,7 @@ export class NvidiaService {
     const e = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
     const navLinks = pages.map((p, i) => `<a href="#" class="nav-a${i === 0 ? " active" : ""}" onclick="return showPage(${i})">${e(p.title)}</a>`).join("");
     const sections = pages.map((p, i) => `<section class="pg" id="pg-${i}"${i === 0 ? "" : ' style="display:none"'}>${p.body}</section>`).join("\n");
-    return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${e(business)}</title><meta name="description" content="${e(business)} — a professional website built to turn visitors into customers."><style>*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;color:#0f172a;background:#f8fafc;line-height:1.55}.nav{position:sticky;top:0;z-index:50;background:#0b1220;display:flex;gap:4px;align-items:center;padding:10px 16px;flex-wrap:wrap;box-shadow:0 2px 10px rgba(0,0,0,.15)}.nav .brand{color:#fff;font-weight:800;margin-right:auto;font-size:1.05rem}.nav-a{color:#cbd5e1;text-decoration:none;padding:8px 13px;border-radius:8px;font-weight:600;cursor:pointer;font-size:.95rem}.nav-a:hover{background:rgba(255,255,255,.1);color:#fff}.nav-a.active{background:${accent};color:#06281a}img{max-width:100%;height:auto}.wrap{max-width:1080px;margin:0 auto;padding:30px 20px}input,textarea{font:inherit}footer{background:#0b1220;color:#cbd5e1;text-align:center;padding:20px;font-size:.9rem}</style></head><body><nav class="nav"><span class="brand">${e(business)}</span>${navLinks}</nav>${sections}<footer>© ${new Date().getFullYear()} ${e(business)}. All rights reserved.</footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>`;
+    return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${e(business)}</title><meta name="description" content="${e(business)} — a professional website built to turn visitors into customers."><style>*{box-sizing:border-box}body{margin:0;font-family:'Segoe UI',Inter,system-ui,Arial,sans-serif;color:#16233a;background:linear-gradient(180deg,#f4f6fb 0%,#eef2f7 100%);line-height:1.6}img{max-width:100%;height:auto;border-radius:14px}.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);display:flex;gap:6px;align-items:center;padding:12px 20px;flex-wrap:wrap;box-shadow:0 2px 14px rgba(15,23,42,.1);backdrop-filter:blur(10px)}.nav .brand{font-weight:800;margin-right:auto;font-size:1.08rem;letter-spacing:-.01em}.nav-a{color:#334155;text-decoration:none;font-weight:600;padding:9px 15px;border-radius:999px;font-size:.9rem;transition:all .2s}.nav-a.active,.nav-a:hover{background:#0f172a;color:#fff}.pg{max-width:1140px;margin:0 auto;padding:28px 22px 48px}.site-foot{background:#0f172a;color:#cbd5e1;text-align:center;padding:26px;font-size:.88rem}form.site-form{display:grid;gap:10px;max-width:520px}input,textarea,select{padding:12px;border:1px solid #cbd5e1;border-radius:10px;font:inherit;width:100%}button{cursor:pointer}</style></head><body><nav class="nav"><span class="brand">${e(business)}</span>${navLinks}</nav>${sections}<footer class="site-foot">© ${new Date().getFullYear()} ${e(business)}. All rights reserved.<br><span style="opacity:.75;font-size:.82rem">Website crafted with MAT LEADS AI Website Studio — created by Ebube John Okoye.</span></footer><script>function showPage(i){document.querySelectorAll('.pg').forEach(function(s,idx){s.style.display=idx===i?'block':'none'});document.querySelectorAll('.nav-a').forEach(function(a,idx){a.classList.toggle('active',idx===i)});window.scrollTo(0,0);return false;}</script></body></html>`;
   }
 
   fallbackPageFragment(spec, lead, hero, gallery, isHome) {
@@ -664,7 +707,7 @@ export class NvidiaService {
     const e = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
     const card = (h, p) => `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px"><h3 style="margin:.1em 0 .3em">${e(h)}</h3><p style="margin:0;color:#475569">${e(p)}</p></div>`;
     const gal = gallery.slice(0, 3).map((u) => `<img src="${e(u)}" alt="${e(name)}" style="width:100%;height:180px;object-fit:cover;border-radius:12px">`).join("");
-    if (isHome) return `<img src="${e(hero)}" alt="${e(name)}" style="width:100%;max-height:440px;object-fit:cover;display:block"><div class="wrap" style="text-align:center"><p style="letter-spacing:2px;text-transform:uppercase;font-size:12px;color:#64748b;margin:0">${e(type)}</p><h1 style="font-size:clamp(2rem,5vw,3.2rem);margin:.25em 0">${e(name)}</h1><p style="max-width:640px;margin:0 auto 20px;color:#475569">A trusted ${e(type.toLowerCase())} delivering quality, reliability and friendly service.${address ? ` Visit us at ${e(address)}.` : ""}</p>${phone ? `<a href="tel:${e(phone)}" style="display:inline-block;padding:13px 24px;border-radius:10px;background:#22c55e;color:#06281a;font-weight:700;text-decoration:none">Call ${e(phone)}</a>` : ""}</div><div class="wrap"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">${gal || card("Welcome", "We are glad you found us.")}</div></div>`;
+    if (isHome) return `<img src="${e(hero)}" alt="${e(name)} — professional ${e(type)}" style="width:100%;max-height:440px;object-fit:cover;display:block"><div class="wrap" style="text-align:center"><p style="letter-spacing:3px;text-transform:uppercase;font-size:12px;color:#64748b;margin:18px 0 0;font-weight:700">${e(type)}</p><h1 style="font-size:clamp(2rem,5.4vw,3.4rem);margin:.2em 0;color:#0f172a">${e(name)}</h1><p style="max-width:660px;margin:0 auto;color:#475569;font-size:1.08rem;line-height:1.6">Professional, reliable ${e(type.toLowerCase())} you can count on. Clear pricing, fast response, and work we stand behind — so getting started is easy.${address ? ` Find us at ${e(address)}.` : ""}</p><div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">${phone ? `<a href="tel:${e(phone)}" style="padding:14px 28px;border-radius:12px;background:#16a34a;color:#fff;font-weight:700;text-decoration:none;box-shadow:0 8px 20px rgba(22,163,74,.28)">Call ${e(phone)}</a>` : ""}<a href="#contact" style="padding:14px 28px;border-radius:12px;background:#0f172a;color:#fff;font-weight:700;text-decoration:none">Get a free quote</a></div><div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px">${["Licensed & insured", "Fast, friendly service", "Free, no-obligation quotes", "Proudly local"].map((c) => `<span style="background:#eef2f7;border:1px solid #e2e8f0;color:#334155;padding:8px 15px;border-radius:999px;font-size:.84rem;font-weight:600">${e(c)}</span>`).join("")}</div></div><div class="wrap"><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:6px">${card("Quality you can trust", "Careful work and honest advice on every single job.")}${card("Clear, upfront pricing", "Know the cost before we begin — no hidden fees.")}${card("Here when you need us", "Quick response and friendly support after the job.")}</div>${gal ? `<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:22px">${gal}</div>` : ""}</div>`;
     if (spec.id === "about") return `<div class="wrap"><h2>About ${e(name)}</h2><p>We are a dedicated ${e(type.toLowerCase())} committed to quality and honest service. Our experienced team treats every customer like a neighbour.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:16px">${card("Trusted", "Loved by local customers.")}${card("Experienced", "Years of hands-on expertise.")}${card("Fair pricing", "Transparent, no surprises.")}</div></div>`;
     if (spec.id === "services") return `<div class="wrap"><h2>Our Services</h2><p>Everything you need, done right the first time.</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px">${card("Service One", "Professional work delivered on time.")}${card("Service Two", "Solutions tailored to your needs.")}${card("Service Three", "Great value, every single time.")}${card("Service Four", "Friendly support before and after.")}</div></div>`;
     if (spec.id === "contact") return `<div class="wrap"><h2>Contact Us</h2><p>${phone ? `Call <a href="tel:${e(phone)}"><strong>${e(phone)}</strong></a>. ` : ""}${email ? `Email <a href="mailto:${e(email)}">${e(email)}</a>. ` : ""}${address ? e(address) : ""}</p><form style="display:grid;gap:10px;max-width:520px;margin-top:12px"><input placeholder="Your name" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px"><input type="email" placeholder="Your email" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px"><textarea rows="4" placeholder="How can we help?" style="padding:12px;border:1px solid #cbd5e1;border-radius:10px"></textarea><button type="submit" style="padding:13px 24px;border:0;border-radius:10px;background:#22c55e;color:#06281a;font-weight:700">Send message</button></form></div>`;
@@ -700,21 +743,26 @@ export class NvidiaService {
     // stay inside the model's token/time budget. The shell + navigation are
     // assembled in code, so the site always renders and the pages always switch.
     const request = (maxTokens, note) => this.completeRaw([
-      { role: "system", content: `You are an elite website builder. Output ONLY the inner content for a ${pageCount}-page business website. RULES: (1) Separate each page with the exact marker <!--PAGE--> on its own line, and emit exactly ${pageCount} page(s) in this order: ${pageSpecs.map((p) => p.title).join(", ")}. (2) Do NOT output <!doctype>, <html>, <head>, <body> or <nav> — only the page content (headings, paragraphs, images, buttons, forms). (3) You MAY put ONE compact single-line <style> block at the very top for shared styles. (4) Use the exact image URLs from the brief in real <img> tags; never leave src empty. (5) Be CONCISE: the ENTIRE output under ~1500 tokens; few sections per page; finish cleanly. (6) No markdown, no explanations, no code fences.` },
+      { role: "system", content: `You are MAT LEADS Studio, an award-winning web design studio whose output rivals Claude's best sites. Output ONLY the inner content for a ${pageCount}-page business website. PRO STANDARD: generous whitespace, oversized display headlines, eyebrow kickers with letter-spacing, gradient or image hero bands with overlay, elevated cards (radius 16-20px, soft shadows, hover lift), trust chips, stats with big numerals, numbered process steps, testimonial band on Home ONLY labelled sample with no invented names, FAQ accordion with <details>/<summary>, sticky mobile call bar, closing CTA band with gradient. RULES: (1) Separate each page with the exact marker <!--PAGE--> on its own line, and emit exactly ${pageCount} page(s) in this order: ${pageSpecs.map((p) => p.title).join(", ")}. (2) Do NOT output <!doctype>, <html>, <head>, <body> or <nav> — only the page content. (3) You MUST open with ONE single-line <style> block defining your OWN fresh classes for hero/cards/buttons/stats/faq/cta (never reuse generic .hero-band/.card); keep it under ~60 declarations. (4) Use the exact image URLs from the brief in real <img> tags with loading=lazy and descriptive alt text; never leave src empty; never emit placeholder grey boxes. (5) Every page opens with a HERO: eyebrow kicker, one bold benefit-led headline, one supporting sentence, TWO buttons; then vary the middle (stats row, process steps, image+text split, pricing teasers, sample testimonial band, FAQ accordion) with a DIFFERENT order and emphasis each build. (6) Copy: warm, confident, benefit-led, short sentences; NEVER invent awards, reviews, licenses, addresses or numbers — use neutral placeholders or omit. (7) FULL LENGTH: every page complete, each at least ~1200 characters of body content; NEVER truncate. (8) No markdown, no explanations, no code fences.` },
       { role: "user", content: `Build the ${pageCount} page section(s) for: ${brief}. Page focuses: ${pageSpecs.map((p) => `${p.title} = ${p.focus}`).join("; ")}. Hero uses images.hero; put images.gallery URLs in an <img> row on the Home page. Separate every page with <!--PAGE-->. ${note || ""}` }
-    ], { temperature: 0.3, maxTokens, timeoutMs: Math.max(30000, env.nvidia.websiteTimeoutMs || 50000) });
-    let result = await request(1500);
+    ], { temperature: 0.85, maxTokens, timeoutMs: Math.max(60000, env.nvidia.websiteTimeoutMs || 90000) });
+    let result = await request(4000);
     let content = String(result.content || "");
-    if (content.replace(/<!--PAGE-->/gi, "").trim().length < 300) {
+    // Retry when the build is thin by EITHER measure: short total length, or —
+    // the failure mode that shipped empty sites — lots of CSS but almost no
+    // visible words. A style-only response is a failed build, so re-ask once.
+    if (content.replace(/<!--PAGE-->/gi, "").trim().length < 2600 || visibleWordCount(content) < 180) {
       try {
-        const retry = await request(2200, "Remember to separate each page with <!--PAGE--> and end cleanly.");
+        const retry = await request(5200, "Previous attempt was cut short — write FULLY complete pages this time with every section finished. Separate each page with <!--PAGE--> and end cleanly.");
         if (String(retry.content || "").length > content.length) { result = retry; content = String(retry.content || ""); }
       } catch { /* keep first attempt */ }
     }
     const fragments = content.split(/<!--PAGE-->/i).map((s) => this.cleanFragment(s)).filter(Boolean);
     const pages = pageSpecs.map((spec, i) => ({
       ...spec,
-      body: fragments[i] && fragments[i].length > 40 ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0),
+      // Require real visible content (heading + prose), not just a CSS block, so
+      // a style-only fragment can never ship as an empty page.
+      body: hasRealContent(fragments[i]) ? fragments[i] : this.fallbackPageFragment(spec, lead, hero, gallery, i === 0),
     }));
     const html = this.assembleMultiPage(pages, business, accent);
     return { ...result, html, pageCount: pages.length };

@@ -2,7 +2,9 @@ import crypto from "node:crypto";
 import { env } from "../config/env.js";
 import { FirestoreRepository } from "../repositories/firestoreRepository.js";
 import { NvidiaService } from "./nvidiaService.js";
+import { PollinationsService } from "./pollinationsService.js";
 import { AppError } from "../utils/errors.js";
+import { hasRichVisibleContent } from "../utils/siteContent.js";
 
 const memoryWebsites = new Map();
 const memoryByToken = new Map();
@@ -26,6 +28,7 @@ export class WebsiteService {
   constructor() {
     this.websites = new FirestoreRepository("aiWebsites");
     this.nvidia = new NvidiaService();
+    this.pollinations = new PollinationsService();
   }
   websiteKey(user, leadId) {
     return `${user?.uid || "anon"}:${leadId || "lead"}`;
@@ -40,40 +43,75 @@ export class WebsiteService {
     let model = "builtin-template-v1";
     let aiError = "";
     let pageCount = parseInt(options.pages, 10) || 1;
-    try {
-      const result = await this.nvidia.buildWebsite(lead, options);
-      if (result.pageCount) pageCount = result.pageCount;
-      if (result.html && /<\/html>/i.test(result.html) && result.html.length > 800) { html = result.html; provider = result.provider || "nvidia"; model = result.model; }
-      else { html = fallbackWebsiteHtml(lead, options); aiError = "AI build was incomplete — used premium template. Click Generate again; the builder now retries until the full file ends with </html>."; }
-    } catch (e) {
+    // AI rule: Pollinations builds the site (cheap/free tier, no per-model activation).
+    // NVIDIA stays available as an opt-in override via options.provider === "nvidia" only.
+    const preferNvidia = String(options.provider || "").toLowerCase() === "nvidia";
+    const builders = preferNvidia
+      ? [{ name: "nvidia", run: () => this.nvidia.buildWebsite(lead, options) }]
+      : [
+        { name: "pollinations", run: () => this.pollinations.buildWebsite(lead, options) },
+        ...(this.nvidia.configured() ? [{ name: "nvidia", run: () => this.nvidia.buildWebsite(lead, options) }] : []),
+      ];
+    const reasons = [];
+    let built = null;
+    for (const builder of builders) {
+      try {
+        const result = await builder.run();
+        if (result.pageCount) pageCount = result.pageCount;
+        // Require complete markup AND enough visible text that a CSS-only shell
+        // (long but unreadable) can never be accepted as a finished site.
+        if (result.html && /<\/html>/i.test(result.html) && result.html.length > 800 && hasRichVisibleContent(result.html)) {
+          html = result.html;
+          provider = result.provider || builder.name;
+          model = result.model;
+          built = result;
+          break;
+        }
+        if (result.html && /<\/html>/i.test(result.html) && result.html.length > 800 && !hasRichVisibleContent(result.html)) {
+          reasons.push(`${builder.name}: AI build produced markup with too little readable content — asking the next provider.`);
+        } else {
+          reasons.push(`${builder.name}: AI build was incomplete — asking the next provider.`);
+        }
+      } catch (e) {
+        reasons.push(`${builder.name}: ${String(e?.message || "AI request failed").slice(0, 220)}`);
+      }
+    }
+    if (!built) {
       html = fallbackWebsiteHtml(lead, options);
       // Give the REAL, actionable reason — never a misleading "check API key" for a timeout.
-      const code = String(e?.code || "");
-      const raw = String(e?.message || "AI request failed");
+      const raw = reasons.join(" ").slice(0, 900) || "AI build failed on every provider";
       let reason;
-      if (code === "NVIDIA_TIMEOUT" || /timed out/i.test(raw)) {
-        reason = "The AI model was slow to answer this time (a reasoning model occasionally needs a retry). This is NOT an API key problem — your key is valid. Click Generate again to retry.";
-      } else if (code === "NVIDIA_MODEL_NOT_ACTIVE" || /authorization failed|403/i.test(raw)) {
-        reason = "Your NVIDIA key is valid but that specific model isn't activated for it. The app already auto-rotates to a live model — just click Generate again.";
+      if (/timed out/i.test(raw)) {
+        reason = "The AI model was slow to answer this time. This is NOT an API key problem — just click Generate again to retry.";
+      } else if (/Missing or invalid|POLLINATIONS_NOT_CONFIGURED|NVIDIA_NOT_CONFIGURED/i.test(raw)) {
+        reason = "No AI key is set yet. Add POLLINATIONS_API_KEY in .env (get one at enter.pollinations.ai/keys), then restart.";
+      } else if (/authorization failed|403|missing or invalid/i.test(raw)) {
+        reason = raw.slice(0, 320) + " Add or replace POLLINATIONS_API_KEY in .env, then restart.";
+      } else if (/POLLINATIONS_MODEL_DENIED|Pollinations key cannot use|Pollinations key is not allowed to use any of|model allow-list|isn.t allowed to use|allow it for this key/i.test(raw)) {
+        const grantMatch = raw.match(/https:\/\/enter\.pollinations\.ai\/grant\?[^\s)\]">]+/);
+        reason = "Pollinations key is blocked from the AI model (its model allow-list is empty). Owner fix: log in at enter.pollinations.ai and open " + (grantMatch ? grantMatch[0] : "https://enter.pollinations.ai/keys") + " to allow the text category - or set a full-access secret (sk_) key as POLLINATIONS_API_KEY. Then click Generate again.";
       } else {
-        reason = `${raw.slice(0, 200)}. Click Generate again to retry; if it repeats, check NVIDIA_API_KEY and the configured models.`;
+        reason = `${raw.slice(0, 320)}. Click Generate again to retry; if it repeats, check POLLINATIONS_API_KEY.`;
       }
       aiError = `${reason} Used premium template so you still have a working site.`;
     }
-    const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, pageCount: pageCount, aiError, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
+    const record = { id, shareToken, ownerId: user?.uid || "anon", leadId: lead?.leadId || lead?.id || "", leadName: lead?.name || options.businessName || "Business", businessType: lead?.businessType || lead?.category || "", address: lead?.address || "", phone: lead?.phone || "", email: lead?.email || "", businessName: options.businessName || lead?.name || "Business", style: options.style || "modern", html, provider, model, pageCount: pageCount, aiError, revisions: 1, history: [{ at: createdAt, instruction: "Initial AI website build" }], createdAt, updatedAt: createdAt };
     try { await this.websites.upsert(id, record); } catch {}
     memoryWebsites.set(id, record);
     memoryByToken.set(shareToken, id);
     return { website: record };
   }
-  async refine({ id, instruction, user }) {
+  async refine({ id, instruction, user, provider }) {
     let record = null;
     try { record = await this.websites.findById(id); } catch {}
     record = record || memoryWebsites.get(id);
     if (!record) { const err = new Error("Website not found. Generate it first."); err.status = 404; err.code = "WEBSITE_NOT_FOUND"; throw err; }
-    const result = await this.nvidia.refineWebsite(record.html, instruction, record);
+    if (String(record.ownerId || "") !== String(user?.uid || "") && String(user?.role || "").toLowerCase() !== "admin") {
+      const err = new Error("You can only refine your own websites."); err.status = 403; err.code = "FORBIDDEN"; throw err;
+    }
+    let result = null; try { result = await this.pollinations.refineWebsite(record.html, instruction, record); } catch (e) { if (this.nvidia.configured()) { result = await this.nvidia.refineWebsite(record.html, instruction, record); } else { throw e; } }
     if (!result.html || result.html.length <= 500) {
-      throw new AppError("NVIDIA AI returned an incomplete website update. Your current site was not changed; please try again.", 503, "NVIDIA_EMPTY");
+      throw new AppError("AI returned an incomplete website update. Your current site was not changed; please try again.", 503, "AI_REFINER_EMPTY");
     }
     const html = result.html;
     const updated = { ...record, html, revisions: Number(record.revisions || 1) + 1, history: [...(record.history || []), { at: new Date().toISOString(), instruction }], updatedAt: new Date().toISOString() };
@@ -85,10 +123,35 @@ export class WebsiteService {
     try { const f = await this.websites.findById(id); if (f) return f; } catch {}
     return memoryWebsites.get(id) || null;
   }
+  // Every site the signed-in account owns, newest first — powers the Studio's
+  // "Your websites" list. Admins see their own sites only, not everyone's.
+  async listForUser(user) {
+    const uid = String(user?.uid || "");
+    let rows = [];
+    try {
+      rows = await this.websites.list({ limit: 200, where: [{ field: "ownerId", op: "==", value: uid }] });
+    } catch {
+      rows = [...memoryWebsites.values()].filter((w) => String(w.ownerId || "") === uid);
+    }
+    const merged = [...rows, ...[...memoryWebsites.values()].filter((w) => String(w.ownerId || "") === uid && !rows.find((r) => r.id === w.id))];
+    return merged
+      .map((w) => ({
+        id: w.id,
+        businessName: w.businessName || w.leadName || "Website",
+        pageCount: Number(w.pageCount || 1),
+        revisions: Number(w.revisions || 1),
+        provider: w.provider || "",
+        shareToken: w.shareToken || "",
+        shareUrl: `/s/${w.shareToken}`,
+        createdAt: w.createdAt || "",
+        updatedAt: w.updatedAt || w.createdAt || ""
+      }))
+      .sort((a, b) => String(b.updatedAt || b.createdAt).localeCompare(String(a.updatedAt || a.createdAt)));
+  }
   async saveHtml(id, html, user) {
     let record = await this.getById(id);
     if (!record) { const e = new Error("Website not found."); e.status = 404; e.code = "WEBSITE_NOT_FOUND"; throw e; }
-    if (String(record.ownerId || "") !== String(user?.uid || "") && String(user?.role || "") !== "admin") {
+    if (String(record.ownerId || "") !== String(user?.uid || "") && String(user?.role || "").toLowerCase() !== "admin") {
       const e = new Error("You can only edit your own websites."); e.status = 403; e.code = "FORBIDDEN"; throw e;
     }
     const updated = { ...record, html, updatedAt: new Date().toISOString(), history: [...(record.history || []), { at: new Date().toISOString(), instruction: "Manual visual edit (no code)" }] };

@@ -4,6 +4,7 @@ const USER_KEY = "mat_user";
 const PUBLIC_API_PATHS = new Set([
   "/api/auth/login",
   "/api/auth/register",
+  "/api/auth/firebase",
   "/api/auth/refresh",
   "/api/health"
 ]);
@@ -179,6 +180,8 @@ export async function apiFetch(path, options = {}) {
   const response = await fetch(path, {
     ...options,
     headers
+  }).catch(() => {
+    throw new Error("Cannot reach the server. Check your internet connection, then reload the page. If this is the live site, the API may still be deploying — wait a minute and retry.");
   });
 
   const contentType = response.headers.get("content-type") || "";
@@ -214,7 +217,10 @@ export async function apiFetch(path, options = {}) {
     }
     var baseMessage = typeof payload === "object" && payload && payload.error ? payload.error.message : "Request failed";
     var message = fieldMessage ? baseMessage + " (" + fieldMessage + ")" : baseMessage;
-    throw new Error(message);
+    var error = new Error(message);
+    error.code = typeof payload === "object" && payload && payload.error && payload.error.code ? payload.error.code : undefined;
+    error.status = response.status;
+    throw error;
   }
 
   return payload;

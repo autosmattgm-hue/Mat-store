@@ -654,6 +654,34 @@ function dedupeLeads(leads = []) {
   return [...byKey.values()];
 }
 
+// Short human-readable ID stamped on every saved lead so the AI tools, studio
+// and lead picker can reference it (format: ML-XXXXXX, no look-alike chars).
+function makeLeadId() {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(6);
+  try { (window.crypto || {}).getRandomValues?.(bytes); } catch {}
+  let out = "ML-";
+  for (let i = 0; i < 6; i += 1) {
+    const byte = bytes[i] ?? Math.floor(Math.random() * 256);
+    out += alphabet[byte % alphabet.length];
+  }
+  return out;
+}
+
+function backfillLocalLeadIds() {
+  try {
+    const leads = readLocalSavedLeads();
+    let changed = false;
+    for (const lead of leads) {
+      if (lead && !lead.leadId) {
+        lead.leadId = makeLeadId();
+        changed = true;
+      }
+    }
+    if (changed) writeLocalSavedLeads(leads);
+  } catch {}
+}
+
 function localLeadId(lead = {}) {
   return String(lead.id || `${lead.name || "lead"}-${lead.address || ""}-${lead.googleMapsLink || ""}`)
     .toLowerCase()
@@ -697,6 +725,7 @@ function compactLeadForLocalStorage(lead = {}) {
   return {
     ...copy,
     id,
+    leadId: copy.leadId || makeLeadId(),
     localSavedAt: new Date().toISOString()
   };
 }
@@ -1530,6 +1559,7 @@ function renderLocalSavedLead(lead) {
       ${renderLeadStrength(lead)}
       <div class="lead-meta">
         <span class="tag success">Local saved</span>
+        <span class="tag tag-lead-id" title="Lead ID — used by AI tools and Website Studio">ID ${escapeHtml(lead.leadId || localLeadId(lead))}</span>
         <span class="tag">${escapeHtml(lead.localStage || lead.stage || "New")}</span>
         ${lead.localCampaign ? `<span class="tag">${escapeHtml(lead.localCampaign)}</span>` : ""}
         ${localReminderStatus(lead) === "due" ? `<span class="tag warning">Follow up due</span>` : ""}
@@ -1598,6 +1628,7 @@ function renderLocalLeadDetail(target, lead) {
       </div>
       <div class="lead-meta" style="margin-top:14px;">
         <span class="tag success">Loaded from local storage</span>
+        <span class="tag tag-lead-id" title="Lead ID — used by AI tools and Website Studio">ID ${escapeHtml(lead.leadId || localLeadId(lead))}</span>
         <span class="tag">${lead.phone ? "Phone found" : "Phone missing"}</span>
         <span class="tag">${lead.email ? "Email found" : "Email missing"}</span>
         <span class="tag">${lead.websiteUrl ? "Website found" : "Website missing"}</span>
@@ -1972,7 +2003,10 @@ function initWebsiteStudioActions() {
     const lead = currentLeadResults.find((l) => String(l.id) === String(leadId))
       || currentFilteredLeadResults.find((l) => String(l.id) === String(leadId))
       || readLocalSavedLeads().find((l) => String(localLeadId(l)) === String(leadId) || String(l.id) === String(leadId));
-    if (lead) { try { sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead)); } catch {} }
+    if (lead) {
+      if (!lead.leadId) lead.leadId = makeLeadId();
+      try { sessionStorage.setItem("mat_studio_lead", JSON.stringify(lead)); } catch {}
+    }
     if (!pro) {
       window.location.href = "/pricing.html?upgrade=pro";
       return;
@@ -1998,7 +2032,7 @@ function initLeadActions() {
       }
       await apiFetch(`/api/leads/${encodeURIComponent(button.dataset.saveLead)}/save`, {
         method: "POST",
-        body: JSON.stringify({})
+        body: JSON.stringify({ lead })
       });
       button.textContent = "Saved";
     } catch (error) {
@@ -2043,7 +2077,7 @@ function initBulkLeadActions() {
         await Promise.all(batch.map((lead) => (
           apiFetch(`/api/leads/${encodeURIComponent(lead.id)}/save`, {
             method: "POST",
-            body: JSON.stringify({})
+            body: JSON.stringify({ lead })
           })
         )));
       }
@@ -2448,6 +2482,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initBulkLeadActions();
   initLocalSavedLeadActions();
   initLocalSavedLeadFilters();
+  backfillLocalLeadIds();
   renderLocalSavedLeads();
   initLeadDetails();
   initOutreachActions();

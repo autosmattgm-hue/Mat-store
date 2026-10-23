@@ -110,7 +110,14 @@ export const authSchemas = {
   register: schema((input) => ({
     name: stringField(input, "name", { required: true, min: 2, max: 120 }),
     email: stringField(input, "email", { required: true, email: true, max: 255 }).toLowerCase(),
-    password: stringField(input, "password", { required: true, min: 8, max: 128 })
+    password: stringField(input, "password", { required: true, min: 8, max: 128 }),
+    ref: stringField(input, "ref", { max: 40, truncate: true })
+  })),
+  verifyEmail: schema((input) => ({
+    token: stringField(input, "token", { required: true, min: 10, max: 200 })
+  })),
+  resendVerification: schema((input) => ({
+    email: stringField(input, "email", { required: true, email: true, max: 255 }).toLowerCase()
   })),
   login: schema((input) => ({
     email: stringField(input, "email", { required: true, email: true, max: 255 }).toLowerCase(),
@@ -118,7 +125,16 @@ export const authSchemas = {
   })),
   refresh: schema((input) => ({
     refreshToken: stringField(input, "refreshToken", { required: true, min: 20, max: 4000 })
-  }))
+  })),
+  firebaseSession: schema((input) => {
+    const idToken = stringField(input, "idToken", { required: true, min: 10, max: 8000 });
+    const name = stringField(input, "name", { max: 120, truncate: true });
+    const password = stringField(input, "password", { max: 128 });
+    if (password && password.length < 8) {
+      throw validationError({ password: ["Must be at least 8 characters"] });
+    }
+    return { idToken, name, password };
+  })
 };
 
 export const profileSchema = schema((input) => ({
@@ -249,6 +265,13 @@ export const aiSchemas = {
     style: stringField(input, "style", { max: 80, truncate: true }),
     palette: stringField(input, "palette", { max: 80, truncate: true }),
     pages: numberField(input, "pages", { int: true, min: 1, max: 4, clamp: true, default: 1 }),
+    design: stringField(input, "design", { max: 40, truncate: true }),
+    tone: stringField(input, "tone", { max: 40, truncate: true }),
+    services: stringField(input, "services", { max: 1200, truncate: true }),
+    cta: stringField(input, "cta", { max: 160, truncate: true }),
+    about: stringField(input, "about", { max: 1200, truncate: true }),
+    language: stringField(input, "language", { max: 40, truncate: true }),
+    followBrief: booleanField(input, "followBrief", { default: true }),
     images: input.images && typeof input.images === "object" ? { hero: String(input.images.hero || "").slice(0, 2000), gallery: Array.isArray(input.images.gallery) ? input.images.gallery.map((g) => String(g || "").slice(0, 2000)).filter(Boolean).slice(0, 6) : [] } : { hero: "", gallery: [] }
   })),
   websiteRefine: schema((input) => ({
