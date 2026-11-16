@@ -1,7 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const aiAgentController = require('../controllers/aiAgentController');
-const { optionalAuth } = require('../middleware/auth');
+const { optionalAuth, requireAuth, requireAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ const agentLimiter = rateLimit({
 });
 
 router.post('/agent', agentLimiter, optionalAuth, aiAgentController.chat);
+router.post('/report', agentLimiter, requireAuth, requireAdmin, aiAgentController.report);
 
 module.exports = router;

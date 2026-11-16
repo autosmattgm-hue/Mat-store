@@ -14,6 +14,16 @@ async function chat(req, res, next) {
   }
 }
 
+async function report(req, res, next) {
+  try {
+    const result = await aiAgentService.runAdminReport({ user: req.user, focus: req.body?.focus });
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   chat
+  ,report
 };

@@ -249,6 +249,40 @@ function cleanProfessionalReply(value, fallback = '') {
   return text || fallback || 'I am ready to help with MAT STORE.';
 }
 
+function buildActions(message, suggestions = [], context = {}) {
+  const text = String(message || '').toLowerCase();
+  const actions = [];
+  const addAction = (action) => {
+    if (!actions.some((item) => item.type === action.type && item.url === action.url && item.productId === action.productId)) actions.push(action);
+  };
+
+  if (/\b(cart|basket)\b/.test(text)) addAction({ type: 'navigate', label: 'Open cart', url: '/cart.html' });
+  if (/\b(checkout|pay|purchase|buy now)\b/.test(text)) addAction({ type: 'navigate', label: 'Review checkout', url: '/checkout.html', requiresConfirmation: true });
+  if (/\b(track|tracking|where is|delivery status)\b/.test(text)) addAction({ type: 'navigate', label: 'Track an order', url: '/tracking.html' });
+  if (/\b(account|login|sign in|profile|address|wishlist)\b/.test(text)) addAction({ type: 'navigate', label: 'Open account', url: '/account.html' });
+  if (/\b(return|refund)\b/.test(text)) addAction({ type: 'navigate', label: 'View returns policy', url: '/returns.html' });
+  if (/\b(shipping|delivery|dispatch|arrival)\b/.test(text)) addAction({ type: 'navigate', label: 'View shipping details', url: '/shipping.html' });
+
+  const currency = text.match(/\b(usd|eur|gbp|cad|aud|jpy)\b/i)?.[1]?.toUpperCase();
+  if (currency) addAction({ type: 'currency', label: `Display prices in ${currency}`, currency });
+
+  // Cart mutation is deliberately not inferred from natural language. The product card remains
+  // the review point, where shoppers can choose a variant and add it through the normal cart flow.
+  // This avoids AI ever placing an ambiguous or incorrectly matched item into a cart.
+  const wantsAdd = /\b(add|put|place)\b[\s\S]{0,45}\b(cart|basket)\b|\badd to cart\b/.test(text);
+
+  const searchIntent = /\b(find|show|search|browse|look for|need|want)\b/.test(text);
+  if (searchIntent && !wantsAdd) {
+    const query = sanitizeString(message, 180);
+    addAction({ type: 'navigate', label: 'See matching products', url: `/search.html?q=${encodeURIComponent(query)}` });
+  }
+
+  if (!actions.length && context?.page && !String(context.page).includes('shop')) {
+    addAction({ type: 'navigate', label: 'Browse the full shop', url: '/shop.html' });
+  }
+  return actions.slice(0, 3);
+}
+
 function buildSystemPrompt(mode, user) {
   const admin = user?.role === 'admin';
   return [
@@ -309,6 +343,7 @@ async function runAgent(input = {}) {
 
   const rawReply = completion.content || fallback;
   const reply = cleanProfessionalReply(rawReply, fallback);
+  const actions = buildActions(message, suggestions, input.context || {});
 
   return {
     reply,
@@ -316,10 +351,55 @@ async function runAgent(input = {}) {
     model: completion.content ? 'mat-ai' : 'local-fallback',
     mode,
     suggestions,
+    actions,
     business: user?.role === 'admin' ? business : undefined
   };
 }
 
+function localAdminReport(analytics, focus = 'executive') {
+  const health = analytics.pricingHealth || {};
+  const focusLabel = String(focus || 'executive').replace(/[^a-z]/gi, ' ') || 'executive';
+  return [
+    `MAT STORE ${focusLabel} report: ${analytics.orders || 0} orders have generated ${Number(analytics.revenue || 0).toFixed(2)} in total revenue, with ${Number(analytics.revenue30Days || 0).toFixed(2)} in the last 30 days and an average order value of ${Number(analytics.averageOrderValue || 0).toFixed(2)}.`,
+    `Operational watchlist: ${analytics.pendingOrders || 0} orders need fulfillment attention, ${analytics.lowStock?.length || 0} products are low in stock, ${analytics.abandonedCarts || 0} carts are awaiting recovery, and ${analytics.duplicateCount || 0} possible catalog duplicates need review.`,
+    `Catalog economics: ${analytics.activeProducts || 0} active products, ${health.protected || 0} protected prices, ${health.underpriced || 0} underpriced products, and a modeled margin value of ${Number(analytics.marginValue || 0).toFixed(2)}.`,
+    'Recommended next actions: clear fulfillment blockers first, recover the highest-intent abandoned carts, review low-stock winners before paid promotion, and repair underpriced or duplicate listings before expanding the catalog.'
+  ].join('\n\n');
+}
+
+async function runAdminReport(input = {}) {
+  if (input.user?.role !== 'admin') throw new HttpError(403, 'Admin access is required for AI reports.');
+  const focus = sanitizeString(input.focus || 'executive', 40).toLowerCase();
+  const analytics = await analyticsService.dashboard();
+  const fallback = localAdminReport(analytics, focus);
+  const completion = await nvidiaAiService.chatCompletion({
+    messages: [
+      { role: 'system', content: `${buildSystemPrompt('business', input.user)} Create a concise executive report with observed metrics, risks, and five prioritized next actions. Do not invent figures.` },
+      { role: 'user', content: JSON.stringify({ focus, analytics }).slice(0, 11000) }
+    ],
+    temperature: 0.25,
+    topP: 0.85,
+    maxTokens: 900,
+    timeoutMs: 18000
+  });
+  return {
+    report: cleanProfessionalReply(completion.content, fallback),
+    provider: completion.content ? 'mat-ai' : 'local-fallback',
+    focus,
+    generatedAt: new Date().toISOString(),
+    metrics: {
+      revenue: analytics.revenue,
+      revenue30Days: analytics.revenue30Days,
+      orders: analytics.orders,
+      pendingOrders: analytics.pendingOrders,
+      abandonedCarts: analytics.abandonedCarts,
+      lowStockCount: analytics.lowStock?.length || 0,
+      activeProducts: analytics.activeProducts
+    }
+  };
+}
+
 module.exports = {
-  runAgent
+  runAgent,
+  runAdminReport
 };
