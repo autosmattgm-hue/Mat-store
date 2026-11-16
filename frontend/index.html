@@ -30,6 +30,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/styles.css?v=20260604-logo2">
+    <link rel="stylesheet" href="/css/home-redesign.css?v=20261115">
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -101,6 +102,10 @@
     </div>
 
     <main id="storefront" class="storefront">
+      <section class="store-announcement" aria-label="Store benefits">
+        <p><span class="announcement-dot" aria-hidden="true"></span> The MAT Holiday Edit is live</p>
+        <div><span>Curated weekly</span><span>Protected checkout</span><span>Worldwide discovery</span></div>
+      </section>
       <section class="hero" id="top" aria-labelledby="heroTitle">
         <video class="hero-video" autoplay muted loop playsinline poster="https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg">
           <source src="https://videos.pexels.com/video-files/3195394/3195394-hd_1920_1080_25fps.mp4" type="video/mp4">
@@ -108,12 +113,13 @@
         <div class="hero-overlay" aria-hidden="true"></div>
         <div class="hero-inner">
           <div class="hero-copy reveal">
-            <p class="eyebrow">MAT AI-curated marketplace</p>
-            <h1 id="heroTitle">MAT STORE</h1>
-            <p class="hero-lede">Luxury product discovery, smart pricing, global currency comfort, and secure checkout built for modern shoppers.</p>
+            <p class="eyebrow"><span class="eyebrow-spark" aria-hidden="true">&#10022;</span> MAT AI-curated marketplace</p>
+            <p class="hero-kicker">THE MODERN OBJECT EDIT</p>
+            <h1 id="heroTitle">Objects worth<br><em>finding.</em></h1>
+            <p class="hero-lede">The very best of modern living, selected by intelligent curation and designed to arrive beautifully.</p>
             <div class="hero-actions">
-              <a class="button primary" href="/shop.html?trending=true">Trending Products</a>
-              <button class="button ghost" id="heroImportTeaser" type="button">MAT AI Import Studio</button>
+              <a class="button primary" href="/shop.html?trending=true">Shop the edit <span aria-hidden="true">&#8599;</span></a>
+              <button class="button ghost" id="heroImportTeaser" type="button">How MAT selects <span aria-hidden="true">&#8594;</span></button>
             </div>
             <div class="hero-metrics" aria-label="Marketplace highlights">
               <span><strong>12+</strong> curated lines</span>
@@ -126,41 +132,40 @@
       </section>
 
       <section class="trust-band" aria-label="Store promises">
-        <span>Secure sessions</span>
-        <span>MAT AI enrichment</span>
-        <span>PayPal checkout ready</span>
-        <span>Secure account orders</span>
-        <span>Global currency display</span>
+        <span><b>01</b> Secure checkout</span>
+        <span><b>02</b> AI-curated selection</span>
+        <span><b>03</b> Global currencies</span>
+        <span><b>04</b> Tracked orders</span>
       </section>
 
       <section class="section collection-band" id="collections" aria-labelledby="collectionsTitle">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Smart categories</p>
-            <h2 id="collectionsTitle">Curated By Intent</h2>
+            <p class="eyebrow">Explore the collection</p>
+            <h2 id="collectionsTitle">A better way<br>to browse.</h2>
           </div>
-          <div id="categoryFilters" class="category-filters" aria-label="Product categories"></div>
+          <div class="collection-heading-side"><p>Shop by feeling, purpose, or the part of your world you want to make more considered.</p><div id="categoryFilters" class="category-filters" aria-label="Product categories"></div></div>
         </div>
         <div class="collection-grid">
           <article class="editorial-tile tall reveal">
             <img src="https://academy.scene7.com/is/image/academy/shoes/skechers-womens-go-walk-flex-slip-in-shoes-124836-nvw/95173bc9-f472-4b6b-8367-bae8db572a47?$pdp-mobile-gallery-ng$" alt="Premium sneaker product styling" loading="lazy">
             <div>
-              <p>Street Luxe</p>
-              <strong>Shoes and fashion selected for movement.</strong>
+              <p>01 / Street Luxe</p>
+              <strong>Designed to move with you.</strong>
             </div>
           </article>
           <article class="editorial-tile reveal">
             <img src="https://m.media-amazon.com/images/I/51Zw2fYy13L._AC_SL1500_.jpg" alt="Premium skincare serum" loading="lazy">
             <div>
-              <p>Beauty Rituals</p>
-              <strong>Repeat-purchase products with refined shelf appeal.</strong>
+              <p>02 / Beauty Rituals</p>
+              <strong>Small routines, beautifully elevated.</strong>
             </div>
           </article>
           <article class="editorial-tile reveal">
             <img src="https://m.media-amazon.com/images/I/71OWtcxKgvL._AC_SL1500_.jpg" alt="Wireless headphones" loading="lazy">
             <div>
-              <p>Modern Tech</p>
-              <strong>High-demand electronics with premium presentation.</strong>
+              <p>03 / Modern Tech</p>
+              <strong>Useful objects with presence.</strong>
             </div>
           </article>
         </div>
@@ -169,12 +174,34 @@
       <section class="section" id="trending" aria-labelledby="trendingTitle">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Trending products</p>
-            <h2 id="trendingTitle">Luxury Market Pulse</h2>
+            <p class="eyebrow">Just landed</p>
+            <h2 id="trendingTitle">The pieces<br>people want now.</h2>
           </div>
-          <a class="text-button" id="viewTrendingButton" href="/shop.html?trending=true">View all trending</a>
+          <a class="text-button" id="viewTrendingButton" href="/shop.html?trending=true">View the full edit <span aria-hidden="true">&#8594;</span></a>
         </div>
         <div id="trendingGrid" class="product-grid"></div>
+      </section>
+
+      <section class="section discovery-section" aria-labelledby="discoveryTitle">
+        <div class="discovery-intro">
+          <div>
+            <p class="eyebrow">Shop with intention</p>
+            <h2 id="discoveryTitle">Tell us what you<br>need. We&rsquo;ll do the rest.</h2>
+          </div>
+          <p>Skip the endless scrolling. MAT AI can narrow the edit around your lifestyle, budget, and the details that matter most.</p>
+        </div>
+        <div class="discovery-grid">
+          <button class="discovery-card discovery-featured" type="button" data-concierge-prompt="I need a premium gift. Help me find the best MAT STORE options under my budget." data-concierge-mode="shopper">
+            <span class="discovery-number">01</span><span class="discovery-icon" aria-hidden="true">&#10022;</span>
+            <strong>Find a gift that feels personal.</strong><small>Start a guided gift search <b aria-hidden="true">&#8594;</b></small>
+          </button>
+          <button class="discovery-card" type="button" data-concierge-prompt="Help me build a high-value modern tech setup from MAT STORE." data-concierge-mode="shopper">
+            <span class="discovery-number">02</span><strong>Refresh your daily setup.</strong><small>Explore modern tech <b aria-hidden="true">&#8594;</b></small>
+          </button>
+          <button class="discovery-card" type="button" data-concierge-prompt="Show me practical beauty and self-care products with the best value." data-concierge-mode="shopper">
+            <span class="discovery-number">03</span><strong>Create a better ritual.</strong><small>Explore beauty picks <b aria-hidden="true">&#8594;</b></small>
+          </button>
+        </div>
       </section>
 
       <section class="section premium-rail-section" id="premium" aria-labelledby="premiumTitle">
@@ -186,6 +213,18 @@
         </div>
         <div class="rail-window" aria-label="Premium product carousel">
           <div id="premiumRail" class="rail-track"></div>
+        </div>
+      </section>
+
+      <section class="shop-services" aria-labelledby="servicesTitle">
+        <div class="shop-services-heading">
+          <p class="eyebrow">Designed around you</p>
+          <h2 id="servicesTitle">The details<br>make the difference.</h2>
+        </div>
+        <div class="service-grid">
+          <a href="/shop.html?category=electronics" class="service-link"><span>01</span><div><strong>Smart discovery</strong><p>Search and filter a considered global catalog in seconds.</p></div><b aria-hidden="true">&#8599;</b></a>
+          <a href="/shipping.html" class="service-link"><span>02</span><div><strong>Clear delivery</strong><p>Review shipping guidance before you decide.</p></div><b aria-hidden="true">&#8599;</b></a>
+          <a href="/returns.html" class="service-link"><span>03</span><div><strong>Confident buying</strong><p>Easy-to-find return and customer-care information.</p></div><b aria-hidden="true">&#8599;</b></a>
         </div>
       </section>
 
@@ -242,6 +281,28 @@
           </div>
         </div>
         <div id="masonryGrid" class="masonry-grid"></div>
+      </section>
+
+      <section class="membership-section" aria-labelledby="membershipTitle">
+        <div class="membership-copy">
+          <p class="eyebrow">The MAT dispatch</p>
+          <h2 id="membershipTitle">Good taste,<br>delivered early.</h2>
+          <p>Receive new-edit notes, private price moments, and the products our curators are saving before they disappear.</p>
+        </div>
+        <form class="membership-form" id="membershipForm" novalidate>
+          <label for="membershipEmail">Your email address</label>
+          <div><input id="membershipEmail" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required><button class="button primary" type="submit">Join the edit <span aria-hidden="true">&#8594;</span></button></div>
+          <p id="membershipStatus" role="status" aria-live="polite">No noise. Just the best finds and occasional private offers.</p>
+        </form>
+      </section>
+
+      <section class="track-order-section" aria-labelledby="trackOrderTitle">
+        <div><p class="eyebrow">Already shopping with us?</p><h2 id="trackOrderTitle">Keep an eye on<br>your order.</h2></div>
+        <form id="homeTrackingForm" class="home-tracking-form">
+          <label for="homeTrackingOrder">Order number</label>
+          <div><input id="homeTrackingOrder" name="orderNumber" autocomplete="off" placeholder="MAT-YYMMDD-XXXXX" required><button class="button ghost" type="submit">Track order <span aria-hidden="true">&#8594;</span></button></div>
+          <p>Enter your MAT order number to continue securely to tracking.</p>
+        </form>
       </section>
     </main>
 
@@ -514,6 +575,7 @@
     <script src="/js/auth.js" defer></script>
     <script src="/js/admin.js" defer></script>
     <script src="/js/app.js" defer></script>
+    <script src="/js/home.js" defer></script>
     <script type="module" src="/js/firebase.js"></script>
     <script src="/js/pwa.js" defer></script>
   </body>

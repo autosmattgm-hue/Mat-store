@@ -822,6 +822,26 @@
     }
   }
 
+  async function generateAiReport(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const output = document.getElementById('adminAiReportOutput');
+    const button = form.querySelector('button[type="submit"]');
+    const focus = document.getElementById('adminAiReportFocus')?.value || 'executive';
+    if (!output || !button) return;
+    button.disabled = true;
+    output.innerHTML = '<div class="skeleton"></div><p>MAT AI is analyzing the current operating signals.</p>';
+    try {
+      const result = await api.post('/ai/report', { focus });
+      output.innerHTML = `<div class="admin-ai-report-meta"><strong>${escapeHtml(focus)} report</strong><span>${escapeHtml(new Date(result.generatedAt).toLocaleString())}</span></div><p>${escapeHtml(result.report).replace(/\n\n/g, '</p><p>')}</p>`;
+      toast('MAT AI report generated from live dashboard data.');
+    } catch (error) {
+      output.innerHTML = `<div class="empty-state">${escapeHtml(error.message)}</div>`;
+    } finally {
+      button.disabled = false;
+    }
+  }
+
   function bind() {
     document.getElementById('adminOpenButton')?.addEventListener('click', openAdmin);
     document.getElementById('heroImportTeaser')?.addEventListener('click', () => {
@@ -869,6 +889,7 @@
     document.getElementById('seoAuditButton')?.addEventListener('click', () => runTool('seo'));
     document.getElementById('imageAuditButton')?.addEventListener('click', repairImages);
     document.getElementById('inventorySyncButton')?.addEventListener('click', () => runTool('inventory'));
+    document.getElementById('adminAiReportForm')?.addEventListener('submit', generateAiReport);
 
     document.addEventListener('click', (event) => {
       const editButton = event.target.closest('[data-edit-product]');

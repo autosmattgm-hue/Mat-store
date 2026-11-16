@@ -1,5 +1,14 @@
 [
   {
+    "id": "eeb8ca91-b3db-45c3-acbb-782145e436f4",
+    "sessionId": "aff23112-5791-4411-bc9c-245861f63414",
+    "currency": "USD",
+    "items": [],
+    "status": "empty",
+    "updatedAt": "2026-11-16T00:13:49.596Z",
+    "createdAt": "2026-11-16T00:13:49.596Z"
+  },
+  {
     "id": "1f00adfe-28bb-406e-823b-a4b2bc7659c8",
     "sessionId": "59fc4315-3981-4642-b72a-c52b8931329a",
     "currency": "GMD",

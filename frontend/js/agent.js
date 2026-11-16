@@ -68,12 +68,13 @@
     };
   }
 
-  function addMessage(role, content, suggestions) {
+  function addMessage(role, content, suggestions, actions) {
     const message = {
       id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
       role,
       content: role === 'assistant' ? professionalText(content) : String(content || '').trim(),
-      suggestions: Array.isArray(suggestions) ? suggestions.slice(0, 4) : []
+      suggestions: Array.isArray(suggestions) ? suggestions.slice(0, 4) : [],
+      actions: Array.isArray(actions) ? actions.slice(0, 3) : []
     };
     state.messages.push(message);
     state.messages = state.messages.slice(-maxHistory);
@@ -114,6 +115,47 @@
     parent.appendChild(link);
   }
 
+  function actionLabel(action = {}) {
+    return String(action.label || 'Continue with MAT AI').slice(0, 120);
+  }
+
+  function renderAction(parent, action) {
+    const button = create('button', 'ai-agent-action', actionLabel(action));
+    button.type = 'button';
+    button.dataset.agentAction = JSON.stringify(action);
+    if (action.requiresConfirmation) button.dataset.confirmAction = 'true';
+    parent.appendChild(button);
+  }
+
+  async function executeAction(action = {}) {
+    if (!action || typeof action !== 'object') return;
+    if (action.requiresConfirmation && !window.confirm(`MAT AI is ready to ${action.label || 'continue'}. Do you want to proceed?`)) return;
+    if (action.type === 'navigate' && typeof action.url === 'string' && action.url.startsWith('/')) {
+      window.location.assign(action.url);
+      return;
+    }
+    if (action.type === 'currency' && /^[A-Z]{3}$/.test(String(action.currency || ''))) {
+      localStorage.setItem('mat_currency', action.currency);
+      const select = document.getElementById('currencySelect');
+      if (select) { select.value = action.currency; select.dispatchEvent(new Event('change', { bubbles: true })); }
+      window.MATApp?.toast?.(`Prices are now displayed in ${action.currency}.`);
+      window.dispatchEvent(new CustomEvent('mat:currency', { detail: action.currency }));
+      return;
+    }
+    if (action.type === 'add_to_cart' && action.productId) {
+      try {
+        const result = await api.get(`/products/${encodeURIComponent(action.productSlug || action.productId)}`);
+        const product = result.product || result;
+        if (!product?.id) throw new Error('That product is no longer available.');
+        window.MATCart?.add(product, 1);
+        window.MATCart?.openCart();
+        window.MATApp?.toast?.(`${product.title} added to your cart.`);
+      } catch (error) {
+        addMessage('assistant', error.message || 'I could not add that item right now.');
+      }
+    }
+  }
+
   function renderMessages() {
     const list = document.getElementById('matAiAgentMessages');
     if (!list) return;
@@ -134,6 +176,11 @@
         const products = create('div', 'ai-agent-products');
         message.suggestions.forEach((item) => renderSuggestion(products, item));
         row.appendChild(products);
+      }
+      if (message.actions?.length) {
+        const actions = create('div', 'ai-agent-actions');
+        message.actions.forEach((action) => renderAction(actions, action));
+        row.appendChild(actions);
       }
       list.appendChild(row);
     });
@@ -165,7 +212,7 @@
         mode,
         context: pageContext()
       });
-      addMessage('assistant', result.reply || 'I am ready to help with MAT STORE.', result.suggestions || []);
+      addMessage('assistant', result.reply || 'I am ready to help with MAT STORE.', result.suggestions || [], result.actions || []);
     } catch (error) {
       addMessage('assistant', error.message || 'MAT AI could not answer right now. Try again in a moment.');
     } finally {
@@ -243,6 +290,11 @@
       const chip = event.target.closest('[data-agent-prompt]');
       if (!chip) return;
       sendMessage(chip.dataset.agentPrompt, chip.dataset.agentMode);
+    });
+    panel.addEventListener('click', (event) => {
+      const button = event.target.closest('[data-agent-action]');
+      if (!button) return;
+      try { executeAction(JSON.parse(button.dataset.agentAction || '{}')); } catch { addMessage('assistant', 'That action could not be prepared. Please try again.'); }
     });
     form.addEventListener('submit', (event) => {
       event.preventDefault();

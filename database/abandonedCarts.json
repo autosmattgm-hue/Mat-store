@@ -1,5 +1,18 @@
 [
   {
+    "id": "3921c2c7-cb1a-43ff-b0e6-e03017d6455e",
+    "cartId": "1f00adfe-28bb-406e-823b-a4b2bc7659c8",
+    "userId": null,
+    "sessionId": "59fc4315-3981-4642-b72a-c52b8931329a",
+    "currency": "GMD",
+    "itemCount": 1,
+    "estimatedValue": 25.99,
+    "status": "ready",
+    "recoveryChannel": "email-ready",
+    "createdAt": "2026-11-15T23:57:07.778Z",
+    "lastReminderAt": null
+  },
+  {
     "id": "d4cf8cec-db7c-40af-b07c-ab00847bf910",
     "cartId": "8588d037-5c90-443b-a9e0-420ee0a19707",
     "userId": "4ff9bf15-b9d5-41cb-b175-0fef0f98f4c7",
