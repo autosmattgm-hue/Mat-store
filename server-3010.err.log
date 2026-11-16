@@ -1,0 +1,8 @@
+=3010 : The term '=3010' is not recognized as the name of a cmdlet, function, script file, or operable program. Check 
+the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ =3010; node backend/server.js
++ ~~~~~
+    + CategoryInfo          : ObjectNotFound: (=3010:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
